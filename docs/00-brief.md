@@ -27,6 +27,7 @@ Answers come from the director's intake answers. Anything marked **ASSUMPTION** 
 - **Death:** you take over another villager of the same town, who **inherits the previous villager's possessions**. Game over only if your town falls.
 - **Combat:** simple and tactical (tap to attack, the soldier fights on its own). Action combat to be reassessed later.
 - **Art:** simple 3D shapes first; real art decided once the game is fun (Phase 6).
+- **Art pick (22/11/2026, after the style test):** Quaternius CC0 models are the game's look ("Full"); plain shapes stay as the "Light" fallback for slow phones. Kenney dropped. Details: docs/06.
 - **Art path (Q7, 21/11/2026):** start with low-poly 3D (plain shapes, then free packs). **End goal:** the detail level of a modern remastered isometric strategy game (the director shared a screenshot as reference): dense towns, tiled roofs, cobbled squares, lush trees and bushes, cliffs and water, team colours on banners and trims, small readable units, warm daylight. Our own original art, never copied. Reaching it needs money (paid model packs or a 3D artist) and a phone performance check; planned for after the game is proven fun.
 - **Tone:** grounded with light humour. A serious and gritty version is parked in [later/serious-gritty-tone.md](later/serious-gritty-tone.md).
 - **Changing sides (Q2):** yes, at great cost and risk of life. A traitor's heir starts with a bad reputation and must rebuild it. This brings in a **reputation system** with each faction.

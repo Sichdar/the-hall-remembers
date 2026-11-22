@@ -1,6 +1,5 @@
-// Tiny local web server for the prototypes (no installs needed): node prototypes/dev-server.mjs
+// Tiny local web server for the game (no installs needed): node tools/dev-server.mjs
 // Serves the project folder at http://localhost:5173/ , like GitHub Pages does. Only for testing on this PC.
-// Style test: http://localhost:5173/prototypes/style-test/
 import http from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize, sep } from "node:path";
@@ -12,11 +11,10 @@ const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", "
 
 http.createServer(async (req, res) => {
   let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
-  if (p === "/") { res.writeHead(302, { location: "/prototypes/style-test/" }); return res.end(); }
   if (p.endsWith("/")) p += "index.html";
   const file = normalize(join(root, p));
-  // only the folders that go public are served
-  const ok = ["prototypes", "assets", "docs"].some(d => file.startsWith(join(root, d) + sep));
+  // only the game page and the folders that go public are served
+  const ok = file === join(root, "index.html") || ["prototypes", "assets", "docs"].some(d => file.startsWith(join(root, d) + sep));
   if (!ok) { res.writeHead(403); return res.end(); }
   try {
     let body = await readFile(file);
@@ -26,4 +24,4 @@ http.createServer(async (req, res) => {
     res.writeHead(200, { "content-type": types[extname(file)] || "application/octet-stream" });
     res.end(body);
   } catch { res.writeHead(404); res.end("not found"); }
-}).listen(5173, "127.0.0.1", () => console.log("Serving the project at http://localhost:5173/prototypes/style-test/"));
+}).listen(5173, "127.0.0.1", () => console.log("Serving the game at http://localhost:5173/"));
