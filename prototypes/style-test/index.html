@@ -86,8 +86,9 @@ html, body { height: 100%; margin: 0; overflow: hidden; background: #0E1116; col
     </div>
     <div class="group" id="lookG" role="group" aria-label="Art look">
       <span class="lbl">Look</span>
-      <button id="l-plain" data-v="plain" class="on">Plain shapes</button>
-      <button id="l-pack" data-v="pack">Free pack</button>
+      <button id="l-plain" data-v="plain" class="on">Plain</button>
+      <button id="l-pack" data-v="pack">Kenney</button>
+      <button id="l-quat" data-v="quat">Quaternius</button>
     </div>
   </div>
   <div class="side">
@@ -225,11 +226,12 @@ function inst(b, x, y, z, sx, sy, sz, ry, noShadow) {
   if (ry) i.rotation.y = ry;
   i.isPickable = false;
   if (!noShadow) sg.addShadowCaster(i);
-  if (tagPlain) plainOnly.push(i);
+  if (tagPlain) tagPlain.push(i);
   return i;
 }
-// things that only show in the plain look (the pack look has its own versions)
-const plainOnly = [];
+// things that only show in the plain look (the pack looks have their own versions);
+// plain trees and torch posts also stay in the Quaternius look, whose free pack has no trees or lanterns
+const plainOnly = [], plainTrees = [], plainTorch = [];
 let tagPlain = false;
 const spots = { trees: [], fences: [], props: [] };
 
@@ -253,14 +255,14 @@ for (let i = 0; i < 18; i++) inst(BS.rock, rr(-60, 60), rr(-0.3, 0), rr(-28, -23
 
 // ---------- trees ----------
 function olive(x, z, s) {
-  spots.trees.push({ x, z, s, k: "olive" }); tagPlain = true;
+  spots.trees.push({ x, z, s, k: "olive" }); tagPlain = plainTrees;
   inst(BS.trunk, x, 0.7 * s, z, s * 1.1, 1.4 * s, s * 1.1, rr(0, 3));
   inst(BS.olive, x, 1.9 * s, z, 1.35 * s, 0.85 * s, 1.25 * s, rr(0, 3));
   inst(BS.olive, x + 0.6 * s, 2.35 * s, z - 0.3 * s, 0.8 * s, 0.6 * s, 0.8 * s, rr(0, 3));
   block(x, z, 0.35, 0.35); tagPlain = false;
 }
 function corkOak(x, z, s) {
-  spots.trees.push({ x, z, s, k: "cork" }); tagPlain = true;
+  spots.trees.push({ x, z, s, k: "cork" }); tagPlain = plainTrees;
   inst(BS.cork, x, 1.1 * s, z, s, 2.2 * s, s, rr(0, 3));
   inst(BS.corkLeaf, x, 2.9 * s, z, 2.3 * s, 1.15 * s, 2.0 * s, rr(0, 3));
   inst(BS.corkLeaf, x - 1.1 * s, 2.6 * s, z + 0.5 * s, 1.2 * s, 0.8 * s, 1.2 * s, rr(0, 3));
@@ -268,7 +270,7 @@ function corkOak(x, z, s) {
   block(x, z, 0.4, 0.4); tagPlain = false;
 }
 function cypress(x, z, s) {
-  spots.trees.push({ x, z, s, k: "cypress" }); tagPlain = true;
+  spots.trees.push({ x, z, s, k: "cypress" }); tagPlain = plainTrees;
   inst(BS.trunk, x, 0.25 * s, z, 0.8 * s, 0.5 * s, 0.8 * s);
   inst(BS.cone, x, 0.4 * s + 2.6 * s, z, 1.15 * s, 5.2 * s, 1.15 * s, rr(0, 3));
   block(x, z, 0.4, 0.4); tagPlain = false;
@@ -277,7 +279,7 @@ function bush(x, z, s) { inst(BS.bush, x, 0.35 * s, z, s, 0.7 * s, s * rr(0.8, 1
 
 // ---------- fences ----------
 function fence(x1, z1, x2, z2) {
-  spots.fences.push([x1, z1, x2, z2]); tagPlain = true;
+  spots.fences.push([x1, z1, x2, z2]); tagPlain = plainOnly;
   const len = Math.hypot(x2 - x1, z2 - z1), n = Math.max(1, Math.round(len / 2)), ang = Math.atan2(z2 - z1, x2 - x1);
   for (let i = 0; i <= n; i++) {
     const t = i / n;
@@ -404,8 +406,8 @@ block(1.2, 2.9, 0.3, 0.3);
 // torches along the street (light at dusk and night)
 const torches = [];
 [[-17, 2.5], [-6, -2.6], [7, 2.5], [18, -2.6], [-26, -2.6], [26, 2.5]].forEach(([x, z], i) => {
-  plainOnly.push(cast(box(0.14, 2.1, 0.14, P.timberDark, x, 1.05, z)));
-  const cup = box(0.32, 0.18, 0.32, "#3E3A35", x, 2.15, z); plainOnly.push(cup);
+  plainTorch.push(cast(box(0.14, 2.1, 0.14, P.timberDark, x, 1.05, z)));
+  const cup = box(0.32, 0.18, 0.32, "#3E3A35", x, 2.15, z); plainTorch.push(cup);
   spots.props.push({ k: "lantern", x, z });
   const flameMat = new BABYLON.StandardMaterial("flame" + i, scene); flameMat.diffuseColor = new C3(0.3, 0.15, 0.05); flameMat.specularColor = new C3(0, 0, 0);
   const flame = MB.CreateIcoSphere("flame", { radius: 0.17, subdivisions: 1 }, scene); flame.material = flameMat; flame.position.set(x, 2.36, z); flame.scaling.y = 1.5;
@@ -562,15 +564,21 @@ function group(id, fn) {
 }
 group("timeG", v => { timeName = v; target = toState(T[v]); });
 group("stageG", v => {
-  stage = +v; buildHouses(stage); if (lookName === "pack") houseRoot.setEnabled(false);
+  stage = +v; buildHouses(stage); if (lookName !== "plain") houseRoot.setEnabled(false);
   if (packLoaded) buildPackHouses(stage);
+  if (quatLoaded) buildQuatHouses(stage);
 });
 function markOn(id, v) { document.getElementById(id).querySelectorAll("button").forEach(x => x.classList.toggle("on", x.dataset.v === v)); }
+const LOADERS = {
+  pack: { done: () => packLoaded, load: () => loadPack(), msg: "Kenney Fantasy Town Kit and Mini Characters (CC0), about 3 MB." },
+  quat: { done: () => quatLoaded, load: () => loadQuat(), msg: "Quaternius Medieval Village and RPG Characters (CC0), about 13 MB." }
+};
 group("lookG", v => {
-  if (v === "pack" && !packLoaded) {
-    showToast("<b>Loading the free pack…</b><br>Kenney Fantasy Town Kit and Mini Characters (CC0), about 3 MB.");
-    loadPack().then(() => { toast.hidden = true; setLook("pack"); markOn("lookG", "pack"); })
-      .catch(err => showToast("<b>The free pack didn't load.</b><br>" + String(err && err.message || err).slice(0, 160)));
+  const L = LOADERS[v];
+  if (L && !L.done()) {
+    showToast("<b>Loading the pack…</b><br>" + L.msg);
+    L.load().then(() => { toast.hidden = true; setLook(v); markOn("lookG", v); })
+      .catch(err => showToast("<b>The pack didn't load.</b><br>" + String(err && err.message || err).slice(0, 160)));
     return false;
   }
   setLook(v);
@@ -581,7 +589,7 @@ function toggleView() {
   if (view === "fp") { meState.fpYaw = meState.yaw; meState.fpPitch = 0.05; }
   scene.activeCamera = view === "iso" ? iso : fp;
   me.parts.forEach(p => p.isVisible = view === "iso"); ring.isVisible = view === "iso";
-  if (me.q) me.q.setEnabled(lookName === "pack" && view === "iso");
+  if (me.q) me.q.setEnabled(lookName !== "plain" && view === "iso");
   viewLbl.textContent = view === "iso" ? "First person" : "Isometric";
   viewBtn.setAttribute("aria-label", view === "iso" ? "Switch to first-person view" : "Switch to isometric view");
   zoomBtn.hidden = view === "fp";
@@ -757,8 +765,8 @@ function buildPackWorld() {
     q.state = ""; q.setEnabled(false);
     return q;
   };
-  walkers.forEach((w, i) => { w.q = addBody(w.p.root, packPeople[i % packPeople.length]); });
-  me.q = addBody(me.root, "character-male-c");
+  walkers.forEach((w, i) => { w.qk = addBody(w.p.root, packPeople[i % packPeople.length]); });
+  me.qk = addBody(me.root, "character-male-c");
 }
 function setAnim(q, moving) {
   const want = moving ? "walk" : "idle";
@@ -774,13 +782,173 @@ function loadPack() {
 }
 function setLook(l) {
   lookName = l;
-  const pack = l === "pack";
-  packRoot.setEnabled(pack);
-  if (houseRoot) houseRoot.setEnabled(!pack);
-  plainOnly.forEach(n => n.setEnabled(!pack));
-  walkers.forEach(w => { w.p.bodyN.setEnabled(!pack); if (w.q) w.q.setEnabled(pack); });
-  me.bodyN.setEnabled(!pack); if (me.q) me.q.setEnabled(pack && view === "iso");
+  const pack = l === "pack", quat = l === "quat", plain = l === "plain";
+  packRoot.setEnabled(pack); quatRoot.setEnabled(quat);
+  if (houseRoot) houseRoot.setEnabled(plain);
+  plainOnly.forEach(n => n.setEnabled(plain));
+  plainTrees.forEach(n => n.setEnabled(!pack));
+  plainTorch.forEach(n => n.setEnabled(!pack));
+  const bodyOf = o => (pack ? o.qk : quat ? o.qq : null);
+  walkers.forEach(w => { if (w.q) w.q.setEnabled(false); w.q = bodyOf(w); w.p.bodyN.setEnabled(plain); if (w.q) { w.q.setEnabled(true); w.q.state = ""; } });
+  if (me.q) me.q.setEnabled(false);
+  me.q = bodyOf(me); me.bodyN.setEnabled(plain); if (me.q) { me.q.setEnabled(view === "iso"); me.q.state = ""; }
   torches.forEach(t => { t.flame.position.y = pack ? 2.0 : 2.36; t.flame.scaling.setAll(pack ? 0.7 : 1); t.flame.scaling.y = pack ? 1 : 1.5; });
+}
+
+// ---------- Quaternius look: Medieval Village MegaKit (free tier) + RPG Character Pack, CC0 (see assets/LICENCES.md) ----------
+// pieces are in metres: walls 2 m wide and 3.12 m tall, outer face toward +z; roofs "4x6" = 4 m span, 6 m long
+const QV = "../../assets/quaternius/medieval-village-megakit/models/", QC = "../../assets/quaternius/rpg-character-pack/models/";
+const QW = 2, QH = 3.12;
+const QTOWN = ["Wall_Plaster_Straight", "Wall_Plaster_Straight_Base", "Wall_Plaster_Door_Round", "Wall_Plaster_Window_Wide_Round",
+  "Wall_Plaster_Window_Thin_Round", "Wall_Plaster_WoodGrid", "Wall_UnevenBrick_Straight", "Wall_UnevenBrick_Door_Round",
+  "Wall_UnevenBrick_Window_Wide_Round", "Wall_UnevenBrick_Window_Thin_Round", "Window_Wide_Round1", "Window_Thin_Round1",
+  "WindowShutters_Wide_Round_Open", "WindowShutters_Thin_Round_Open", "Door_1_Round", "Corner_Exterior_Brick", "Corner_Exterior_Wood",
+  "Wall_BottomCover", "Roof_RoundTiles_4x4", "Roof_RoundTiles_4x6", "Roof_Front_Brick4", "Prop_Chimney", "Prop_Crate", "Prop_Wagon",
+  "Prop_WoodenFence_Single", "Prop_Vine1", "Prop_Vine2"];
+const QPEOPLE = ["Monk", "Rogue", "Ranger", "Warrior", "Cleric", "Wizard"];
+const qkit = {};
+let quatLoaded = false, quatLoading = null, quatHouseRoot = null;
+const quatRoot = new BABYLON.TransformNode("quatRoot", scene); quatRoot.setEnabled(false);
+const qTint = new C3(1.04, 1.0, 0.94);
+// every piece file carries its own copy of the shared materials (MI_Plaster, MI_WoodTrim…): one material per name
+// lets each house merge into a few meshes; the window glass uses the glass that glows at dusk and night
+const qMats = new Map();
+function toStandardSmooth(c, share) {
+  const swap = new Map();
+  c.meshes.forEach(m => {
+    const pm = m.material; if (!pm) return;
+    if (share && pm.name === "MI_WindowGlass") { m.material = winMat; return; }
+    if (share && qMats.has(pm.name)) { m.material = qMats.get(pm.name); return; }
+    if (!swap.has(pm)) {
+      const sm = new BABYLON.StandardMaterial(pm.name + "-q", scene);
+      const tex = pm.albedoTexture || pm.diffuseTexture;
+      if (tex) { sm.diffuseTexture = tex; sm.diffuseColor = qTint.clone(); if (pm.transparencyMode === 1 || pm.needAlphaTesting && pm.needAlphaTesting()) { tex.hasAlpha = true; sm.useAlphaFromDiffuseTexture = false; } }
+      else sm.diffuseColor = (pm.albedoColor || new C3(1, 1, 1)).multiply(qTint);
+      sm.backFaceCulling = pm.backFaceCulling; sm.specularColor = new C3(0, 0, 0); sm.maxSimultaneousLights = 8;
+      swap.set(pm, sm); if (share) qMats.set(pm.name, sm);
+    }
+    m.material = swap.get(pm);
+  });
+}
+async function loadQKit(root, names, ext, share) {
+  await Promise.all(names.map(async n => {
+    const c = await BABYLON.SceneLoader.LoadAssetContainerAsync(root, n + ext, scene);
+    toStandardSmooth(c, share); qkit[n] = c;
+  }));
+}
+function qpiece(name, x, y, z, ry, parent, s) {
+  const e = qkit[name].instantiateModelsToScene(n => n, false, { doNotInstantiate: true });
+  const h = new BABYLON.TransformNode(name, scene);
+  h.parent = parent || quatRoot; h.position.set(x, y, z); h.rotation.y = ry || 0;
+  if (s) h.scaling.setAll(s);
+  e.rootNodes.forEach(r => r.parent = h);
+  h.getChildMeshes().forEach(m => { sg.addShadowCaster(m); m.receiveShadows = true; m.isPickable = false; });
+  e.animationGroups.forEach(a => a.stop());
+  h.anims = e.animationGroups;
+  return h;
+}
+// one wall segment facing local +z, with its window or door
+function qWall(parent, kind, mat2, x, y, z, ry) {
+  const set = mat2 === "brick" ? "Wall_UnevenBrick_" : "Wall_Plaster_";
+  const name = kind === "door" ? set + "Door_Round" : kind === "wide" ? set + "Window_Wide_Round" : kind === "thin" ? set + "Window_Thin_Round"
+    : kind === "grid" ? "Wall_Plaster_WoodGrid" : kind === "base" ? "Wall_Plaster_Straight_Base" : set === "Wall_UnevenBrick_" ? "Wall_UnevenBrick_Straight" : "Wall_Plaster_Straight";
+  const w = qpiece(name, x, y, z, ry, parent);
+  if (kind === "wide") { qpiece("Window_Wide_Round1", 0, 0, 0, 0, w); qpiece("WindowShutters_Wide_Round_Open", 0, 0, 0, 0, w); }
+  if (kind === "thin") { qpiece("Window_Thin_Round1", 0, 0, 0, 0, w); qpiece("WindowShutters_Thin_Round_Open", 0, 0, 0, 0, w); }
+  if (kind === "door") qpiece("Door_1_Round", -0.56, 0, 0, 0, w);
+  return w;
+}
+function mergeHouse(r) {
+  // one mesh per material per house keeps the draw calls low on phones
+  const byMat = new Map();
+  const keep = ["position", "normal", "uv"];
+  r.getChildMeshes().forEach(m => {
+    if (!m.material || !m.getTotalVertices()) return;
+    // pieces differ in extra data (second UV set, colours): keep only what the material uses, so they can merge
+    m.getVerticesDataKinds().forEach(k => { if (!keep.includes(k)) m.removeVerticesData(k); });
+    if (!m.isVerticesDataPresent("uv")) m.setVerticesData("uv", new Array(m.getTotalVertices() * 2).fill(0));
+    const k = m.material; if (!byMat.has(k)) byMat.set(k, []); byMat.get(k).push(m); });
+  byMat.forEach(list => {
+    if (list.length < 2) return;
+    try { const mm = BABYLON.Mesh.MergeMeshes(list, true, true, undefined, false, false); if (mm) { mm.parent = null; mm.setParent(r); cast(mm); mm.isPickable = false; } } catch (e) { console.warn("merge skipped", e && e.message); }
+  });
+}
+function buildQuatHouses(st) {
+  if (quatHouseRoot) quatHouseRoot.dispose(false, false);
+  quatHouseRoot = new BABYLON.TransformNode("quatHouses", scene); quatHouseRoot.parent = quatRoot;
+  quatHouses.length = 0;
+  housesSpec.forEach((h, hi) => {
+    const r = new BABYLON.TransformNode("qh", scene); r.parent = quatHouseRoot;
+    r.position.set(h.x, 0, h.z); r.rotation.y = (h.f > 0 ? 0 : Math.PI) + h.yaw;
+    const nx = st === 2 && h.w > 5.1 ? 3 : 2, W = nx * QW, D = 2 * QW;
+    const floors = st === 2 ? [hi % 2 ? "brick" : "plaster", "plaster"] : ["brick"];
+    floors.forEach((m2, fl) => {
+      const y = fl * QH;
+      for (let i = 0; i < nx; i++) {
+        const cx = (i - (nx - 1) / 2) * QW;
+        const front = fl === 0 && i === 0 ? "door" : fl === 0 ? "wide" : (i % 2 ? "grid" : "wide");
+        qWall(r, front, m2, cx, y, D / 2, 0);
+        qWall(r, i === nx - 1 ? "thin" : "plain", m2, cx, y, -D / 2, Math.PI);
+      }
+      [-1, 1].forEach(sd => [-1, 1].forEach((sz, k) => qWall(r, k === 0 && fl === st - 1 ? "thin" : "plain", m2, sd * W / 2, y, sz * QW / 2, sd * Math.PI / 2)));
+      if (fl > 0) [[0, D / 2, 0], [0, -D / 2, Math.PI]].forEach(([, z, ry]) => { for (let i = 0; i < nx; i++) qpiece("Wall_BottomCover", (i - (nx - 1) / 2) * QW, y, z, ry, r); });
+      [[1, 1], [1, -1], [-1, 1], [-1, -1]].forEach(([sx, sz]) => qpiece(m2 === "brick" ? "Corner_Exterior_Brick" : "Corner_Exterior_Wood", sx * W / 2, y, sz * D / 2, Math.atan2(sx, sz) - Math.PI / 4, r));
+    });
+    const top = floors.length * QH;
+    qpiece(nx === 3 ? "Roof_RoundTiles_4x6" : "Roof_RoundTiles_4x4", 0, top, 0, Math.PI / 2, r);
+    [-1, 1].forEach(sd => qpiece("Roof_Front_Brick4", sd * W / 2, top, 0, sd * Math.PI / 2, r));
+    if (st === 2) qpiece(hi % 3 ? "Prop_Chimney" : "Prop_Chimney", W / 2 - 1, top, -1, 0, r);
+    if (hi % 3 === 1) qpiece("Prop_Vine1", -W / 2 + 0.6, QH, D / 2 + 0.12, 0, r);
+    mergeHouse(r);
+    r.getChildMeshes().forEach(m => m.freezeWorldMatrix());
+    quatHouses.push({ x: h.x, z: h.z, half: W / 2 + 1, meshes: r.getChildMeshes().filter(m => m.getTotalVertices() > 0), fade: 1 });
+  });
+  quatHouseRoot.setEnabled(true);
+}
+// these houses stand about 10 m tall: one between the camera and your villager fades so you never lose sight of them
+const quatHouses = [];
+function fadeQuatHouses(dt) {
+  const p = me.root.position, dx = Math.cos(iso.alpha), dz = Math.sin(iso.alpha);
+  quatHouses.forEach(q => {
+    const vx = q.x - p.x, vz = q.z - p.z, along = vx * dx + vz * dz, side = Math.abs(-vx * dz + vz * dx);
+    const want = view === "iso" && along > 0 && along < 16 && side < q.half ? 0.18 : 1;
+    if (Math.abs(q.fade - want) < 0.01) return;
+    q.fade += (want - q.fade) * Math.min(1, dt * 8);
+    if (Math.abs(q.fade - want) < 0.01) q.fade = want;
+    q.meshes.forEach(m => m.visibility = q.fade);
+  });
+}
+function buildQuatWorld() {
+  spots.fences.forEach(([x1, z1, x2, z2]) => {
+    const dx = x2 - x1, dz = z2 - z1, len = Math.hypot(dx, dz), n = Math.max(1, Math.round(len / 2)), ang = Math.atan2(dz, dx);
+    for (let k = 0; k < n; k++) { const t = (k + 0.5) / n; const f = qpiece("Prop_WoodenFence_Single", x1 + dx * t, 0, z1 + dz * t, -ang, quatRoot); f.scaling.x = len / n / 2.06; }
+  });
+  qpiece("Prop_Wagon", -24, 0, 2.6, 0.3 + Math.PI / 2, quatRoot);
+  [[27, -3.8], [-13.6, -3.0], [10.2, 3.6]].forEach(([x, z], i) => { qpiece("Prop_Crate", x, 0, z, i * 0.5, quatRoot, 0.75); block(x, z, 0.5, 0.5); });
+  quatRoot.getChildMeshes().forEach(m => m.freezeWorldMatrix());
+  buildQuatHouses(stage);
+  const addBody = (holderParent, name) => {
+    const q = qpiece(name, 0, 0, 0, 0, holderParent);
+    const bb = q.getHierarchyBoundingVectors(true);
+    q.scaling.setAll(1.7 / Math.max(0.1, bb.max.y - bb.min.y));
+    const find = nm => q.anims.find(a => a.name.toLowerCase() === nm);
+    q.walk = find("walk"); q.idle = find("idle");
+    q.state = ""; q.setEnabled(false);
+    return q;
+  };
+  walkers.forEach((w, i) => { w.qq = addBody(w.p.root, QPEOPLE[i % QPEOPLE.length]); });
+  me.qq = addBody(me.root, "Ranger");
+}
+// the glTF loader keeps colour textures in sRGB GPU buffers by default; our simple materials then read them far too dark
+// (people came out black), so the Quaternius files load without them. The flag only covers the load calls started here.
+let qPlainTextures = false;
+BABYLON.SceneLoader.OnPluginActivatedObservable.add(p => { if (qPlainTextures && p.name === "gltf") p.useSRGBBuffers = false; });
+function loadQuat() {
+  if (quatLoading) return quatLoading;
+  qPlainTextures = true;
+  quatLoading = Promise.all([loadQKit(QV, QTOWN, ".gltf", true), loadQKit(QC, [...new Set([...QPEOPLE])], ".glb")]).then(() => { buildQuatWorld(); quatLoaded = true; });
+  qPlainTextures = false;
+  return quatLoading;
 }
 
 // ---------- loop ----------
@@ -790,6 +958,7 @@ const fpsBase = () => (view === "fp" ? (isTouch ? "Left thumb: walk · right thu
 scene.onBeforeRenderObservable.add(() => {
   const dt = Math.min(0.05, engine.getDeltaTime() / 1000); time += dt;
   updatePlayer(dt); updateWalkers(dt, time);
+  if (lookName === "quat") fadeQuatHouses(dt);
   lerpState(Math.min(1, dt * 2.2)); applyState(time);
   const p = me.root.position;
   iso.target = V3.Lerp(iso.target, new V3(p.x, 1, p.z), Math.min(1, dt * 6));
