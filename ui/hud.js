@@ -69,8 +69,10 @@ const PL = {
   board: { x: -3.5, z: 2.0, name: "Notice board" },
   cart: { x: -24, z: 1.0, name: "Timber cart (yard)" },
   home: { x: home.x - home.w * 0.2, z: home.z + home.d / 2 + 0.9, name: "Your home" },
-  dummy: { x: -2.4, z: -7.2, name: "Straw dummy" }
+  dummy: { x: -2.4, z: -7.2, name: "Straw dummy" },
+  gate: { x: W.gate.x, z: W.gate.z - 1.6, name: "North gate" }
 };
+const ORDER_AT = { timber: PL.cart, gate: PL.gate }; // where each order is done: marked on the map, arrowed when tracked
 const smith = W.walkers[4], reader = W.walkers[5];
 const NAMES = ["Inês", "Bento", "Marta", "Duarte", "Rui", "Leonor"];
 const posOf = w => w.p.root.position;
@@ -305,13 +307,18 @@ function drawMap() {
   const r = c.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
   c.width = r.width * dpr; c.height = r.height * dpr;
   const g = c.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0);
-  const X0 = -40, X1 = 40, Z0 = -26, Z1 = 28, s = Math.min(r.width / (X1 - X0), r.height / (Z1 - Z0));
+  const X0 = -40, X1 = 40, Z0 = -26, Z1 = 31, s = Math.min(r.width / (X1 - X0), r.height / (Z1 - Z0));
   const ox = (r.width - (X1 - X0) * s) / 2, oy = (r.height - (Z1 - Z0) * s) / 2;
   const mx = x => ox + (x - X0) * s, my = z => oy + (Z1 - z) * s; // north (+z) up
   g.fillStyle = "#EADBB5"; g.fillRect(0, 0, r.width, r.height);
   g.fillStyle = "#9FB7C9"; g.fillRect(mx(X0), my(-24), (X1 - X0) * s, (24 + Z0 + 50) * s);
   g.strokeStyle = "#B08A5A"; g.lineWidth = 4.2 * s; g.beginPath(); g.moveTo(mx(X0), my(0)); g.lineTo(mx(X1), my(0)); g.stroke();
   g.lineWidth = 3 * s; g.beginPath(); g.moveTo(mx(4.5), my(-1.5)); g.lineTo(mx(4.5), my(-24)); g.stroke();
+  // north lane, palisade and the north gate
+  const G = W.gate; g.lineWidth = 2.6 * s; g.beginPath(); g.moveTo(mx(G.x), my(2)); g.lineTo(mx(G.x), my(G.z)); g.stroke();
+  g.strokeStyle = "#6B4A2B"; g.lineWidth = Math.max(2, 0.45 * s); g.setLineDash([3, 2]); g.beginPath();
+  g.moveTo(mx(G.x - 21.8), my(G.z)); g.lineTo(mx(G.x - 3), my(G.z)); g.moveTo(mx(G.x + 3), my(G.z)); g.lineTo(mx(G.x + 21.8), my(G.z)); g.stroke(); g.setLineDash([]);
+  g.fillStyle = "#5A3A22"; [-2.1, 2.1].forEach(dx => g.fillRect(mx(G.x + dx - 0.75), my(G.z + 0.75), 1.5 * s, 1.5 * s));
   g.fillStyle = "rgba(122,140,62,.35)"; g.fillRect(mx(-31), my(-11), 22 * s, 10 * s); g.fillRect(mx(9), my(-11), 22 * s, 10 * s);
   g.fillStyle = "#6E7A3E"; W.spots.trees.forEach(t => { g.beginPath(); g.arc(mx(t.x), my(t.z), 0.9 * s, 0, 7); g.fill(); });
   W.housesSpec.forEach((h, i) => { g.fillStyle = i === 1 ? "#C9A23A" : "#A9643C"; g.strokeStyle = "#5A3A22"; g.lineWidth = 1.5;
@@ -323,7 +330,10 @@ function drawMap() {
   if (smith) { const p = posOf(smith); dot(p.x, p.z, "#8A6A45"); label(p.x, p.z + 0.8, "Smith"); }
   dot(PL.dummy.x, PL.dummy.z, "#D23B2E"); label(PL.dummy.x + 5, PL.dummy.z + 0.4, "Straw dummy", "#8E1F16");
   label(home.x - 1, home.z - home.d / 2 - 1.8, "Home");
-  const o = S.orders.find(x => x.id === S.tracked); if (o && o.id === "timber") { g.strokeStyle = "#A27A1E"; g.lineWidth = 2.5; g.setLineDash([5, 4]); g.beginPath(); g.arc(mx(PL.cart.x), my(PL.cart.z + 1.6), 12, 0, 7); g.stroke(); g.setLineDash([]); }
+  label(G.x, G.z + 1.4, "North gate");
+  // every accepted order's place gets a dashed gold ring, the tracked one a thicker ring
+  S.orders.forEach(o => { const at = ORDER_AT[o.id]; if (!at) return; const on = o.id === S.tracked;
+    g.strokeStyle = "#A27A1E"; g.lineWidth = on ? 3 : 1.6; g.setLineDash([5, 4]); g.beginPath(); g.arc(mx(at.x), my(at.z + 1.6), on ? 13 : 10, 0, 7); g.stroke(); g.setLineDash([]); });
   const me = W.me.root.position; dot(me.x, me.z, "#F2C14E", 7); label(me.x, me.z + 1.2, "You", "#5A4210");
   g.font = "italic 12px Georgia, serif"; g.fillStyle = "#7A6243"; g.textAlign = "left"; g.fillText("Only what you have seen. Enemies show only while you can see them.", 10, r.height - 10);
 }
@@ -572,6 +582,7 @@ W.onFrame(dt => {
   const arrows = [];
   if (tn === "night") arrows.push({ x: -45, z: 10, i: "paw", foe: true });
   if (o && o.id === "timber") arrows.push({ ...PL.cart, i: "axe" });
+  if (o && o.id === "gate") arrows.push({ ...PL.gate, i: "tower" });
   if (hn && hn.at && !(o && o.id === "timber" && hn.at === PL.cart)) arrows.push({ ...hn.at, i: hn.i });
   if ((tn === "night" || tn === "dusk") && arrows.length < 3 && dist(me, PL.home) > 6) arrows.push({ ...PL.home, i: "house" });
   edgeArrows(arrows.slice(0, 3));

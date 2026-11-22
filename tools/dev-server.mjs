@@ -5,7 +5,8 @@ import { readFile } from "node:fs/promises";
 import { extname, join, normalize, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = normalize(fileURLToPath(new URL("..", import.meta.url)));
+const port = Number(process.env.PORT || process.argv[2] || 5173); // another port lets two sessions test at once
+const root =normalize(fileURLToPath(new URL("..", import.meta.url)));
 const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".mjs": "text/javascript", ".json": "application/json",
   ".glb": "model/gltf-binary", ".gltf": "model/gltf+json", ".png": "image/png", ".jpg": "image/jpeg", ".bin": "application/octet-stream" };
 
@@ -24,4 +25,4 @@ http.createServer(async (req, res) => {
     res.writeHead(200, { "content-type": types[extname(file)] || "application/octet-stream" });
     res.end(body);
   } catch { res.writeHead(404); res.end("not found"); }
-}).listen(5173, "127.0.0.1", () => console.log("Serving the game at http://localhost:5173/"));
+}).listen(port, "127.0.0.1", () => console.log("Serving the game at http://localhost:" + port + "/"));

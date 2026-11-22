@@ -342,15 +342,16 @@ housesSpec.forEach(h => block(h.x, h.z, h.w / 2 + 0.4, h.d / 2 + 0.4));
 for (let z = -12; z > -21; z -= 1.15) { inst(BS.row, -20, 0.11, z, 22, 1, 1, 0, true); }
 for (let z = -12; z > -21; z -= 1.2) { inst(BS.wheat, 20, 0.2, z, 22, 1, 1, 0, true); }
 fence(-31, -10.6, -9, -10.6); fence(9, -10.6, 31, -10.6); fence(-31, -10.6, -31, -21.5); fence(31, -10.6, 31, -21.5);
-fence(-22, 10.8, -6, 10.8); fence(5, 10.8, 22, 10.8);
+fence(-22, 10.8, -6, 10.8); fence(6, 10.8, 23, 10.8); // gap at x 4.2 for the north lane (same length, same random draws)
 for (let x = -20; x <= -8; x += 4) for (let z = 14; z <= 22; z += 4) olive(x + rr(-0.6, 0.6), z + rr(-0.6, 0.6), rr(0.85, 1.1));
 for (let x = 8; x <= 22; x += 4.5) for (let z = 14; z <= 22; z += 4.5) olive(x + rr(-0.6, 0.6), z + rr(-0.6, 0.6), rr(0.85, 1.1));
 [[-27, 4], [-28, 12], [27, 5], [-2, 15], [1, 25], [28, 14], [-30, 22], [30, 24]].forEach(([x, z]) => corkOak(x, z, rr(0.9, 1.2)));
-[[-25, -4.5], [-25.5, -8], [23, -3.8], [23.5, -8.5], [-2.5, -9.5], [9.5, -9.5], [-6, 11.5], [-3, 11.5], [5, 11.5], [36, 0], [-36, 0], [-36, 4]]
+[[-25, -4.5], [-25.5, -8], [23, -3.8], [23.5, -8.5], [-2.5, -9.5], [9.5, -9.5], [-6, 11.5], [-3, 11.5], [6.8, 11.5], [36, 0], [-36, 0], [-36, 4]]
   .forEach(([x, z]) => cypress(x, z, rr(0.85, 1.15)));
 for (let i = 0; i < 46; i++) {
   const x = rr(-34, 34), z = rr(-10, 12);
   if (Math.abs(z) < 3.2) continue;
+  if (Math.abs(x - 4.2) < 2 && z > 0) continue; // keep the north lane clear
   if (blockers.some(b => Math.abs(x - b.x) < b.hw + 0.6 && Math.abs(z - b.z) < b.hd + 0.6)) continue;
   bush(x, z, rr(0.5, 0.95));
 }
@@ -400,6 +401,30 @@ block(1.2, 2.9, 0.3, 0.3);
   cast(box(2.1, 0.12, 0.35, P.timberDark, 0, 2.06, 0, r));
   [[-0.5, 1.6], [0.1, 1.35], [0.55, 1.65]].forEach(([x, y]) => box(0.42, 0.5, 0.02, "#EEE6D2", x, y, -0.07, r));
   block(-3.5, 2.9, 1.0, 0.3);
+})();
+
+// north lane and the north gate (a timber gatehouse in a palisade; shown in both looks, the Quaternius packs have no gate)
+const gate = { x: 4.2, z: 27 };
+const northLane = box(2.6, 0.06, 25, P.path, gate.x, 0.032, 14.6); northLane.receiveShadows = true;
+(function () {
+  const r = new BABYLON.TransformNode("northGate", scene); r.position.set(gate.x, 0, gate.z);
+  [-2.1, 2.1].forEach(x => {
+    cast(box(1.5, 4.6, 1.5, P.timberDark, x, 2.3, 0, r));          // tower
+    cast(box(1.9, 0.25, 1.9, P.timber, x, 4.7, 0, r));             // tower top
+    [-0.7, 0.7].forEach(dx => cast(box(0.18, 0.5, 1.9, P.timber, x + dx, 5.05, 0, r))); // battlements
+    block(gate.x + x, gate.z, 0.85, 0.85);
+  });
+  cast(box(2.8, 0.45, 0.6, P.timber, 0, 3.7, 0, r));               // beam over the way
+  [-1, 1].forEach(s => { const d = box(1.35, 3, 0.14, "#7A5A3A", s * 1.35, 1.5, 0.75, r); d.rotation.y = s * -1.2; cast(d); }); // doors swung open
+  // palisade of pointed stakes either side (instances: about 80 stakes cost one draw each for stake and tip)
+  const stakeB = base(MB.CreateBox("stake", { width: 0.42, height: 1, depth: 0.42 }, scene), "#8A6A44");
+  const tipB = base(MB.CreateCylinder("tip", { height: 0.45, diameterTop: 0, diameterBottom: 0.5, tessellation: 4 }, scene), "#8A6A44");
+  const stake = x => { const h = 2.5 + Math.abs(Math.sin(x * 3.7)) * 0.35; inst(stakeB, gate.x + x, h / 2, gate.z, 1, h, 1); inst(tipB, gate.x + x, h + 0.22, gate.z, 1); };
+  for (let x = -3.3; x > -22; x -= 0.46) stake(x);
+  for (let x = 3.3; x < 22; x += 0.46) stake(x);
+  block(gate.x - 12.6, gate.z, 9.4, 0.3); block(gate.x + 12.6, gate.z, 9.4, 0.3);
+  // a post and iron cup each side of the way
+  [-3.3, 3.3].forEach(x => { cast(box(0.2, 1.4, 0.2, P.timberDark, x, 0.7, 1.1, r)); box(0.5, 0.2, 0.5, "#3E3A35", x, 1.45, 1.1, r); });
 })();
 
 // torches along the street (light at dusk and night)
@@ -844,12 +869,24 @@ scene.executeWhenReady(() => {
   if (savedLook() !== "plain") chooseLook("quat");
 });
 engine.runRenderLoop(() => scene.render());
-window.addEventListener("resize", () => { engine.resize(); fitOrtho(); });
+// Keep the 3D picture's shape matched to the screen. iPhone Safari sends "resize" while rotating, before the page has its
+// new size, so the picture kept the old shape and looked stretched. Watch the canvas itself, re-check after rotations,
+// and as a last guard compare shapes twice a second.
+function fit() {
+  const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return;
+  const a = w / h, b = engine.getRenderWidth() / Math.max(1, engine.getRenderHeight());
+  if (Math.abs(a - b) > 0.005 || Math.abs(w * engine.getHardwareScalingLevel() ** -1 - engine.getRenderWidth()) > 2) { engine.resize(); fitOrtho(); }
+}
+window.addEventListener("resize", fit);
+window.addEventListener("orientationchange", () => [60, 250, 600, 1200].forEach(t => setTimeout(fit, t)));
+if (window.visualViewport) visualViewport.addEventListener("resize", fit);
+if (window.ResizeObserver) new ResizeObserver(fit).observe(canvas);
+setInterval(fit, 500);
 
 // ---------- hooks for the interface layer (ui/hud.js): it reads the world, never the other way round ----------
 let paused = false;
 window.THR = {
-  scene, engine, me, walkers, spots, housesSpec, block, mat, P,
+  scene, engine, me, walkers, spots, housesSpec, block, mat, P, gate,
   get view() { return view; }, get timeName() { return timeName; }, get look() { return lookName; },
   toggleView, setTime: v => document.querySelector('#timeG button[data-v="' + v + '"]').click(),
   zoom: () => zoomBtn.click(),
