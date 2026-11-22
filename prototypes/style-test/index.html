@@ -1,0 +1,806 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Almara Street Style Test</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: full-screen 3D canvas, thin HUD panels along the top, joystick bottom-left, view button right. Single dark-glass game look. */
+:root {
+  --glass: rgba(22, 26, 34, 0.62);
+  --glass-hi: rgba(40, 46, 58, 0.78);
+  --ink: #F4EFE4;
+  --ink-dim: #B9B2A4;
+  --gold: #F2C14E;
+  --gold-ink: #2A2110;
+  --almara: #2F6FB3;
+  --line: rgba(255, 255, 255, 0.14);
+  --font-ui: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  color-scheme: dark;
+}
+[hidden] { display: none !important; }
+html, body { height: 100%; margin: 0; overflow: hidden; background: #0E1116; color: var(--ink); font-family: var(--font-ui); }
+#c { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
+#touch { position: fixed; inset: 0; touch-action: none; z-index: 1; }
+#vig { position: fixed; inset: 0; pointer-events: none; z-index: 2; opacity: 0;
+  background: radial-gradient(circle at 50% 55%, transparent 0 22%, rgba(6, 10, 28, 0.55) 48%, rgba(4, 6, 18, 0.92) 78%); }
+#hud { position: fixed; inset: 0; pointer-events: none; z-index: 3;
+  padding-top: max(8px, env(safe-area-inset-top, 0px));
+  padding-bottom: max(8px, env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px)); box-sizing: border-box; }
+.top { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; max-width: calc(100% - 120px); }
+.group { pointer-events: auto; display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: 12px;
+  background: var(--glass); border: 1px solid var(--line); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.lbl { font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--ink-dim); padding: 0 6px 0 7px; }
+.group button { font: 600 13px/1 var(--font-ui); color: var(--ink); background: transparent; border: 0; border-radius: 9px;
+  min-height: 36px; padding: 0 11px; cursor: pointer; }
+.group button.on { background: var(--gold); color: var(--gold-ink); }
+.group button.locked { color: var(--ink-dim); }
+.group button:focus-visible, .round:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.side { position: absolute; top: max(8px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+.round { pointer-events: auto; display: flex; align-items: center; gap: 7px; font: 600 13px/1 var(--font-ui); color: var(--ink);
+  background: var(--glass-hi); border: 1px solid var(--line); border-radius: 999px; min-height: 46px; padding: 0 16px 0 12px; cursor: pointer;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.round svg { width: 22px; height: 22px; flex: none; }
+.round.small { min-height: 38px; padding: 0 14px; }
+#joy { position: absolute; left: max(28px, calc(env(safe-area-inset-left, 0px) + 20px)); bottom: max(28px, calc(env(safe-area-inset-bottom, 0px) + 20px));
+  width: 124px; height: 124px; border-radius: 50%; background: rgba(20, 24, 30, 0.35); border: 2px solid rgba(255, 255, 255, 0.22);
+  pointer-events: none; transition: opacity .2s; }
+#knob { position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%;
+  background: rgba(244, 239, 228, 0.82); box-shadow: 0 2px 8px rgba(0,0,0,.35); }
+#lookpad { position: absolute; right: max(28px, calc(env(safe-area-inset-right, 0px) + 20px)); bottom: max(28px, calc(env(safe-area-inset-bottom, 0px) + 20px));
+  font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: rgba(244,239,228,.7); padding: 10px 14px; border-radius: 12px;
+  border: 1px dashed rgba(255,255,255,.3); }
+#info { position: absolute; left: 50%; bottom: max(10px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  font-size: 11px; color: var(--ink-dim); background: var(--glass); padding: 5px 10px; border-radius: 8px; white-space: nowrap;
+  font-variant-numeric: tabular-nums; }
+#toast { position: absolute; left: 50%; top: 42%; transform: translate(-50%, -50%); max-width: min(420px, calc(100% - 40px));
+  background: var(--glass-hi); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: 14px; line-height: 1.45;
+  text-align: center; pointer-events: auto; }
+#toast b { color: var(--gold); }
+#portrait { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--glass-hi); padding: 12px 16px;
+  border-radius: 12px; font-size: 14px; text-align: center; border: 1px solid var(--line); display: none; }
+@media (orientation: portrait) and (max-width: 700px) { #portrait { display: block; } }
+#loading { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; background: #0E1116; color: var(--ink-dim); font-size: 14px; }
+@media (prefers-reduced-motion: reduce) { #joy { transition: none; } }
+</style>
+
+<canvas id="c"></canvas>
+<div id="touch"></div>
+<div id="vig"></div>
+<div id="hud">
+  <div class="top">
+    <div class="group" id="timeG" role="group" aria-label="Time of day">
+      <span class="lbl">Time</span>
+      <button id="t-dawn" data-v="dawn">Dawn</button>
+      <button id="t-day" data-v="day" class="on">Day</button>
+      <button id="t-dusk" data-v="dusk">Dusk</button>
+      <button id="t-night" data-v="night">Night</button>
+    </div>
+    <div class="group" id="stageG" role="group" aria-label="Town stage">
+      <span class="lbl">Town</span>
+      <button id="s-1" data-v="1">Founding</button>
+      <button id="s-2" data-v="2" class="on">Growing</button>
+    </div>
+    <div class="group" id="lookG" role="group" aria-label="Art look">
+      <span class="lbl">Look</span>
+      <button id="l-plain" data-v="plain" class="on">Plain shapes</button>
+      <button id="l-pack" data-v="pack">Free pack</button>
+    </div>
+  </div>
+  <div class="side">
+    <button class="round" id="viewBtn" aria-label="Switch to first-person view">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span id="viewLbl">First person</span>
+    </button>
+    <button class="round small" id="zoomBtn">Zoom</button>
+  </div>
+  <div id="joy"><div id="knob"></div></div>
+  <div id="lookpad" hidden>Drag here to look</div>
+  <div id="info">Left thumb: walk</div>
+  <div id="toast" hidden></div>
+  <div id="portrait">Turn your phone sideways</div>
+</div>
+<div id="loading">Building the street…</div>
+
+<script src="https://cdn.jsdelivr.net/npm/babylonjs@7.54.3/babylon.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/babylonjs-loaders@7.54.3/babylonjs.loaders.min.js"></script>
+<script>
+(function () {
+"use strict";
+const V3 = BABYLON.Vector3, C3 = BABYLON.Color3, MB = BABYLON.MeshBuilder;
+const canvas = document.getElementById("c");
+const isTouch = matchMedia("(pointer: coarse)").matches;
+const engine = new BABYLON.Engine(canvas, true, { stencil: true, preserveDrawingBuffer: false }, false);
+engine.setHardwareScalingLevel(1 / Math.min(window.devicePixelRatio || 1, 2));
+const scene = new BABYLON.Scene(engine);
+scene.ambientColor = new C3(0, 0, 0);
+scene.fogMode = BABYLON.Scene.FOGMODE_EXP2;
+scene.fogDensity = 0;
+
+// ---------- colours (Phase 6 palette) ----------
+const P = {
+  grass: "#BFA552", grassDark: "#A99343", grassLight: "#CDB76A", path: "#C99A5B", sand: "#E3CF9E",
+  rock: "#A89F8E", stone: "#A39A88", white: "#EFE9DC", sandstone: "#D9C19A",
+  roof: ["#B5552F", "#A84B2B", "#C0623A"], ridge: "#8E3F22", thatch: "#CDB062", thatchDark: "#B89A4E",
+  timber: "#8A6A45", timberDark: "#5E4329", door: "#5A3A22",
+  olive: "#7C8A45", cypress: "#2F4A2C", corkLeaf: "#64733F", bush: "#6C7F3C", trunk: "#7B6A58", cork: "#B5643A",
+  field: "#7E8F3E", soil: "#9C7A4A", wheat: "#D9B85C",
+  sea: "#1F4E8C", shallow: "#3FB5B0", almara: "#2F6FB3", gold: "#F2C14E"
+};
+const mats = {};
+function mat(hex, opt) {
+  opt = opt || {};
+  const key = hex + (opt.emissive || "") + (opt.twoSided ? "2" : "");
+  if (mats[key]) return mats[key];
+  const m = new BABYLON.StandardMaterial("m" + key, scene);
+  m.diffuseColor = C3.FromHexString(hex);
+  m.specularColor = new C3(0, 0, 0);
+  m.maxSimultaneousLights = 8;
+  if (opt.emissive) m.emissiveColor = C3.FromHexString(opt.emissive);
+  if (opt.twoSided) m.backFaceCulling = false;
+  mats[key] = m;
+  return m;
+}
+// seeded random so the street looks the same every visit
+let seed = 20261121;
+function rnd() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }
+function rr(a, b) { return a + rnd() * (b - a); }
+function pick(a) { return a[Math.floor(rnd() * a.length)]; }
+
+// ---------- lights and shadows ----------
+const hemi = new BABYLON.HemisphericLight("hemi", new V3(0, 1, 0), scene);
+const sun = new BABYLON.DirectionalLight("sun", new V3(0.6, -1.3, -0.25), scene);
+sun.shadowMinZ = 1; sun.shadowMaxZ = 220;
+sun.autoUpdateExtends = false;
+sun.shadowFrustumSize = 64;
+const sg = new BABYLON.ShadowGenerator(isTouch ? 1024 : 2048, sun);
+if (engine.webGLVersion >= 2) { sg.usePercentageCloserFiltering = true; sg.filteringQuality = BABYLON.ShadowGenerator.QUALITY_MEDIUM; }
+else sg.usePoissonSampling = true;
+sg.bias = 0.0012; sg.normalBias = 0.03; sg.darkness = 0.35;
+function cast(m) { sg.addShadowCaster(m); m.receiveShadows = true; return m; }
+
+// ---------- helpers ----------
+function box(w, h, d, hex, x, y, z, parent, opt) {
+  const m = MB.CreateBox("b", { width: w, height: h, depth: d }, scene);
+  m.material = typeof hex === "string" ? mat(hex, opt) : hex;
+  m.position.set(x, y, z);
+  if (parent) m.parent = parent;
+  return m;
+}
+// gable roof prism: length along x, span along z, apex height h
+function prism(L, S, H, material, parent, y) {
+  const a = [-L/2, 0, -S/2], b = [-L/2, H, 0], c = [-L/2, 0, S/2], d = [L/2, 0, -S/2], e = [L/2, H, 0], f = [L/2, 0, S/2];
+  const faces = [[a, c, b], [d, e, f], [a, b, e, d], [c, f, e, b], [a, d, f, c]];
+  const pos = [], idx = [], nor = [];
+  const ctr = [0, H / 3, 0];
+  faces.forEach(fc => {
+    const p0 = new V3(...fc[0]), p1 = new V3(...fc[1]), p2 = new V3(...fc[2]);
+    let n = V3.Cross(p1.subtract(p0), p2.subtract(p0)).normalize();
+    const mid = fc.reduce((s, p) => s.add(new V3(...p)), V3.Zero()).scale(1 / fc.length);
+    if (V3.Dot(n, mid.subtract(new V3(...ctr))) < 0) n = n.scale(-1);
+    const base = pos.length / 3;
+    fc.forEach(p => { pos.push(...p); nor.push(n.x, n.y, n.z); });
+    for (let i = 1; i < fc.length - 1; i++) idx.push(base, base + i, base + i + 1);
+  });
+  const m = new BABYLON.Mesh("roof", scene);
+  const vd = new BABYLON.VertexData(); vd.positions = pos; vd.indices = idx; vd.normals = nor; vd.applyToMesh(m);
+  const mm = material.clone ? material : mat(material);
+  m.material = mm; m.parent = parent; m.position.y = y;
+  return m;
+}
+const roofMats = P.roof.map(h => { const m = mat(h).clone("roof" + h); m.backFaceCulling = false; return m; });
+
+// window glass: glows at dusk and night
+const winMat = new BABYLON.StandardMaterial("win", scene);
+winMat.diffuseColor = C3.FromHexString("#2E2620"); winMat.specularColor = new C3(0, 0, 0); winMat.maxSimultaneousLights = 8;
+const winGlow = new C3(1, 0.68, 0.3);
+
+// instanced bases for nature and props
+function base(mesh, hex) { mesh.material = mat(hex); mesh.convertToFlatShadedMesh(); mesh.position.y = -500; mesh.isPickable = false; mesh.receiveShadows = true; return mesh; }
+const BS = {
+  trunk: base(MB.CreateCylinder("trunk", { height: 1, diameterTop: 0.24, diameterBottom: 0.36, tessellation: 6 }, scene), P.trunk),
+  cork: base(MB.CreateCylinder("cork", { height: 1, diameterTop: 0.34, diameterBottom: 0.5, tessellation: 6 }, scene), P.cork),
+  cone: base(MB.CreateCylinder("cone", { height: 1, diameterTop: 0, diameterBottom: 1, tessellation: 7 }, scene), P.cypress),
+  olive: base(MB.CreateIcoSphere("olive", { radius: 1, subdivisions: 1 }, scene), P.olive),
+  corkLeaf: base(MB.CreateIcoSphere("corkLeaf", { radius: 1, subdivisions: 1 }, scene), P.corkLeaf),
+  bush: base(MB.CreateIcoSphere("bush", { radius: 1, subdivisions: 1 }, scene), P.bush),
+  rock: base(MB.CreateIcoSphere("rock", { radius: 1, subdivisions: 1 }, scene), P.rock),
+  post: base(MB.CreateBox("post", { width: 0.16, height: 1, depth: 0.16 }, scene), P.timber),
+  rail: base(MB.CreateBox("rail", { width: 1, height: 0.09, depth: 0.08 }, scene), "#9B8463"),
+  barrel: base(MB.CreateCylinder("barrel", { height: 0.9, diameterTop: 0.6, diameterBottom: 0.6, tessellation: 8 }, scene), "#7A5232"),
+  crate: base(MB.CreateBox("crate", { size: 0.7 }, scene), "#A07A4A"),
+  log: base(MB.CreateCylinder("log", { height: 1.6, diameter: 0.3, tessellation: 6 }, scene), "#8C6A44"),
+  row: base(MB.CreateBox("row", { width: 1, height: 0.22, depth: 0.55 }, scene), P.field),
+  wheat: base(MB.CreateBox("wheat", { width: 1, height: 0.4, depth: 0.6 }, scene), P.wheat),
+  patch: base(MB.CreateCylinder("patch", { height: 0.02, diameter: 1, tessellation: 9 }, scene), P.grassDark),
+  patchL: base(MB.CreateCylinder("patchL", { height: 0.02, diameter: 1, tessellation: 9 }, scene), P.grassLight)
+};
+function inst(b, x, y, z, sx, sy, sz, ry, noShadow) {
+  const i = b.createInstance("i");
+  i.position.set(x, y, z);
+  i.scaling.set(sx, sy === undefined ? sx : sy, sz === undefined ? sx : sz);
+  if (ry) i.rotation.y = ry;
+  i.isPickable = false;
+  if (!noShadow) sg.addShadowCaster(i);
+  if (tagPlain) plainOnly.push(i);
+  return i;
+}
+// things that only show in the plain look (the pack look has its own versions)
+const plainOnly = [];
+let tagPlain = false;
+const spots = { trees: [], fences: [], props: [] };
+
+// ---------- collision ----------
+const blockers = []; // {x,z,hw,hd}
+function block(x, z, hw, hd) { blockers.push({ x, z, hw, hd }); }
+
+// ---------- ground, path, shore ----------
+const ground = box(140, 2, 70, P.grass, 0, -1, 9); ground.receiveShadows = true;
+const path = box(110, 0.06, 4.2, P.path, 0, 0.03, 0); path.receiveShadows = true;
+const lane = box(3, 0.06, 23, P.path, 4.5, 0.031, -13); lane.receiveShadows = true;
+const sand = box(140, 1, 6, P.sand, 0, -0.62, -27); sand.receiveShadows = true;
+const shallow = MB.CreateGround("shallow", { width: 160, height: 18 }, scene); shallow.position.set(0, -0.38, -38); shallow.material = mat(P.shallow);
+const sea = MB.CreateGround("sea", { width: 600, height: 600 }, scene); sea.position.set(0, -0.45, -40); sea.material = mat(P.sea);
+for (let i = 0; i < 60; i++) {
+  const x = rr(-60, 60), z = rr(-20, 40);
+  if (Math.abs(z) < 3) continue;
+  inst(rnd() < 0.5 ? BS.patch : BS.patchL, x, 0.012, z, rr(2, 6), 1, rr(2, 5), rr(0, 3), true);
+}
+for (let i = 0; i < 18; i++) inst(BS.rock, rr(-60, 60), rr(-0.3, 0), rr(-28, -23.5), rr(0.6, 1.6), rr(0.4, 0.9), rr(0.6, 1.4), rr(0, 3));
+
+// ---------- trees ----------
+function olive(x, z, s) {
+  spots.trees.push({ x, z, s, k: "olive" }); tagPlain = true;
+  inst(BS.trunk, x, 0.7 * s, z, s * 1.1, 1.4 * s, s * 1.1, rr(0, 3));
+  inst(BS.olive, x, 1.9 * s, z, 1.35 * s, 0.85 * s, 1.25 * s, rr(0, 3));
+  inst(BS.olive, x + 0.6 * s, 2.35 * s, z - 0.3 * s, 0.8 * s, 0.6 * s, 0.8 * s, rr(0, 3));
+  block(x, z, 0.35, 0.35); tagPlain = false;
+}
+function corkOak(x, z, s) {
+  spots.trees.push({ x, z, s, k: "cork" }); tagPlain = true;
+  inst(BS.cork, x, 1.1 * s, z, s, 2.2 * s, s, rr(0, 3));
+  inst(BS.corkLeaf, x, 2.9 * s, z, 2.3 * s, 1.15 * s, 2.0 * s, rr(0, 3));
+  inst(BS.corkLeaf, x - 1.1 * s, 2.6 * s, z + 0.5 * s, 1.2 * s, 0.8 * s, 1.2 * s, rr(0, 3));
+  inst(BS.corkLeaf, x + 1.0 * s, 3.2 * s, z - 0.4 * s, 1.1 * s, 0.8 * s, 1.1 * s, rr(0, 3));
+  block(x, z, 0.4, 0.4); tagPlain = false;
+}
+function cypress(x, z, s) {
+  spots.trees.push({ x, z, s, k: "cypress" }); tagPlain = true;
+  inst(BS.trunk, x, 0.25 * s, z, 0.8 * s, 0.5 * s, 0.8 * s);
+  inst(BS.cone, x, 0.4 * s + 2.6 * s, z, 1.15 * s, 5.2 * s, 1.15 * s, rr(0, 3));
+  block(x, z, 0.4, 0.4); tagPlain = false;
+}
+function bush(x, z, s) { inst(BS.bush, x, 0.35 * s, z, s, 0.7 * s, s * rr(0.8, 1.2), rr(0, 3)); }
+
+// ---------- fences ----------
+function fence(x1, z1, x2, z2) {
+  spots.fences.push([x1, z1, x2, z2]); tagPlain = true;
+  const len = Math.hypot(x2 - x1, z2 - z1), n = Math.max(1, Math.round(len / 2)), ang = Math.atan2(z2 - z1, x2 - x1);
+  for (let i = 0; i <= n; i++) {
+    const t = i / n;
+    inst(BS.post, x1 + (x2 - x1) * t, 0.5, z1 + (z2 - z1) * t, 1, 1, 1, rr(-0.1, 0.1));
+  }
+  const cx = (x1 + x2) / 2, cz = (z1 + z2) / 2;
+  [0.45, 0.8].forEach(h => inst(BS.rail, cx, h, cz, len, 1, 1, -ang));
+  tagPlain = false;
+}
+
+// ---------- houses (rebuilt when the town stage changes) ----------
+const housesSpec = [
+  { x: -19, z: -6.4, f: 1 }, { x: -7.5, z: -6.2, f: 1 }, { x: 3.5, z: -6.6, f: 1 }, { x: 15, z: -6.3, f: 1 },
+  { x: -13, z: 6.3, f: -1 }, { x: -1.5, z: 6.5, f: -1 }, { x: 10, z: 6.2, f: -1 }
+].map(h => ({ ...h, w: rr(4.6, 5.6), d: rr(3.8, 4.4), yaw: rr(-0.07, 0.07), wall: pick([P.white, P.white, P.sandstone]), roof: Math.floor(rnd() * 3) }));
+let houseRoot = null;
+const winMeshes = [];
+function buildHouses(stage) {
+  if (houseRoot) houseRoot.dispose(false, false);
+  winMeshes.length = 0;
+  houseRoot = new BABYLON.TransformNode("houses", scene);
+  housesSpec.forEach(h => {
+    const r = new BABYLON.TransformNode("house", scene);
+    r.parent = houseRoot; r.position.set(h.x, 0, h.z); r.rotation.y = (h.f > 0 ? 0 : Math.PI) + h.yaw;
+    const parts = [];
+    const win = (x, y, z, ry) => { const m = box(0.62, 0.62, 0.1, winMat, x, y, z, r); m.rotation.y = ry || 0; winMeshes.push(m); parts.push(m); };
+    if (stage === 2) {
+      const w = h.w, d = h.d, H = 2.8, y0 = 0.5;
+      parts.push(box(w + 0.3, 0.5, d + 0.3, P.stone, 0, 0.25, 0, r));
+      parts.push(box(w, H, d, h.wall, 0, y0 + H / 2, 0, r));
+      [[1, 1], [1, -1], [-1, 1], [-1, -1]].forEach(([sx, sz]) => parts.push(box(0.2, H, 0.2, P.timberDark, sx * (w / 2 - 0.02), y0 + H / 2, sz * (d / 2 - 0.02), r)));
+      parts.push(box(w + 0.02, 0.16, d + 0.02, P.timberDark, 0, y0 + H * 0.52, 0, r));
+      parts.push(prism(w + 0.7, d + 0.9, 1.7, roofMats[h.roof], r, y0 + H));
+      parts.push(box(w + 0.75, 0.16, 0.24, P.ridge, 0, y0 + H + 1.7, 0, r));
+      [1, -1].forEach(s => parts.push(box(w + 0.72, 0.14, 0.16, P.almara, 0, y0 + H + 0.02, s * (d + 0.9) / 2, r)));
+      parts.push(box(0.5, 1.4, 0.5, P.stone, w * 0.26, y0 + H + 1.3, -d * 0.12, r));
+      parts.push(box(0.95, 1.75, 0.12, P.door, -w * 0.2, y0 + 0.88, d / 2 + 0.05, r));
+      parts.push(box(1.3, 0.12, 0.6, P.timberDark, -w * 0.2, y0 + 1.95, d / 2 + 0.25, r));
+      win(w * 0.22, y0 + H * 0.74, d / 2 + 0.05); win(w * 0.22, y0 + H * 0.3, d / 2 + 0.05);
+      win(-w * 0.2, y0 + H * 0.74, -d / 2 - 0.05); win(w * 0.22, y0 + H * 0.5, -d / 2 - 0.05);
+      win(w / 2 + 0.05, y0 + H * 0.6, 0, Math.PI / 2); win(-w / 2 - 0.05, y0 + H * 0.6, 0, Math.PI / 2);
+    } else {
+      const w = h.w * 0.88, d = h.d * 0.9, H = 2.3;
+      parts.push(box(w, H, d, P.timber, 0, H / 2, 0, r));
+      for (let i = 1; i <= 3; i++) parts.push(box(w + 0.03, 0.07, d + 0.03, P.timberDark, 0, i * H / 4, 0, r));
+      const roof = MB.CreateCylinder("thatch", { height: 2.3, diameterTop: 0, diameterBottom: Math.SQRT2, tessellation: 4 }, scene);
+      roof.rotation.y = Math.PI / 4; roof.bakeCurrentTransformIntoVertices(); roof.convertToFlatShadedMesh();
+      roof.scaling.set(w + 1.0, 1, d + 1.0); roof.position.y = H + 1.15; roof.parent = r; roof.material = mat(P.thatch);
+      parts.push(roof);
+      parts.push(box(w + 0.9, 0.18, 0.12, P.almara, 0, H + 0.02, (d + 0.9) / 2, r));
+      parts.push(box(0.9, 1.6, 0.12, P.door, -w * 0.18, 0.8, d / 2 + 0.05, r));
+      win(w * 0.24, H * 0.55, d / 2 + 0.05); win(-w * 0.1, H * 0.55, -d / 2 - 0.05);
+      parts.push(box(1.6, 0.9, 0.5, P.thatchDark, w * 0.3, 0.45, -d / 2 - 0.6, r));
+    }
+    parts.forEach(cast);
+  });
+}
+housesSpec.forEach(h => block(h.x, h.z, h.w / 2 + 0.4, h.d / 2 + 0.4));
+
+// ---------- fields, orchards, fences, props ----------
+for (let z = -12; z > -21; z -= 1.15) { inst(BS.row, -20, 0.11, z, 22, 1, 1, 0, true); }
+for (let z = -12; z > -21; z -= 1.2) { inst(BS.wheat, 20, 0.2, z, 22, 1, 1, 0, true); }
+fence(-31, -10.6, -9, -10.6); fence(9, -10.6, 31, -10.6); fence(-31, -10.6, -31, -21.5); fence(31, -10.6, 31, -21.5);
+fence(-22, 10.8, -6, 10.8); fence(5, 10.8, 22, 10.8);
+for (let x = -20; x <= -8; x += 4) for (let z = 14; z <= 22; z += 4) olive(x + rr(-0.6, 0.6), z + rr(-0.6, 0.6), rr(0.85, 1.1));
+for (let x = 8; x <= 22; x += 4.5) for (let z = 14; z <= 22; z += 4.5) olive(x + rr(-0.6, 0.6), z + rr(-0.6, 0.6), rr(0.85, 1.1));
+[[-27, 4], [-28, 12], [27, 5], [-2, 15], [1, 25], [28, 14], [-30, 22], [30, 24]].forEach(([x, z]) => corkOak(x, z, rr(0.9, 1.2)));
+[[-25, -4.5], [-25.5, -8], [23, -3.8], [23.5, -8.5], [-2.5, -9.5], [9.5, -9.5], [-6, 11.5], [-3, 11.5], [5, 11.5], [36, 0], [-36, 0], [-36, 4]]
+  .forEach(([x, z]) => cypress(x, z, rr(0.85, 1.15)));
+for (let i = 0; i < 46; i++) {
+  const x = rr(-34, 34), z = rr(-10, 12);
+  if (Math.abs(z) < 3.2) continue;
+  if (blockers.some(b => Math.abs(x - b.x) < b.hw + 0.6 && Math.abs(z - b.z) < b.hd + 0.6)) continue;
+  bush(x, z, rr(0.5, 0.95));
+}
+function props(x, z) {
+  const k = Math.floor(rnd() * 3);
+  if (k === 0) { inst(BS.barrel, x, 0.45, z, 1); inst(BS.barrel, x + 0.7, 0.45, z + 0.2, 1); inst(BS.crate, x + 0.2, 0.35, z + 0.8, 1, 1, 1, 0.4); }
+  else if (k === 1) { for (let i = 0; i < 3; i++) for (let j = 0; j < 3 - i; j++) { const l = inst(BS.log, x + j * 0.32 + i * 0.16, 0.15 + i * 0.27, z, 1); l.rotation.x = Math.PI / 2; } }
+  else { inst(BS.crate, x, 0.35, z, 1); inst(BS.crate, x, 1.05, z, 1, 1, 1, 0.3); inst(BS.barrel, x + 0.8, 0.45, z, 1); }
+  block(x + 0.4, z + 0.3, 0.9, 0.8);
+}
+[[-13.2, -3.4], [-1.3, -3.3], [9.6, -3.4], [21, -3.3], [-19.5, 3.2], [-7.2, 3.3], [4.8, 3.2], [16, 3.4]].forEach(([x, z]) => props(x, z));
+
+// cart
+(function () {
+  const r = new BABYLON.TransformNode("cart", scene); r.position.set(-24, 0, 2.6); r.rotation.y = 0.3;
+  cast(box(2.2, 0.5, 1.3, "#94704A", 0, 0.85, 0, r));
+  [[0, 0.68], [0, -0.68]].forEach(([x, z]) => { const w = MB.CreateCylinder("wheel", { height: 0.12, diameter: 1.1, tessellation: 10 }, scene); w.material = mat(P.timberDark); w.rotation.x = Math.PI / 2; w.position.set(x, 0.55, z); w.parent = r; cast(w); });
+  [0.4, -0.4].forEach(z => { const s = box(1.8, 0.1, 0.1, P.timber, 1.9, 0.6, z, r); s.rotation.z = 0.25; cast(s); });
+  block(-24, 2.6, 1.6, 1.0);
+  plainOnly.push(r);
+})();
+
+// banner of Almara: square, blue, white wave
+const bannerTex = new BABYLON.DynamicTexture("bannerTex", { width: 256, height: 320 }, scene, true);
+(function () {
+  const g = bannerTex.getContext();
+  g.fillStyle = P.almara; g.fillRect(0, 0, 256, 320);
+  g.strokeStyle = "#F4F1EA"; g.lineWidth = 16; g.strokeRect(14, 14, 228, 292);
+  g.lineWidth = 22; g.lineCap = "round"; g.beginPath(); g.moveTo(40, 175);
+  g.bezierCurveTo(80, 110, 110, 110, 128, 165); g.bezierCurveTo(146, 220, 176, 220, 216, 150); g.stroke();
+  g.lineWidth = 12; g.beginPath(); g.moveTo(52, 230); g.bezierCurveTo(90, 195, 115, 200, 128, 225); g.bezierCurveTo(141, 250, 170, 250, 204, 215); g.stroke();
+  bannerTex.update();
+})();
+const bannerMat = new BABYLON.StandardMaterial("bannerMat", scene);
+bannerMat.diffuseTexture = bannerTex; bannerMat.specularColor = new C3(0, 0, 0); bannerMat.backFaceCulling = false; bannerMat.maxSimultaneousLights = 8;
+bannerMat.emissiveColor = new C3(0.12, 0.12, 0.12);
+const bannerPole = box(0.16, 5.4, 0.16, P.timberDark, 1.2, 2.7, 2.9); cast(bannerPole);
+const bar = box(1.7, 0.1, 0.1, P.timberDark, 2.0, 5.2, 2.9); cast(bar);
+const banner = MB.CreatePlane("banner", { width: 1.5, height: 1.9, sideOrientation: BABYLON.Mesh.DOUBLESIDE }, scene);
+banner.material = bannerMat; banner.setPivotPoint(new V3(0, 0.95, 0)); banner.position.set(2.05, 4.2, 2.9); cast(banner);
+block(1.2, 2.9, 0.3, 0.3);
+// notice board
+(function () {
+  const r = new BABYLON.TransformNode("board", scene); r.position.set(-3.5, 0, 2.9);
+  [-0.8, 0.8].forEach(x => cast(box(0.14, 2, 0.14, P.timberDark, x, 1, 0, r)));
+  cast(box(1.9, 1.1, 0.1, "#9B7B52", 0, 1.45, 0, r));
+  cast(box(2.1, 0.12, 0.35, P.timberDark, 0, 2.06, 0, r));
+  [[-0.5, 1.6], [0.1, 1.35], [0.55, 1.65]].forEach(([x, y]) => box(0.42, 0.5, 0.02, "#EEE6D2", x, y, -0.07, r));
+  block(-3.5, 2.9, 1.0, 0.3);
+})();
+
+// torches along the street (light at dusk and night)
+const torches = [];
+[[-17, 2.5], [-6, -2.6], [7, 2.5], [18, -2.6], [-26, -2.6], [26, 2.5]].forEach(([x, z], i) => {
+  plainOnly.push(cast(box(0.14, 2.1, 0.14, P.timberDark, x, 1.05, z)));
+  const cup = box(0.32, 0.18, 0.32, "#3E3A35", x, 2.15, z); plainOnly.push(cup);
+  spots.props.push({ k: "lantern", x, z });
+  const flameMat = new BABYLON.StandardMaterial("flame" + i, scene); flameMat.diffuseColor = new C3(0.3, 0.15, 0.05); flameMat.specularColor = new C3(0, 0, 0);
+  const flame = MB.CreateIcoSphere("flame", { radius: 0.17, subdivisions: 1 }, scene); flame.material = flameMat; flame.position.set(x, 2.36, z); flame.scaling.y = 1.5;
+  const light = i < 4 ? new BABYLON.PointLight("torch" + i, new V3(x, 2.6, z), scene) : null;
+  if (light) { light.diffuse = new C3(1, 0.6, 0.28); light.specular = new C3(0, 0, 0); light.range = 13; light.intensity = 0; }
+  torches.push({ flame, flameMat, light, phase: rr(0, 6) });
+  block(x, z, 0.25, 0.25);
+});
+
+// ---------- people ----------
+const skins = ["#E0B48C", "#C68E62", "#9A6A45", "#F1C9A5", "#B57B52"];
+const tunics = ["#7A5C3E", "#9C8A6A", "#5E6B4A", "#8B4E3A", "#B8A27A", "#6E6250"];
+function person(o) {
+  const root = new BABYLON.TransformNode("person", scene);
+  const bodyN = new BABYLON.TransformNode("bodyN", scene); bodyN.parent = root;
+  const parts = [];
+  const body = MB.CreateCapsule("body", { height: 1.1, radius: 0.27, tessellation: 8, subdivisions: 1 }, scene);
+  body.material = mat(o.tunic); body.position.y = 0.6; body.parent = bodyN; parts.push(body);
+  const head = MB.CreateIcoSphere("head", { radius: 0.25, subdivisions: 2, flat: false }, scene);
+  head.material = mat(o.skin); head.position.y = 1.4; head.parent = bodyN; parts.push(head);
+  [-0.09, 0.09].forEach(x => { const e = box(0.05, 0.06, 0.03, "#2A211B", x, 1.44, 0.235, bodyN); parts.push(e); });
+  const sash = box(0.6, 0.11, 0.6, P.almara, 0, 0.84, 0, bodyN); sash.rotation.z = 0.65; parts.push(sash);
+  if (o.hat === 1) { const h = MB.CreateCylinder("hat", { height: 0.32, diameterTop: 0.1, diameterBottom: 0.75, tessellation: 8 }, scene); h.material = mat("#D9C27A"); h.position.y = 1.66; h.parent = bodyN; parts.push(h); }
+  if (o.hat === 2) { const h = MB.CreateCylinder("cap", { height: 0.16, diameter: 0.46, tessellation: 8 }, scene); h.material = mat(P.almara); h.position.y = 1.6; h.parent = bodyN; parts.push(h); }
+  if (o.prop === "axe") {
+    const hd = box(0.06, 0.9, 0.06, "#7A5A3A", 0.34, 0.75, 0.1, bodyN); hd.rotation.x = 0.3; parts.push(hd);
+    parts.push(box(0.05, 0.22, 0.26, "#8F8F8F", 0.34, 1.15, 0.27, bodyN));
+  } else if (o.prop === "basket") {
+    const b = MB.CreateCylinder("basket", { height: 0.36, diameterTop: 0.55, diameterBottom: 0.4, tessellation: 8 }, scene);
+    b.material = mat("#B08A4E"); b.position.set(0, 1.0, -0.33); b.parent = bodyN; parts.push(b);
+  } else if (o.prop === "spear") {
+    parts.push(box(0.05, 2.0, 0.05, "#7A5A3A", 0.33, 1.0, 0.05, bodyN));
+    parts.push(box(0.06, 0.24, 0.06, "#9A9A9A", 0.33, 2.1, 0.05, bodyN));
+    const sh = MB.CreateCylinder("shield", { height: 0.06, diameter: 0.6, tessellation: 10 }, scene);
+    sh.material = mat(P.almara); sh.rotation.z = Math.PI / 2; sh.position.set(-0.32, 0.8, 0.05); sh.parent = bodyN; parts.push(sh);
+  }
+  parts.forEach(p => { sg.addShadowCaster(p); p.isPickable = false; });
+  return { root, bodyN, parts };
+}
+const walkers = [];
+[
+  { x1: -28, x2: 26, z: 0.8, prop: "basket" }, { x1: -20, x2: 12, z: -0.9, prop: "axe" },
+  { x1: -5, x2: 24, z: 1.4, prop: null }, { x1: -26, x2: -2, z: -1.4, prop: "spear" },
+  { x1: 2, x2: 4, z: 3.9, prop: null, idle: true }, { x1: -4.5, x2: -2.5, z: 1.9, prop: null, idle: true }
+].forEach(w => {
+  const p = person({ tunic: pick(tunics), skin: pick(skins), hat: Math.floor(rnd() * 3), prop: w.prop });
+  const x = rr(w.x1, w.x2); p.root.position.set(x, 0, w.z);
+  walkers.push({ ...w, p, x, dir: rnd() < 0.5 ? 1 : -1, speed: w.idle ? 0 : rr(1.0, 1.5), t: rr(0, 6), wait: 0, moving: false });
+});
+const packPeople = ["character-female-b", "character-worker", "character-male-e", "character-soldier", "character-female-d", "character-male-a"];
+
+// the player's villager
+const me = person({ tunic: "#4F6A86", skin: "#E0B48C", hat: 0, prop: null });
+me.root.position.set(-1, 0, -0.2);
+const ring = MB.CreateTorus("ring", { diameter: 1.3, thickness: 0.13, tessellation: 24 }, scene);
+const ringMat = new BABYLON.StandardMaterial("ringMat", scene); ringMat.diffuseColor = C3.FromHexString(P.gold); ringMat.emissiveColor = C3.FromHexString("#C8932A"); ringMat.specularColor = new C3(0, 0, 0);
+ring.material = ringMat; ring.parent = me.root; ring.position.y = 0.05;
+// start facing down the street (+x), so first person doesn't open on the villager at the notice board
+const meState = { yaw: Math.PI / 2, fpYaw: Math.PI / 2, fpPitch: 0.05 };
+me.root.rotation.y = meState.yaw;
+
+// ---------- cameras ----------
+const iso = new BABYLON.ArcRotateCamera("iso", Math.PI / 4, 0.955, 80, new V3(0, 1, 0), scene);
+iso.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA; iso.minZ = 1; iso.maxZ = 400;
+const zooms = [7.5, 11, 15.5]; let zoomI = window.innerHeight < 500 ? 0 : 1;
+function fitOrtho() {
+  const a = engine.getRenderWidth() / Math.max(1, engine.getRenderHeight()), h = zooms[zoomI];
+  iso.orthoTop = h; iso.orthoBottom = -h; iso.orthoLeft = -h * a; iso.orthoRight = h * a;
+}
+fitOrtho();
+const fp = new BABYLON.UniversalCamera("fp", new V3(0, 1.55, 0), scene);
+// fixed horizontal view (about 80°): on wide landscape phones a fixed vertical view stretched the screen edges
+fp.minZ = 0.08; fp.maxZ = 400; fp.fovMode = BABYLON.Camera.FOVMODE_HORIZONTAL_FIXED; fp.fov = 1.4; fp.inputs.clear();
+let view = "iso";
+scene.activeCamera = iso;
+
+// ---------- time of day ----------
+const T = {
+  dawn:  { dir: [-0.35, -0.5, 0.9],   sI: 0.7, sC: "#FFD9A8", hI: 0.5, hC: "#E7DCCB", hG: "#6E5A44", sky: "#E7D3B0", fog: 0.006, win: 0.25, torch: 0.2, vig: 0.12 },
+  day:   { dir: [0.6, -1.3, -0.25],   sI: 0.95, sC: "#FFF2DC", hI: 0.5, hC: "#DDE6F5", hG: "#7A6440", sky: "#8FBCE6", fog: 0, win: 0, torch: 0, vig: 0 },
+  dusk:  { dir: [0.9, -0.38, 0.4],    sI: 0.8, sC: "#FF9A5A", hI: 0.42, hC: "#E9A79A", hG: "#4E3A3A", sky: "#E58A6B", fog: 0.003, win: 0.75, torch: 0.65, vig: 0.25 },
+  night: { dir: [0.4, -1, 0.3],       sI: 0.4, sC: "#8FA6FF", hI: 0.36, hC: "#5A6FB8", hG: "#141A33", sky: "#0C1430", fog: 0, win: 1, torch: 1, vig: 0.85 }
+};
+function toState(p) { return { dir: new V3(...p.dir).normalize(), sI: p.sI, sC: C3.FromHexString(p.sC), hI: p.hI, hC: C3.FromHexString(p.hC), hG: C3.FromHexString(p.hG), sky: C3.FromHexString(p.sky), fog: p.fog, win: p.win, torch: p.torch, vig: p.vig }; }
+let cur = toState(T.day), target = toState(T.day), timeName = "day";
+function lerpState(k) {
+  cur.dir = V3.Lerp(cur.dir, target.dir, k).normalize();
+  ["sI", "hI", "fog", "win", "torch", "vig"].forEach(n => cur[n] += (target[n] - cur[n]) * k);
+  ["sC", "hC", "hG", "sky"].forEach(n => cur[n] = C3.Lerp(cur[n], target[n], k));
+}
+const vig = document.getElementById("vig");
+function applyState(t) {
+  sun.direction.copyFrom(cur.dir); sun.intensity = cur.sI; sun.diffuse.copyFrom(cur.sC); sun.specular.set(0, 0, 0);
+  const fpDark = view === "fp" ? 1 - 0.45 * cur.vig : 1;
+  hemi.intensity = cur.hI * fpDark; hemi.diffuse.copyFrom(cur.hC); hemi.groundColor.copyFrom(cur.hG); hemi.specular.set(0, 0, 0);
+  scene.clearColor = new BABYLON.Color4(cur.sky.r, cur.sky.g, cur.sky.b, 1);
+  scene.fogColor = cur.sky; scene.fogDensity = cur.fog;
+  winMat.emissiveColor = winGlow.scale(cur.win);
+  glowMat.alpha = Math.min(1, cur.win);
+  torches.forEach(tc => {
+    const fl = 0.85 + 0.15 * Math.sin(t * 9 + tc.phase) * Math.sin(t * 5.3 + tc.phase * 2);
+    tc.flameMat.emissiveColor = new C3(1, 0.55, 0.18).scale(Math.min(1, cur.torch * 1.2) * fl);
+    if (tc.light) tc.light.intensity = cur.torch * 1.7 * fl;
+  });
+  vig.style.opacity = view === "iso" ? cur.vig.toFixed(3) : "0";
+  const outline = cur.vig > 0.4;
+  me.parts.forEach(p => { p.renderOutline = outline; p.outlineColor = C3.FromHexString(P.gold); p.outlineWidth = 0.025; });
+  ringMat.emissiveColor = C3.FromHexString("#C8932A").scale(0.8 + cur.vig * 0.6);
+}
+
+// ---------- input: joystick (left thumb), look (right thumb), keyboard ----------
+const joyEl = document.getElementById("joy"), knob = document.getElementById("knob"), touchEl = document.getElementById("touch");
+const joy = { id: null, cx: 0, cy: 0, x: 0, y: 0 };
+const look = { id: null, lx: 0, ly: 0 };
+const keys = {};
+const R = 50;
+function joyHome() { joyEl.style.left = ""; joyEl.style.bottom = ""; joyEl.style.top = ""; knob.style.transform = ""; }
+touchEl.addEventListener("pointerdown", e => {
+  const leftSide = e.clientX < window.innerWidth * 0.45;
+  if (e.pointerType !== "mouse" && leftSide && joy.id === null) {
+    joy.id = e.pointerId; joy.cx = e.clientX; joy.cy = e.clientY; joy.x = 0; joy.y = 0;
+    joyEl.style.left = (e.clientX - 62) + "px"; joyEl.style.top = (e.clientY - 62) + "px"; joyEl.style.bottom = "auto";
+  } else if (look.id === null) {
+    look.id = e.pointerId; look.lx = e.clientX; look.ly = e.clientY;
+  }
+  touchEl.setPointerCapture(e.pointerId);
+});
+touchEl.addEventListener("pointermove", e => {
+  if (e.pointerId === joy.id) {
+    let dx = e.clientX - joy.cx, dy = e.clientY - joy.cy; const l = Math.hypot(dx, dy);
+    if (l > R) { dx *= R / l; dy *= R / l; }
+    joy.x = dx / R; joy.y = dy / R; knob.style.transform = `translate(${dx}px, ${dy}px)`;
+  } else if (e.pointerId === look.id) {
+    const dx = e.clientX - look.lx, dy = e.clientY - look.ly; look.lx = e.clientX; look.ly = e.clientY;
+    if (view === "fp") { meState.fpYaw += dx * 0.006; meState.fpPitch = Math.max(-1.1, Math.min(1.1, meState.fpPitch + dy * 0.005)); }
+  }
+});
+function endPtr(e) { if (e.pointerId === joy.id) { joy.id = null; joy.x = joy.y = 0; joyHome(); } if (e.pointerId === look.id) look.id = null; }
+touchEl.addEventListener("pointerup", endPtr); touchEl.addEventListener("pointercancel", endPtr);
+window.addEventListener("keydown", e => { keys[e.key.toLowerCase()] = true; if (e.key.toLowerCase() === "v") toggleView(); });
+window.addEventListener("keyup", e => { keys[e.key.toLowerCase()] = false; });
+
+// ---------- HUD ----------
+const info = document.getElementById("info"), toast = document.getElementById("toast");
+let toastTimer = 0;
+function showToast(html) { toast.innerHTML = html; toast.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.hidden = true, 5200); }
+toast.addEventListener("click", () => toast.hidden = true);
+function group(id, fn) {
+  const g = document.getElementById(id);
+  g.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+    if (fn(b.dataset.v) === false) return;
+    g.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+  }));
+}
+group("timeG", v => { timeName = v; target = toState(T[v]); });
+group("stageG", v => {
+  stage = +v; buildHouses(stage); if (lookName === "pack") houseRoot.setEnabled(false);
+  if (packLoaded) buildPackHouses(stage);
+});
+function markOn(id, v) { document.getElementById(id).querySelectorAll("button").forEach(x => x.classList.toggle("on", x.dataset.v === v)); }
+group("lookG", v => {
+  if (v === "pack" && !packLoaded) {
+    showToast("<b>Loading the free pack…</b><br>Kenney Fantasy Town Kit and Mini Characters (CC0), about 3 MB.");
+    loadPack().then(() => { toast.hidden = true; setLook("pack"); markOn("lookG", "pack"); })
+      .catch(err => showToast("<b>The free pack didn't load.</b><br>" + String(err && err.message || err).slice(0, 160)));
+    return false;
+  }
+  setLook(v);
+});
+const viewBtn = document.getElementById("viewBtn"), viewLbl = document.getElementById("viewLbl"), zoomBtn = document.getElementById("zoomBtn"), lookpad = document.getElementById("lookpad");
+function toggleView() {
+  view = view === "iso" ? "fp" : "iso";
+  if (view === "fp") { meState.fpYaw = meState.yaw; meState.fpPitch = 0.05; }
+  scene.activeCamera = view === "iso" ? iso : fp;
+  me.parts.forEach(p => p.isVisible = view === "iso"); ring.isVisible = view === "iso";
+  if (me.q) me.q.setEnabled(lookName === "pack" && view === "iso");
+  viewLbl.textContent = view === "iso" ? "First person" : "Isometric";
+  viewBtn.setAttribute("aria-label", view === "iso" ? "Switch to first-person view" : "Switch to isometric view");
+  zoomBtn.hidden = view === "fp";
+  lookpad.hidden = !(view === "fp" && isTouch);
+  info.textContent = view === "fp" ? (isTouch ? "Left thumb: walk · right thumb: look" : "WASD: walk · drag: look · V: view") : (isTouch ? "Left thumb: walk" : "WASD or arrows: walk · V: view");
+}
+viewBtn.addEventListener("click", toggleView);
+zoomBtn.addEventListener("click", () => { zoomI = (zoomI + 1) % zooms.length; fitOrtho(); });
+if (!isTouch) { info.textContent = "WASD or arrows: walk · V: view"; document.getElementById("joy").hidden = true; }
+
+// ---------- movement ----------
+function collide(pos, r) {
+  for (const b of blockers) {
+    const dx = pos.x - b.x, dz = pos.z - b.z, ox = b.hw + r - Math.abs(dx), oz = b.hd + r - Math.abs(dz);
+    if (ox > 0 && oz > 0) { if (ox < oz) pos.x += Math.sign(dx || 1) * ox; else pos.z += Math.sign(dz || 1) * oz; }
+  }
+  pos.x = Math.max(-60, Math.min(60, pos.x)); pos.z = Math.max(-23, Math.min(40, pos.z));
+}
+let mx = 0, mz = 0, walkT = 0;
+function updatePlayer(dt) {
+  let ix = joy.x, iy = joy.y;
+  if (keys.a || keys.arrowleft) ix -= 1; if (keys.d || keys.arrowright) ix += 1;
+  if (keys.w || keys.arrowup) iy -= 1; if (keys.s || keys.arrowdown) iy += 1;
+  const l = Math.hypot(ix, iy); if (l > 1) { ix /= l; iy /= l; }
+  let fx, fz;
+  if (view === "iso") { fx = -Math.cos(iso.alpha); fz = -Math.sin(iso.alpha); }
+  else { fx = Math.sin(meState.fpYaw); fz = Math.cos(meState.fpYaw); }
+  const rx = fz, rz = -fx;
+  const speed = 4.2;
+  const vx = (rx * ix - fx * iy) * speed, vz = (rz * ix - fz * iy) * speed;
+  const pos = me.root.position;
+  pos.x += vx * dt; pos.z += vz * dt; collide(pos, 0.35);
+  const moving = Math.hypot(vx, vz) > 0.1;
+  if (moving) { meState.yaw = Math.atan2(vx, vz); walkT += dt * 9; }
+  if (view === "iso") me.root.rotation.y = meState.yaw;
+  me.bodyN.position.y = moving ? Math.abs(Math.sin(walkT)) * 0.07 : 0;
+  setAnim(me.q, moving);
+  ring.rotation.y += dt * 0.8;
+}
+function updateWalkers(dt, t) {
+  walkers.forEach(w => {
+    const p = w.p;
+    const moving = !w.idle && !(w.wait > 0);
+    setAnim(w.q, moving);
+    if (w.idle) { p.root.rotation.y = Math.sin(t * 0.3 + w.t) * 1.2; p.bodyN.position.y = 0; return; }
+    if (w.wait > 0) { w.wait -= dt; p.bodyN.position.y = 0; return; }
+    w.x += w.dir * w.speed * dt;
+    if (w.x > w.x2) { w.x = w.x2; w.dir = -1; w.wait = rr(1, 3); }
+    if (w.x < w.x1) { w.x = w.x1; w.dir = 1; w.wait = rr(1, 3); }
+    p.root.position.x = w.x;
+    p.root.rotation.y = w.dir > 0 ? Math.PI / 2 : -Math.PI / 2;
+    w.t += dt * 8.5; p.bodyN.position.y = Math.abs(Math.sin(w.t)) * 0.06;
+  });
+}
+
+// ---------- free-pack look: Kenney CC0 models (see assets/LICENCES.md) ----------
+const S = 2.4;                        // one kit cell = 2.4 m
+const warm = new C3(1.22, 1.1, 0.94); // one warm tint pulls the kit colours toward our palette
+const CHAR_YAW = 0;                   // turn applied to character models so they face where they walk
+const TOWN = ["wall", "wall-door", "wall-window-shutters", "wall-window-small", "wall-wood", "wall-wood-door",
+  "wall-wood-window-shutters", "wall-wood-window-small", "roof-high", "roof-high-left", "roof-high-right", "chimney", "fence",
+  "tree", "tree-crooked", "tree-high-round", "cart", "stall-red", "lantern"];
+const PEOPLE = [...new Set([...packPeople, "character-male-c"])];
+const kit = {};
+let lookName = "plain", stage = 2, packLoaded = false, packLoading = null, packHouseRoot = null;
+const packRoot = new BABYLON.TransformNode("packRoot", scene); packRoot.setEnabled(false);
+const glowMat = new BABYLON.StandardMaterial("glow", scene);
+glowMat.disableLighting = true; glowMat.emissiveColor = winGlow; glowMat.alpha = 0; glowMat.backFaceCulling = false;
+function toStandard(c) {
+  const swap = new Map();
+  c.meshes.forEach(m => {
+    const pm = m.material; if (!pm) return;
+    if (!swap.has(pm)) {
+      const sm = new BABYLON.StandardMaterial(pm.name + "-std", scene);
+      const tex = pm.albedoTexture || pm.diffuseTexture;
+      if (tex) { sm.diffuseTexture = tex; tex.updateSamplingMode(BABYLON.Texture.NEAREST_SAMPLINGMODE); sm.diffuseColor = warm.clone(); }
+      else sm.diffuseColor = (pm.albedoColor || new C3(1, 1, 1)).multiply(warm);
+      sm.specularColor = new C3(0, 0, 0); sm.maxSimultaneousLights = 8;
+      swap.set(pm, sm);
+    }
+    m.material = swap.get(pm);
+  });
+}
+async function loadKit(folder, names) {
+  await Promise.all(names.map(async n => {
+    // models live once in assets/kenney/ at the project root (same path locally and on GitHub Pages)
+    const c = await BABYLON.SceneLoader.LoadAssetContainerAsync("../../assets/kenney/" + folder + "/", n + ".glb", scene);
+    toStandard(c); kit[n] = c;
+  }));
+}
+function piece(name, x, y, z, ry, parent, sx, sy, sz) {
+  const e = kit[name].instantiateModelsToScene(n => n, false, { doNotInstantiate: true });
+  const h = new BABYLON.TransformNode(name, scene);
+  // the glTF loader mirrors the kit pieces; half a turn puts walls back on the edge we ask for
+  h.parent = parent || packRoot; h.position.set(x, y, z); h.rotation.y = (ry || 0) + Math.PI;
+  h.scaling.set(sx || S, sy || sx || S, sz || sx || S);
+  e.rootNodes.forEach(r => r.parent = h);
+  h.getChildMeshes().forEach(m => { sg.addShadowCaster(m); m.receiveShadows = true; m.isPickable = false; });
+  e.animationGroups.forEach(a => a.stop());
+  h.anims = e.animationGroups;
+  return h;
+}
+function glowQuad(parent) {
+  const q = MB.CreatePlane("glowQ", { width: 0.26, height: 0.3, sideOrientation: BABYLON.Mesh.DOUBLESIDE }, scene);
+  q.material = glowMat; q.parent = parent; q.position.set(0.515, 0.55, 0); q.rotation.y = -Math.PI / 2; q.isPickable = false;
+}
+const gableMat = mat("#6E4A2C", { twoSided: true });
+function gableTri(parent, x, sd, top) {
+  const m = new BABYLON.Mesh("gable", scene), H = 1.1 * S;
+  const vd = new BABYLON.VertexData();
+  vd.positions = [x, top, -S, x, top + H, 0, x, top, S]; vd.indices = [0, 1, 2]; vd.normals = [sd, 0, 0, sd, 0, 0, sd, 0, 0];
+  vd.applyToMesh(m); m.material = gableMat; m.parent = parent; m.isPickable = false; cast(m);
+}
+function buildPackHouses(st) {
+  if (packHouseRoot) packHouseRoot.dispose(false, false);
+  packHouseRoot = new BABYLON.TransformNode("packHouses", scene); packHouseRoot.parent = packRoot;
+  housesSpec.forEach(h => {
+    const r = new BABYLON.TransformNode("ph", scene); r.parent = packHouseRoot;
+    r.position.set(h.x, 0, h.z); r.rotation.y = (h.f > 0 ? 0 : Math.PI) + h.yaw;
+    const nx = h.w > 5.1 ? 3 : 2;
+    const floors = st === 2 ? ["wall", "wall-wood"] : ["wall-wood"];
+    floors.forEach((pre, fl) => {
+      const y = fl * S;
+      for (let i = 0; i < nx; i++) {
+        const cx = (i - (nx - 1) / 2) * S;
+        const door = fl === 0 && i === 0;
+        const f = piece(door ? pre + "-door" : pre + "-window-shutters", cx, y, S / 2, -Math.PI / 2, r); if (!door) glowQuad(f);
+        const backWin = i === nx - 1;
+        const b = piece(backWin ? pre + "-window-small" : pre, cx, y, -S / 2, Math.PI / 2, r); if (backWin) glowQuad(b);
+        if (i === 0) [S / 2, -S / 2].forEach((cz, k) => { const s = piece(k ? pre : pre + "-window-small", cx, y, cz, Math.PI, r); if (!k) glowQuad(s); });
+        if (i === nx - 1) [S / 2, -S / 2].forEach(cz => piece(pre, cx, y, cz, 0, r));
+      }
+    });
+    const top = floors.length * S;
+    // gable ends: a timber triangle under each roof end
+    [-1, 1].forEach(sd => gableTri(r, sd * (nx * S / 2 - 0.06 * S), sd, top));
+    for (let i = 0; i < nx; i++) {
+      const cx = (i - (nx - 1) / 2) * S;
+      const nm = i === 0 ? "roof-high-left" : i === nx - 1 ? "roof-high-right" : "roof-high";
+      piece(nm, cx, top, -S / 2, -Math.PI / 2, r);
+      piece(nm === "roof-high-left" ? "roof-high-right" : nm === "roof-high-right" ? "roof-high-left" : "roof-high", cx, top, S / 2, Math.PI / 2, r);
+    }
+    piece("chimney", ((nx - 1) / 2) * S, top, -S / 2, -Math.PI / 2, r);
+    r.getChildMeshes().forEach(m => m.freezeWorldMatrix());
+  });
+}
+function buildPackWorld() {
+  spots.trees.forEach(t => {
+    const nm = t.k === "cypress" ? "tree-high-round" : t.k === "cork" ? "tree-crooked" : "tree";
+    const sc = (t.k === "cypress" ? 1.9 : t.k === "cork" ? 1.6 : 1.35) * t.s;
+    piece(nm, t.x, 0, t.z, rr(0, 6.28), packRoot, sc);
+  });
+  spots.fences.forEach(([x1, z1, x2, z2]) => {
+    const dx = x2 - x1, dz = z2 - z1, len = Math.hypot(dx, dz), n = Math.max(1, Math.round(len / 2)), th = Math.atan2(dx, dz), sc = 2;
+    const ox = Math.cos(th) * 0.46 * sc, oz = -Math.sin(th) * 0.46 * sc;
+    for (let k = 0; k < n; k++) {
+      const t = (k + 0.5) / n;
+      piece("fence", x1 + dx * t - ox, 0, z1 + dz * t - oz, th, packRoot, sc, sc, len / n);
+    }
+  });
+  spots.props.forEach(p => { if (p.k === "lantern") piece("lantern", p.x, 0, p.z, 0, packRoot, 1.45); });
+  piece("cart", -24, 0, 2.6, 0.3 + Math.PI / 2, packRoot, 2.2);
+  piece("stall-red", 27, 0, -3.8, Math.PI, packRoot, 2.1); block(27, -3.8, 1.1, 1.1);
+  packRoot.getChildMeshes().forEach(m => m.freezeWorldMatrix());
+  buildPackHouses(stage);
+  // people: same walkers, pack bodies with real walk and idle animations
+  const addBody = (holderParent, name) => {
+    const q = piece(name, 0, 0, 0, CHAR_YAW, holderParent, 1);
+    const bb = q.getHierarchyBoundingVectors(true);
+    const hgt = Math.max(0.1, bb.max.y - bb.min.y);
+    q.scaling.setAll(1.7 / hgt);
+    q.walk = q.anims.find(a => a.name === "walk"); q.idle = q.anims.find(a => a.name === "idle");
+    q.state = ""; q.setEnabled(false);
+    return q;
+  };
+  walkers.forEach((w, i) => { w.q = addBody(w.p.root, packPeople[i % packPeople.length]); });
+  me.q = addBody(me.root, "character-male-c");
+}
+function setAnim(q, moving) {
+  const want = moving ? "walk" : "idle";
+  if (!q || q.state === want) return;
+  q.state = want;
+  if (q.walk) q.walk.stop(); if (q.idle) q.idle.stop();
+  const a = moving ? q.walk : q.idle; if (a) a.start(true, 1.0);
+}
+function loadPack() {
+  if (packLoading) return packLoading;
+  packLoading = Promise.all([loadKit("fantasy-town-kit", TOWN), loadKit("mini-characters", PEOPLE)]).then(() => { buildPackWorld(); packLoaded = true; });
+  return packLoading;
+}
+function setLook(l) {
+  lookName = l;
+  const pack = l === "pack";
+  packRoot.setEnabled(pack);
+  if (houseRoot) houseRoot.setEnabled(!pack);
+  plainOnly.forEach(n => n.setEnabled(!pack));
+  walkers.forEach(w => { w.p.bodyN.setEnabled(!pack); if (w.q) w.q.setEnabled(pack); });
+  me.bodyN.setEnabled(!pack); if (me.q) me.q.setEnabled(pack && view === "iso");
+  torches.forEach(t => { t.flame.position.y = pack ? 2.0 : 2.36; t.flame.scaling.setAll(pack ? 0.7 : 1); t.flame.scaling.y = pack ? 1 : 1.5; });
+}
+
+// ---------- loop ----------
+buildHouses(2);
+let time = 0, fpsT = 0;
+const fpsBase = () => (view === "fp" ? (isTouch ? "Left thumb: walk · right thumb: look" : "WASD: walk · drag: look · V: view") : (isTouch ? "Left thumb: walk" : "WASD or arrows: walk · V: view"));
+scene.onBeforeRenderObservable.add(() => {
+  const dt = Math.min(0.05, engine.getDeltaTime() / 1000); time += dt;
+  updatePlayer(dt); updateWalkers(dt, time);
+  lerpState(Math.min(1, dt * 2.2)); applyState(time);
+  const p = me.root.position;
+  iso.target = V3.Lerp(iso.target, new V3(p.x, 1, p.z), Math.min(1, dt * 6));
+  fp.position.set(p.x, 1.55 + me.bodyN.position.y * 0.5, p.z);
+  fp.rotation.set(meState.fpPitch, meState.fpYaw, 0);
+  sun.position = new V3(p.x, 0, p.z).subtract(cur.dir.scale(90));
+  banner.rotation.y = Math.sin(time * 1.3) * 0.18; banner.rotation.x = Math.sin(time * 2.1) * 0.05;
+  fpsT += dt; if (fpsT > 0.5) { fpsT = 0; info.textContent = fpsBase() + " · " + engine.getFps().toFixed(0) + " fps"; }
+});
+scene.executeWhenReady(() => document.getElementById("loading").remove());
+engine.runRenderLoop(() => scene.render());
+window.addEventListener("resize", () => { engine.resize(); fitOrtho(); });
+})();
+</script>
