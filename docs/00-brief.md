@@ -6,7 +6,7 @@ Answers come from the director's intake answers. Anything marked **ASSUMPTION** 
 |---|---|
 | Idea | You are one villager in a medieval world where AI factions play a full strategy war around you. You do your job, survive, and may take up arms, always by your own choice. Day and night cycle. |
 | Genre | Strategy-world survival / life sim with light tactical combat |
-| Platform | Web browser, phone first (landscape), also PC. Hosted from a GitHub repo (GitHub Pages). |
+| Platform | Web browser, phone first (landscape or portrait; portrait allowed from 22/11/2026), also PC. Hosted from a GitHub repo (GitHub Pages). |
 | Target player | ASSUMPTION: adults 25–45 who grew up with classic real-time strategy games and now play on phones in short sittings |
 | Session length | One war per run, about 20–40 minutes |
 | Players | Single-player. The factions are AI. |

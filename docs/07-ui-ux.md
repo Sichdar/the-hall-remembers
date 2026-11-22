@@ -41,6 +41,14 @@
 | Bottom centre | The one hint, 8 words at most, with an icon | | Between the thumbs, where the eyes already rest. |
 | Screen edges | Arrows to things off screen: tracked order, home at night, your dropped sack, danger | 40 × 40 | Instead of a minimap (see 2.4). |
 
+| Right edge, above the view button | **Zoom toggle** (magnifier: + to come closer, − to go back) | 48 × 48 | The director's iPhone test (22/11/2026): the villager looked too far away. On = camera about 40% closer; remembered on each phone. Hidden in first person. On screen for now; may move into Settings later. |
+
+**Portrait (phone held upright, allowed from 22/11/2026, the director):** the same pieces, rearranged so nothing overlaps and the thumbs stay free:
+- Bars top left, with the sun dial and the tracked order under them; orders, map, bag and pause stand in a column down the right edge.
+- Zoom toggle and view button on the right edge, middle; joystick lower left, Action button lower right, as in landscape.
+- The hint sits above the thumbs, not between them. Panels (board, shop, bag) fill the middle of the screen and stop above the joystick, so you can still walk away to close them (the war keeps running, Q15). The map and pause take the whole screen.
+- The camera shows the same width of the world either way, so your villager is the same size; first person keeps a natural up-down view so the screen edges don't warp.
+
 **Phone edges:** nothing sits inside the notch side or the home-bar strip at the bottom (the phone's "safe area"). The joystick and Action button sit 24 points above the bottom edge so a swipe doesn't send the game to the background.
 
 ### 2.2 The Action button changes with what's in front of you

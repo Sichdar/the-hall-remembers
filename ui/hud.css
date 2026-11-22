@@ -61,6 +61,9 @@
 #viewB { position: absolute; right: var(--sr); top: 50%; transform: translateY(-50%); width: 56px; height: 56px; border-radius: 50%; }
 #viewB .ic { width: 28px; height: 28px; }
 #viewB.fp { border-color: var(--gold); color: var(--gold); }
+/* zoom toggle, just above the view button */
+#zoomB { position: absolute; right: calc(var(--sr) + 4px); top: calc(50% - 64px); transform: translateY(-50%); }
+#zoomB.on { border-color: var(--gold); color: var(--gold); }
 
 /* --- lower right: action and fight buttons --- */
 #actB { position: absolute; right: calc(var(--sr) + 70px); bottom: calc(var(--sb) + 16px); width: 88px; height: 88px; border-radius: 50%; border-width: 3px; }
@@ -188,3 +191,18 @@ body.calm .float, body.calm #panel.on, body.calm #banner.on, body.calm .fight.re
 #dot { position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; background: var(--cream); box-shadow: 0 0 0 2px rgba(46,32,21,.7); display: none; }
 #dot.on { display: block; }
 @media (max-width: 760px) { #dial { left: calc(var(--sl) + 250px); transform: none; padding: 4px 9px; font-size: .92em; gap: 6px; } #dial .ic { width: 20px; height: 20px; } #icons { gap: 6px; } }
+
+/* --- portrait (phone held upright; allowed from 22/11/2026) ---
+   bars top left with the sun dial and tracked order under them; the round icons stand in a column on the right;
+   panels take the lower part of the screen so the street stays visible above them (Q15); the hint sits above the thumbs */
+@media (orientation: portrait) {
+  #icons { flex-direction: column; gap: 6px; }
+  #dial { left: var(--sl); top: calc(var(--st) + 112px); transform: none; }
+  #track { top: calc(var(--st) + 152px); max-width: calc(100% - var(--sl) - var(--sr) - 62px); }
+  #banner { top: calc(var(--st) + 280px); white-space: normal; text-align: center; max-width: calc(100% - 40px); }
+  #hint { bottom: calc(var(--sb) + 200px); white-space: normal; max-width: calc(100% - 40px); }
+  #drawer { right: calc(var(--sr) + 58px); top: var(--st); max-height: calc(100% - var(--st) - var(--sb)); overflow-y: auto; }
+  #panel { left: var(--sl); right: var(--sr); width: auto; top: 26%; bottom: calc(var(--sb) + 172px); } /* the thumbs stay free to walk away */
+  #panel.full { top: var(--st); bottom: var(--sb); }
+  .notes { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+}

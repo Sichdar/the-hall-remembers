@@ -126,7 +126,7 @@ The game is **3D**, with two views. A **view button is on screen at all times** 
 **Why 3D matters:** the first-person view only works in 3D, because it is the same world seen from a different camera. That is why the whole game is 3D, not flat drawings.
 
 ## 5. Controls
-| Action | Phone (landscape) | PC |
+| Action | Phone (landscape or portrait, see Phase 7) | PC |
 |---|---|---|
 | Move | **Joystick** (left thumb, fixed in the lower-left corner) (the director, Q6). Tapping an object still walks you to it. Tap-to-move available in settings. | W A S D, or click the ground |
 | Switch view (isometric / first person) | View button, always on screen (right edge, middle; moved from top centre in [Phase 7](07-ui-ux.md)) | V |

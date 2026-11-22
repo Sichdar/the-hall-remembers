@@ -18,6 +18,8 @@ const I = {
   map: '<path fill="currentColor" d="M2.5 5.5l6.3-2.3 6.4 2.3 6.3-2.3v15.3l-6.3 2.3-6.4-2.3-6.3 2.3z"/><path d="M8.8 3.2v15.3M15.2 5.5v15.3" stroke="#3A2817" stroke-width="1.4"/>',
   sack: '<path fill="currentColor" d="M9 2.5h6l-1.7 3.2C16.8 7.3 19.5 11 19.5 15c0 4-3.3 6.5-7.5 6.5S4.5 19 4.5 15c0-4 2.7-7.7 6.2-9.3z"/><path d="M9.6 6.2h4.8" stroke="#3A2817" stroke-width="1.7" stroke-linecap="round"/>',
   pause: '<rect x="6" y="4.5" width="4" height="15" rx="1.2" fill="currentColor"/><rect x="14" y="4.5" width="4" height="15" rx="1.2" fill="currentColor"/>',
+  zoomIn: '<circle cx="10" cy="10" r="6.6" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15 15l6.5 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M6.8 10h6.4M10 6.8v6.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+  zoomOut: '<circle cx="10" cy="10" r="6.6" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15 15l6.5 6.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M6.8 10h6.4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
   eye: '<path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" d="M1.8 12S5.5 5 12 5s10.2 7 10.2 7-3.7 7-10.2 7S1.8 12 1.8 12z"/><circle cx="12" cy="12" r="3.4" fill="currentColor"/>',
   iso: '<path fill="currentColor" d="M12 2.5l9 4.8v9.4l-9 4.8-9-4.8V7.3z" opacity=".35"/><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 2.5l9 4.8-9 4.8-9-4.8zM12 12.1v9.4M3 7.3v9.4l9 4.8 9-4.8V7.3"/>',
   axe: '<path d="M5 21L15.5 7.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path fill="currentColor" d="M12.5 4.2c2.8-2.3 6.6-2 8.6.3-1.2.2-2.3 1-2.9 2.1-.8 1.4-.6 3 .4 4.2-2.7.3-5.6-1.1-7-3.6z"/>',
@@ -111,6 +113,7 @@ ui.innerHTML = `
   <button class="wbtn" id="pauseB" aria-label="Pause">${ic("pause")}</button>
 </div>
 <div id="drawer" class="plate"></div>
+<button class="wbtn" id="zoomB" aria-label="Zoom in" aria-pressed="false">${ic("zoomIn")}</button>
 <button class="wbtn" id="viewB" aria-label="Switch to first-person view">${ic("eye")}</button>
 <button class="wbtn fight" id="braceB" aria-label="Brace" hidden><span class="cd"></span>${ic("shield")}<span class="k">Q</span></button>
 <button class="wbtn fight" id="strikeB" aria-label="Heavy strike" hidden><span class="cd"></span>${ic("strike")}<span class="k">E</span></button>
@@ -393,6 +396,9 @@ $("#foodRow").onclick = () => {
 $("#track").onclick = () => { if (S.orders.length > 1) { const i = S.orders.findIndex(o => o.id === S.tracked); S.tracked = S.orders[(i + 1) % S.orders.length].id; } };
 const viewB = $("#viewB");
 viewB.onclick = () => { W.toggleView(); };
+// zoom toggle (the director, 22/11: "so the character isn't so far away"): on = camera closer; shown in the isometric view only
+const zoomB = $("#zoomB");
+zoomB.onclick = () => W.setClose(!W.close);
 
 // ---------- speech bubbles (at most 2) ----------
 const GOSSIP = [
@@ -570,6 +576,9 @@ W.onFrame(dt => {
   const dT = "Day 1 · " + tn[0].toUpperCase() + tn.slice(1);
   if ($("#dialT").textContent !== dT) { $("#dialT").textContent = dT; $("#dialI").innerHTML = ic(dI); }
   $("#dot").classList.toggle("on", W.view === "fp");
+  zoomB.hidden = W.view === "fp";
+  const zi = W.close ? "zoomOut" : "zoomIn";
+  if (zoomB.dataset.i !== zi) { zoomB.innerHTML = ic(zi); zoomB.dataset.i = zi; zoomB.classList.toggle("on", W.close); zoomB.setAttribute("aria-pressed", String(W.close)); zoomB.setAttribute("aria-label", W.close ? "Zoom out" : "Zoom in"); }
   viewB.classList.toggle("fp", W.view === "fp"); const vi = W.view === "fp" ? "iso" : "eye";
   if (viewB.dataset.i !== vi) { viewB.innerHTML = ic(vi); viewB.dataset.i = vi; viewB.setAttribute("aria-label", W.view === "fp" ? "Switch to isometric view" : "Switch to first-person view"); }
 

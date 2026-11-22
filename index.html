@@ -60,9 +60,7 @@ html, body { height: 100%; margin: 0; overflow: hidden; background: #0E1116; col
   background: var(--glass-hi); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: 14px; line-height: 1.45;
   text-align: center; pointer-events: auto; }
 #toast b { color: var(--gold); }
-#portrait { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background: var(--glass-hi); padding: 12px 16px;
-  border-radius: 12px; font-size: 14px; text-align: center; border: 1px solid var(--line); display: none; }
-@media (orientation: portrait) and (max-width: 700px) { #portrait { display: block; } }
+/* portrait play is allowed (the director, 22/11/2026): no "turn your phone" note */
 #loading { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; background: #0E1116; color: var(--ink-dim); font-size: 14px; }
 @media (prefers-reduced-motion: reduce) { #joy { transition: none; } }
 </style>
@@ -101,7 +99,6 @@ html, body { height: 100%; margin: 0; overflow: hidden; background: #0E1116; col
   <div id="lookpad" hidden>Drag here to look</div>
   <div id="info">Left thumb: walk</div>
   <div id="toast" hidden></div>
-  <div id="portrait">Turn your phone sideways</div>
 </div>
 <div id="loading">Building the street…</div>
 
@@ -495,15 +492,26 @@ me.root.rotation.y = meState.yaw;
 // ---------- cameras ----------
 const iso = new BABYLON.ArcRotateCamera("iso", Math.PI / 4, 0.955, 80, new V3(0, 1, 0), scene);
 iso.mode = BABYLON.Camera.ORTHOGRAPHIC_CAMERA; iso.minZ = 1; iso.maxZ = 400;
-const zooms = [7.5, 11, 15.5]; let zoomI = window.innerHeight < 500 ? 0 : 1;
+const zooms = [7.5, 11, 15.5]; let zoomI = Math.min(window.innerWidth, window.innerHeight) < 500 ? 0 : 1;
+// "close" = the on-screen zoom toggle: brings the camera in so your villager is bigger (remembered per device)
+let close = false; try { close = localStorage.getItem("thr-close") === "1"; } catch (e) {}
+const CLOSE = 0.6; let fpReady = false;
 function fitOrtho() {
-  const a = engine.getRenderWidth() / Math.max(1, engine.getRenderHeight()), h = zooms[zoomI];
-  iso.orthoTop = h; iso.orthoBottom = -h; iso.orthoLeft = -h * a; iso.orthoRight = h * a;
+  const a = engine.getRenderWidth() / Math.max(1, engine.getRenderHeight()), h = zooms[zoomI] * (close ? CLOSE : 1);
+  // landscape: h is half the screen's height; portrait: h is half its width, so the villager is the same size both ways
+  const top = a >= 1 ? h : h / a;
+  iso.orthoTop = top; iso.orthoBottom = -top; iso.orthoLeft = -top * a; iso.orthoRight = top * a;
+  // first person: a fixed sideways view in landscape; upright phones keep a fixed up-down view so the edges don't warp
+  if (fpReady) {
+    if (a >= 1) { fp.fovMode = BABYLON.Camera.FOVMODE_HORIZONTAL_FIXED; fp.fov = 1.4; }
+    else { fp.fovMode = BABYLON.Camera.FOVMODE_VERTICAL_FIXED; fp.fov = 1.2; }
+  }
 }
-fitOrtho();
+function setClose(b) { close = !!b; try { localStorage.setItem("thr-close", close ? "1" : "0"); } catch (e) {} fitOrtho(); }
 const fp = new BABYLON.UniversalCamera("fp", new V3(0, 1.55, 0), scene);
 // fixed horizontal view (about 80°): on wide landscape phones a fixed vertical view stretched the screen edges
 fp.minZ = 0.08; fp.maxZ = 400; fp.fovMode = BABYLON.Camera.FOVMODE_HORIZONTAL_FIXED; fp.fov = 1.4; fp.inputs.clear();
+fpReady = true; fitOrtho(); // first fit, now that both cameras exist
 let view = "iso";
 scene.activeCamera = iso;
 
@@ -796,17 +804,36 @@ function buildQuatHouses(st) {
     if (hi % 3 === 1) qpiece("Prop_Vine1", -W / 2 + 0.6, QH, D / 2 + 0.12, 0, r);
     mergeHouse(r);
     r.getChildMeshes().forEach(m => m.freezeWorldMatrix());
-    quatHouses.push({ x: h.x, z: h.z, half: W / 2 + 1, meshes: r.getChildMeshes().filter(m => m.getTotalVertices() > 0), fade: 1 });
+    const ms = r.getChildMeshes().filter(m => m.getTotalVertices() > 0);
+    const lo = new V3(Infinity, Infinity, Infinity), hiV = new V3(-Infinity, -Infinity, -Infinity);
+    ms.forEach(m => { m.computeWorldMatrix(true); const bb = m.getBoundingInfo().boundingBox; lo.minimizeInPlace(bb.minimumWorld); hiV.maximizeInPlace(bb.maximumWorld); });
+    quatHouses.push({ x: h.x, z: h.z, half: W / 2 + 1, meshes: ms, fade: 1, lo, hi: hiV });
   });
   quatHouseRoot.setEnabled(true);
 }
 // these houses stand about 10 m tall: one between the camera and your villager fades so you never lose sight of them
 const quatHouses = [];
+// A house fades when it stands between the camera and you AND covers you on screen (checked with its real outline,
+// so it also works when the camera is zoomed in or the phone is upright).
+const projM = BABYLON.Matrix.Identity();
+function screenRect(lo, hi, vp) {
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (let i = 0; i < 8; i++) {
+    const c = new V3(i & 1 ? hi.x : lo.x, i & 2 ? hi.y : lo.y, i & 4 ? hi.z : lo.z);
+    const s = V3.Project(c, projM, scene.getTransformMatrix(), vp);
+    x0 = Math.min(x0, s.x); x1 = Math.max(x1, s.x); y0 = Math.min(y0, s.y); y1 = Math.max(y1, s.y);
+  }
+  return { x0, y0, x1, y1 };
+}
 function fadeQuatHouses(dt) {
   const p = me.root.position, dx = Math.cos(iso.alpha), dz = Math.sin(iso.alpha);
+  const vp = iso.viewport.toGlobal(engine.getRenderWidth(), engine.getRenderHeight());
+  const meS = view === "iso" ? V3.Project(new V3(p.x, 0.9, p.z), projM, scene.getTransformMatrix(), vp) : null;
   quatHouses.forEach(q => {
-    const vx = q.x - p.x, vz = q.z - p.z, along = vx * dx + vz * dz, side = Math.abs(-vx * dz + vz * dx);
-    const want = view === "iso" && along > 0 && along < 16 && side < q.half ? 0.18 : 1;
+    const vx = q.x - p.x, vz = q.z - p.z, along = vx * dx + vz * dz;
+    let covers = false;
+    if (meS && along > 0) { const r = screenRect(q.lo, q.hi, vp), pad = 12; covers = meS.x > r.x0 - pad && meS.x < r.x1 + pad && meS.y > r.y0 - pad && meS.y < r.y1 + pad; }
+    const want = covers ? 0.18 : 1;
     if (Math.abs(q.fade - want) < 0.01) return;
     q.fade += (want - q.fade) * Math.min(1, dt * 8);
     if (Math.abs(q.fade - want) < 0.01) q.fade = want;
@@ -890,6 +917,7 @@ window.THR = {
   get view() { return view; }, get timeName() { return timeName; }, get look() { return lookName; },
   toggleView, setTime: v => document.querySelector('#timeG button[data-v="' + v + '"]').click(),
   zoom: () => zoomBtn.click(),
+  get close() { return close; }, setClose,
   fps: () => engine.getFps(),
   onFrame: fn => scene.onBeforeRenderObservable.add(() => { if (!paused) fn(Math.min(0.05, engine.getDeltaTime() / 1000)); }),
   setPaused(b) { if (b === paused) return; paused = b; if (b) engine.stopRenderLoop(); else engine.runRenderLoop(() => scene.render()); },
