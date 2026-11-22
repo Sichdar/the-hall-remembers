@@ -129,13 +129,13 @@ The game is **3D**, with two views. A **view button is on screen at all times** 
 | Action | Phone (landscape) | PC |
 |---|---|---|
 | Move | **Joystick** (left thumb, fixed in the lower-left corner) (the director, Q6). Tapping an object still walks you to it. Tap-to-move available in settings. | W A S D, or click the ground |
-| Switch view (isometric / first person) | View button, always on screen (top centre) | V |
+| Switch view (isometric / first person) | View button, always on screen (right edge, middle; moved from top centre in [Phase 7](07-ui-ux.md)) | V |
 | Look around (first person) | Drag on the right half of the screen | Mouse |
 | Work, pick up, deliver, talk | Tap the object; or the big **Action** button (right thumb), which changes with context | Click the object, or Space |
 | Good stroke | Tap the ring when it pulses | Space |
 | Target an enemy | Tap the enemy (first person: the enemy in the centre of the screen) | Click the enemy |
 | Brace / Heavy strike | Two buttons above the Action button | Q / E |
-| Bag, map, orders | Icons at the top corners | B / M / O |
+| Bag, map, orders | Icons at the top right, next to pause ([Phase 7](07-ui-ux.md)) | B / M / O |
 | Zoom (isometric only) | Pinch (3 levels) | Mouse wheel |
 | Pause | Top-right button | Esc |
 

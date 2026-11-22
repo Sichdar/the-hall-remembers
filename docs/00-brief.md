@@ -36,4 +36,7 @@ Answers come from the director's intake answers. Anything marked **ASSUMPTION** 
 - **Side across wars (Q11, 21/11/2026):** the family stays on the side it ended the last war on; a turncoat family has switched for good.
 - **Voices (Q12, 21/11/2026):** no full voice acting; villagers call out short real Portuguese words ("Bom dia!", "Vamos!"), kept in Portuguese in every translation.
 - **Grudges (S1, 21/11/2026):** the enemy who killed you is marked; your heir can repay the blood.
+- **Phone app (22/11/2026):** if the game proves fun, it becomes a phone app (app stores) as well as the web page. Phase 8 picks tools that allow this.
+- **Jobs and mastery (22/11/2026):** the player takes jobs and levels up mastery in them (Phase 5, section 2.3).
+- **UI look (22/11/2026):** medieval in feel, with icons that are instantly readable and recognisable (Phase 7).
 - **Kept open for later:** short runs with lasting unlocks (see [later/other-parked-ideas.md](later/other-parked-ideas.md)).

@@ -845,5 +845,29 @@ scene.executeWhenReady(() => {
 });
 engine.runRenderLoop(() => scene.render());
 window.addEventListener("resize", () => { engine.resize(); fitOrtho(); });
+
+// ---------- hooks for the interface layer (ui/hud.js): it reads the world, never the other way round ----------
+let paused = false;
+window.THR = {
+  scene, engine, me, walkers, spots, housesSpec, block, mat, P,
+  get view() { return view; }, get timeName() { return timeName; }, get look() { return lookName; },
+  toggleView, setTime: v => document.querySelector('#timeG button[data-v="' + v + '"]').click(),
+  zoom: () => zoomBtn.click(),
+  fps: () => engine.getFps(),
+  onFrame: fn => scene.onBeforeRenderObservable.add(() => { if (!paused) fn(Math.min(0.05, engine.getDeltaTime() / 1000)); }),
+  setPaused(b) { if (b === paused) return; paused = b; if (b) engine.stopRenderLoop(); else engine.runRenderLoop(() => scene.render()); },
+  get paused() { return paused; },
+  // world point -> screen point in CSS pixels; vis=false when behind the camera
+  project(x, y, z) {
+    const w = engine.getRenderWidth(), h = engine.getRenderHeight(), cam = scene.activeCamera;
+    const p = V3.Project(new V3(x, y, z), BABYLON.Matrix.Identity(), scene.getTransformMatrix(), cam.viewport.toGlobal(w, h));
+    const k = canvas.clientWidth / w;
+    // the isometric camera sees everything in front of it; in first person, behind = dot product below 0
+    const vis = cam !== fp || V3.Dot(cam.getDirection(V3.Forward()), new V3(x - cam.position.x, y - cam.position.y, z - cam.position.z)) > 0;
+    return { x: p.x * k, y: p.y * k, vis };
+  }
+};
 })();
 </script>
+<link rel="stylesheet" href="ui/hud.css">
+<script src="ui/hud.js"></script>

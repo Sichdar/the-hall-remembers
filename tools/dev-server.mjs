@@ -6,7 +6,7 @@ import { extname, join, normalize, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = normalize(fileURLToPath(new URL("..", import.meta.url)));
-const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".mjs": "text/javascript", ".json": "application/json",
+const types = { ".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".mjs": "text/javascript", ".json": "application/json",
   ".glb": "model/gltf-binary", ".gltf": "model/gltf+json", ".png": "image/png", ".jpg": "image/jpeg", ".bin": "application/octet-stream" };
 
 http.createServer(async (req, res) => {
@@ -14,7 +14,7 @@ http.createServer(async (req, res) => {
   if (p.endsWith("/")) p += "index.html";
   const file = normalize(join(root, p));
   // only the game page and the folders that go public are served
-  const ok = file === join(root, "index.html") || ["prototypes", "assets", "docs"].some(d => file.startsWith(join(root, d) + sep));
+  const ok = file === join(root, "index.html") || ["prototypes", "assets", "docs", "ui"].some(d => file.startsWith(join(root, d) + sep));
   if (!ok) { res.writeHead(403); return res.end(); }
   try {
     let body = await readFile(file);

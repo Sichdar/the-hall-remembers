@@ -239,5 +239,5 @@ If a member of your family earns 3 or more deeds in one chapter and your town wi
 ## Open questions and risks
 - ✅ **Q11:** the family stays on the side it ended the last chapter on; turncoat families have switched for good (the director, 21/11/2026). See 4.1.
 - ⚠️ **Balance needs playtests:** pay, prices and ranks are guesses until the prototype runs. All numbers live in data files so they can change without code.
-- ⚠️ **Too many items for a phone screen?** ~22 items must fit a simple shop screen (Phase 7).
+- ✅ **Too many items for a phone screen?** Answered in [Phase 7](07-ui-ux.md), section 3.5: one seller at a time, at most about 13 items in 3 tabs.
 - ⚠️ **14 building types × 3 looks** is the biggest art job of the first version. The prototype uses plain shapes (Phase 6).
