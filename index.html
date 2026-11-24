@@ -61,6 +61,12 @@ html, body { height: 100%; margin: 0; overflow: hidden; background: #0E1116; col
   text-align: center; pointer-events: auto; }
 #toast b { color: var(--gold); }
 /* portrait play is allowed (the director, 22/11/2026): no "turn your phone" note */
+/* crowd test read-out (test only): the numbers the director reads off the phone */
+#crowdInfo { position: fixed; left: 50%; top: calc(max(8px, env(safe-area-inset-top, 0px)) + 48px); transform: translateX(-50%); z-index: 5; pointer-events: none;
+  font: 600 12px/1.35 var(--font-ui); color: #FFF6DE; background: rgba(14, 17, 22, 0.78); border: 1px solid var(--line);
+  padding: 6px 10px; border-radius: 9px; text-align: center; white-space: nowrap; font-variant-numeric: tabular-nums; }
+#crowdInfo b { color: var(--gold); }
+@media (orientation: portrait) { #crowdInfo { top: calc(max(8px, env(safe-area-inset-top, 0px)) + 215px); } } /* under the bars, dial and tracked order */
 #loading { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; background: #0E1116; color: var(--ink-dim); font-size: 14px; }
 @media (prefers-reduced-motion: reduce) { #joy { transition: none; } }
 </style>
@@ -87,6 +93,19 @@ html, body { height: 100%; margin: 0; overflow: hidden; background: #0E1116; col
       <button id="l-quat" data-v="quat">Full</button>
       <button id="l-plain" data-v="plain" class="on">Light</button>
     </div>
+    <div class="group" id="crowdG" role="group" aria-label="Crowd test: how many villagers">
+      <span class="lbl">Crowd</span>
+      <button data-v="0" class="on">Off</button>
+      <button data-v="30">30</button>
+      <button data-v="60">60</button>
+      <button data-v="120">120</button>
+      <button data-v="200">200</button>
+    </div>
+    <div class="group" id="animG" role="group" aria-label="Crowd test: how they are animated">
+      <span class="lbl">Animation</span>
+      <button data-v="usual" class="on">Usual</button>
+      <button data-v="baked">Baked</button>
+    </div>
   </div>
   <div class="side">
     <button class="round" id="viewBtn" aria-label="Switch to first-person view">
@@ -99,6 +118,7 @@ html, body { height: 100%; margin: 0; overflow: hidden; background: #0E1116; col
   <div id="lookpad" hidden>Drag here to look</div>
   <div id="info">Left thumb: walk</div>
   <div id="toast" hidden></div>
+  <div id="crowdInfo" hidden></div>
 </div>
 <div id="loading">Building the street…</div>
 
@@ -872,6 +892,232 @@ function loadQuat() {
   qPlainTextures = false;
   return quatLoading;
 }
+
+// ---------- crowd test (S7, docs/08 section 10): many animated Quaternius villagers and the numbers that matter ----------
+// Test only, no game rules. Two ways to animate them:
+//  "Usual": every villager has its own skeleton and animation, the engine's normal way (what the street's people use now).
+//  "Baked": each model's walk and idle are recorded once into a picture the graphics chip reads ("baked vertex animation"),
+//           and all villagers of one model are drawn together as copies ("thin instances"): one draw per model.
+// Villagers carry nothing (weapons hidden in both ways), so both ways draw the same people.
+const crowd = { n: 0, mode: "usual", agents: [], root: new BABYLON.TransformNode("crowd", scene), baked: {}, scale: {}, area: null, token: 0 };
+const crowdInfo = document.getElementById("crowdInfo");
+const BAKE_FPS = 30;
+function crowdPick(a) { const r = crowd.area; a.tx = r.x0 + Math.random() * (r.x1 - r.x0); a.tz = r.z0 + Math.random() * (r.z1 - r.z0); a.stuck = 0; }
+function crowdAgents(n) {
+  const cx = Math.max(-22, Math.min(22, me.root.position.x));
+  crowd.area = { x0: cx - 16, x1: cx + 16, z0: -4.6, z1: 4.6 };  // the street and the front yards around you
+  const list = [];
+  for (let i = 0; i < n; i++) {
+    const a = { m: QPEOPLE[i % QPEOPLE.length], pos: new V3(0, 0, 0), yaw: Math.random() * 6.28, wait: Math.random() * 2, walking: false, shown: null,
+      speed: 1.0 + Math.random() * 0.5, tx: 0, tz: 0, stuck: 0, off: Math.random() * 40 };
+    crowdPick(a); a.pos.set(a.tx, 0, a.tz); collide(a.pos, 0.3); crowdPick(a);
+    list.push(a);
+  }
+  return list;
+}
+function crowdStep(dt) {
+  crowd.agents.forEach(a => {
+    if (a.wait > 0) { a.wait -= dt; a.walking = false; return; }
+    const dx = a.tx - a.pos.x, dz = a.tz - a.pos.z, d = Math.hypot(dx, dz);
+    if (d < 0.4) { a.wait = 0.5 + Math.random() * 2.5; a.walking = false; crowdPick(a); return; }
+    const ox = a.pos.x, oz = a.pos.z;
+    a.pos.x += dx / d * a.speed * dt; a.pos.z += dz / d * a.speed * dt; collide(a.pos, 0.3);
+    if (Math.hypot(a.pos.x - ox, a.pos.z - oz) < a.speed * dt * 0.3) { a.stuck += dt; if (a.stuck > 1) crowdPick(a); } else a.stuck = 0;
+    a.yaw = Math.atan2(dx, dz); a.walking = true;
+  });
+}
+// one fresh copy of a character (own skeleton and animations), weapons hidden
+function crowdCopy(name, prefix) {
+  const e = qkit[name].instantiateModelsToScene(n => prefix + n, false, { doNotInstantiate: true });
+  const h = new BABYLON.TransformNode(prefix + name, scene); h.parent = crowd.root;
+  e.rootNodes.forEach(r => r.parent = h);
+  e.animationGroups.forEach(g => g.stop());
+  const meshes = h.getChildMeshes(false).filter(m => m.getTotalVertices() > 0);
+  const skin = meshes.find(m => m.skeleton);
+  meshes.forEach(m => { m.isPickable = false; if (m.material !== skin.material) m.setEnabled(false); });
+  if (!crowd.scale[name]) {
+    const bb = h.getHierarchyBoundingVectors(true, m => !!m.getTotalVertices && m.isEnabled() && m.getTotalVertices() > 0);
+    crowd.scale[name] = 1.7 / Math.max(0.1, bb.max.y - bb.min.y);
+  }
+  const find = nm => e.animationGroups.find(g => g.name.toLowerCase() === (prefix + nm).toLowerCase());
+  return { e, h, skin, meshes: meshes.filter(m => m.isEnabled()), walk: find("walk"), idle: find("idle") };
+}
+function dropCopy(c) {
+  c.meshes.forEach(m => sg.removeShadowCaster(m));
+  c.e.animationGroups.forEach(g => { g.stop(); g.dispose(); });
+  c.e.skeletons.forEach(s => s.dispose());
+  c.h.dispose(false, false);
+}
+function playAnim(c, walking, off) {
+  const g = walking ? c.walk : c.idle, o = walking ? c.idle : c.walk;
+  if (o) o.stop();
+  if (g) { g.start(true, 1.0, g.from, g.to); g.goToFrame(g.from + (off % 1) * (g.to - g.from)); }
+}
+// "Baked": record walk and idle once per model into a float texture, fold the head and gear into the skinned body,
+// then draw every villager of that model as a copy with its own place, facing and animation frame.
+function bakeModel(name) {
+  if (crowd.baked[name]) return crowd.baked[name];
+  const c = crowdCopy(name, "bk_");
+  try { return bakeFrom(name, c); } catch (err) { dropCopy(c); throw err; }
+}
+function bakeFrom(name, c) {
+  const skin = c.skin, sk = skin.skeleton;
+  const nodes = c.h.getDescendants(false);
+  const pose = () => { nodes.forEach(n => n.computeWorldMatrix && n.computeWorldMatrix(true)); sk.prepare(true); };
+  const walk = c.walk, idle = c.idle;
+  walk.start(false, 1, walk.from, walk.to); walk.pause(); walk.goToFrame(walk.from); pose();
+  // the head, hair and gear hang from a bone: turn them into body parts that follow that bone, so one mesh draws all
+  const invS = skin.getWorldMatrix().clone().invert(), m0 = sk.getTransformMatrices(skin);
+  const P0 = Array.from(skin.getVerticesData("position")), N0 = Array.from(skin.getVerticesData("normal")), U0 = Array.from(skin.getVerticesData("uv") || []),
+    MI = Array.from(skin.getVerticesData("matricesIndices")), MW = Array.from(skin.getVerticesData("matricesWeights")), IX = Array.from(skin.getIndices());
+  if (!U0.length) for (let i = 0; i < P0.length / 3; i++) U0.push(0, 0);
+  const boneOf = n => { for (; n; n = n.parent) { const b = sk.bones.find(b => b.getTransformNode() === n); if (b) return b; } return null; };
+  c.meshes.forEach(m => {
+    if (m === skin) return;
+    const b = boneOf(m.parent); if (!b) return;
+    const bi = b.getIndex(), B = BABYLON.Matrix.FromArray(m0, bi * 16);
+    const T = m.getWorldMatrix().multiply(invS).multiply(B.clone().invert());
+    const p = m.getVerticesData("position"), nn = m.getVerticesData("normal"), u = m.getVerticesData("uv"), ix = m.getIndices(), base = P0.length / 3;
+    for (let v = 0; v < p.length / 3; v++) {
+      const q = V3.TransformCoordinates(new V3(p[v * 3], p[v * 3 + 1], p[v * 3 + 2]), T); P0.push(q.x, q.y, q.z);
+      const r = nn ? V3.TransformNormal(new V3(nn[v * 3], nn[v * 3 + 1], nn[v * 3 + 2]), T).normalize() : V3.Up(); N0.push(r.x, r.y, r.z);
+      U0.push(u ? u[v * 2] : 0, u ? u[v * 2 + 1] : 0);
+      MI.push(bi, 0, 0, 0); MW.push(1, 0, 0, 0);
+    }
+    const flip = T.determinant() < 0;
+    for (let i = 0; i < ix.length; i += 3) { if (flip) IX.push(ix[i] + base, ix[i + 2] + base, ix[i + 1] + base); else IX.push(ix[i] + base, ix[i + 1] + base, ix[i + 2] + base); }
+  });
+  const skinLocal = skin.getWorldMatrix().clone();
+  // record the animation frames
+  const take = g => {
+    g.start(false, 1, g.from, g.to); g.pause();
+    const fps = (g.targetedAnimations[0] && g.targetedAnimations[0].animation.framePerSecond) || 60;
+    const K = Math.max(2, Math.round((g.to - g.from) / fps * BAKE_FPS)), out = [];
+    for (let k = 0; k < K; k++) { g.goToFrame(g.from + (g.to - g.from) * k / K); pose(); out.push(Float32Array.from(sk.getTransformMatrices(skin))); }
+    g.stop(); return out;
+  };
+  const W = take(walk), I = idle ? take(idle) : W, per = W[0].length, frames = W.concat(I);
+  const data = new Float32Array(per * frames.length); frames.forEach((f, k) => data.set(f, k * per));
+  const tex = BABYLON.RawTexture.CreateRGBATexture(data, per / 4, frames.length, scene, false, false, BABYLON.Texture.NEAREST_NEAREST, BABYLON.Constants.TEXTURETYPE_FLOAT);
+  const man = new BABYLON.BakedVertexAnimationManager(scene); man.texture = tex;
+  const bm = new BABYLON.Mesh("baked_" + name, scene);
+  const vd = new BABYLON.VertexData(); vd.positions = P0; vd.normals = N0; vd.uvs = U0; vd.indices = IX; vd.matricesIndices = MI; vd.matricesWeights = MW;
+  vd.applyToMesh(bm);
+  bm.material = skin.material; bm.skeleton = sk; bm.numBoneInfluencers = 4;
+  bm.bakedVertexAnimationManager = man; bm.isPickable = false; bm.receiveShadows = true; bm.alwaysSelectAsActiveMesh = true;
+  bm.parent = crowd.root; bm.setEnabled(false);
+  c.h.setEnabled(false);  // the recording copy stays hidden; its skeleton is only kept for the shader setup
+  const k = { bm, man, walk: [0, W.length - 1], idle: [W.length, frames.length - 1], skinLocal, list: [], mats: null, sets: null };
+  crowd.baked[name] = k;
+  return k;
+}
+function clearCrowd() {
+  crowd.agents.forEach(a => { if (a.copy) dropCopy(a.copy); });
+  crowd.agents = [];
+  Object.values(crowd.baked).forEach(k => { k.bm.thinInstanceCount = 0; k.bm.setEnabled(false); sg.removeShadowCaster(k.bm); k.list = []; });
+}
+function setCrowd(n, mode) {
+  clearCrowd();
+  crowd.n = n; crowd.mode = mode; stats.reset();
+  crowdInfo.hidden = !n;
+  if (!n) return;
+  crowd.agents = crowdAgents(n);
+  if (mode === "usual") {
+    crowd.agents.forEach(a => {
+      a.copy = crowdCopy(a.m, "cr_");
+      a.copy.h.scaling.setAll(crowd.scale[a.m]);
+      a.copy.meshes.forEach(m => { sg.addShadowCaster(m); m.receiveShadows = true; });
+    });
+  } else {
+    crowd.agents.forEach(a => bakeModel(a.m).list.push(a));
+    Object.values(crowd.baked).forEach(k => {
+      if (!k.list.length) return;
+      k.mats = new Float32Array(16 * k.list.length); k.sets = new Float32Array(4 * k.list.length);
+      k.bm.thinInstanceSetBuffer("matrix", k.mats, 16, false);
+      k.bm.thinInstanceSetBuffer("bakedVertexAnimationSettingsInstanced", k.sets, 4, false);
+      k.bm.setEnabled(true); sg.addShadowCaster(k.bm);
+    });
+  }
+}
+// if this phone can't do one of the ways, say so on screen (with the reason) and go back to no crowd
+function trySetCrowd(n, mode) {
+  const prev = crowd.mode;
+  try { setCrowd(n, mode); return true; }
+  catch (err) {
+    console.warn("crowd test", err);
+    try { setCrowd(0, prev); } catch (e) {}
+    markOn("crowdG", "0");
+    showToast("<b>The " + (mode === "baked" ? "baked" : "usual") + " crowd didn't work on this phone.</b><br>" + String(err && err.message || err).slice(0, 160));
+    return false;
+  }
+}
+function chooseCrowd(n, mode) {
+  const tok = ++crowd.token;
+  if (!n || quatLoaded) return trySetCrowd(n, mode);
+  showToast("<b>Loading the villagers…</b><br>" + LOADERS.quat.msg);
+  loadQuat().then(() => { if (tok !== crowd.token) return; toast.hidden = true; if (trySetCrowd(n, mode)) { markOn("crowdG", String(n)); markOn("animG", mode); } })
+    .catch(err => showToast("<b>The models didn't load.</b><br>" + String(err && err.message || err).slice(0, 160)));
+  return false;
+}
+group("crowdG", v => chooseCrowd(+v, crowd.mode));
+group("animG", v => { if (!crowd.n) { crowd.mode = v; return; } return chooseCrowd(crowd.n, v); });
+const tmpQ = new BABYLON.Quaternion(), tmpM = BABYLON.Matrix.Identity(), tmpM2 = BABYLON.Matrix.Identity(), tmpS = new V3(1, 1, 1);
+function crowdDraw(dt) {
+  if (crowd.mode === "usual") {
+    crowd.agents.forEach(a => {
+      const h = a.copy.h; h.position.copyFrom(a.pos); h.rotation.y = a.yaw;
+      if (a.shown !== a.walking) { a.shown = a.walking; playAnim(a.copy, a.walking, a.off); }
+    });
+    return;
+  }
+  Object.values(crowd.baked).forEach(k => {
+    if (!k.list.length) return;
+    k.man.time += dt;
+    let setsChanged = false;
+    k.list.forEach((a, i) => {
+      tmpS.setAll(crowd.scale[a.m]); BABYLON.Quaternion.RotationYawPitchRollToRef(a.yaw, 0, 0, tmpQ);
+      BABYLON.Matrix.ComposeToRef(tmpS, tmpQ, a.pos, tmpM); k.skinLocal.multiplyToRef(tmpM, tmpM2); tmpM2.copyToArray(k.mats, i * 16);
+      if (a.shown !== a.walking) {
+        a.shown = a.walking; const r = a.walking ? k.walk : k.idle;
+        k.sets.set([r[0], r[1], a.off, BAKE_FPS], i * 4); setsChanged = true;
+      }
+    });
+    k.bm.thinInstanceBufferUpdated("matrix");
+    if (setsChanged) k.bm.thinInstanceBufferUpdated("bakedVertexAnimationSettingsInstanced");
+  });
+}
+// the numbers: average frame rate and slowest frame over the last 3 seconds, draw calls, villagers on screen
+const stats = {
+  dts: [], t: 0, skip: 0, dc: 0,
+  reset() { this.dts = []; this.t = 0; this.skip = 1000; crowdInfo.innerHTML = "<b>Setting up the crowd…</b>"; },
+  frame(dtMs) {
+    if (this.skip > 0) { this.skip -= dtMs; return; }  // the first second after a change is the setting-up hitch, not the crowd
+    this.dts.push(dtMs); let sum = 0; for (const d of this.dts) sum += d;
+    while (sum > 3000 && this.dts.length > 1) sum -= this.dts.shift();
+    this.t += dtMs; if (this.t < 500 || !crowd.n) return;
+    this.t = 0;
+    const fps = this.dts.length * 1000 / Math.max(1, sum), worst = Math.max(...this.dts);
+    const planes = BABYLON.Frustum.GetPlanes(scene.getTransformMatrix()), pt = new V3(0, 0, 0);
+    let seen = 0; crowd.agents.forEach(a => { pt.set(a.pos.x, 0.9, a.pos.z); if (BABYLON.Frustum.IsPointInFrustum(pt, planes)) seen++; });
+    const dc = this.dc;
+    crowdInfo.innerHTML = "<b>" + crowd.n + " villagers · " + (crowd.mode === "usual" ? "Usual" : "Baked") + " · " + (lookName === "plain" ? "Light" : "Full") + "</b><br>" +
+      fps.toFixed(0) + " fps · slowest frame " + worst.toFixed(0) + " ms<br>" + dc + " draw calls · " + seen + " on screen";
+  }
+};
+// draw calls in this frame (shadow pass included): the engine's counter only adds up, so take the difference
+const dcNow = () => (engine._drawCalls ? engine._drawCalls.current : 0);
+let dc0 = 0;
+scene.onBeforeRenderObservable.add(() => {
+  dc0 = dcNow();
+  if (!crowd.n) return;
+  const dt = Math.min(0.05, engine.getDeltaTime() / 1000);
+  crowdStep(dt); crowdDraw(dt);
+});
+scene.onAfterRenderObservable.add(() => {
+  if (!crowd.n) return;
+  const d = dcNow() - dc0; stats.dc = d >= 0 ? d : dcNow();
+  stats.frame(engine.getDeltaTime());
+});
 
 // ---------- loop ----------
 buildHouses(2);
