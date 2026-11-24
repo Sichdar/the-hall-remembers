@@ -204,6 +204,7 @@ The riskiest technical question (Phase 1 and 2 risks) is whether a phone browser
 **What changes in the plan**
 - Villagers use baked animation (section 7.2 confirmed).
 - Lighter villager models for the isometric view: about 1,500 corners each, a cut made with glTF Transform (section 4) or simpler models.
+- **Only two villager bodies** (one man, one woman), decided 24/11/2026 (docs/06 section 5.1): the crowd is the same body with different clothes colours, so only two light models need cutting and baking, and colours cost nothing extra. Named people (about 10 to 15) add their own head and hair; how those follow the baked animation is settled when the models are made (Guess: extra pieces moving with the head).
 - Real shadows only for villagers near you; the rest get a soft round shadow on the ground.
 - The automatic sharpness step-down (section 7.2) is needed, not optional; start at 1.5× on phones if a second test shows it pays.
 - More of the town merged into fewer pieces, to get back under 150 draw calls.

@@ -61,7 +61,9 @@ Night must stay readable: a brightness slider (Phase 3), enemies get an outline,
 - **Size:** about one-tenth of a house's height (visual-direction.md), but with slightly big heads and hands so poses read from above.
 - **Look from the job:** each job adds one clear prop (axe, sickle, pick, carry frame, spear and shield). You can tell what anyone is doing at a glance.
 - **Team:** sash, shield and hat trim in team colour.
-- **Variety without extra models:** one body, several heads, hair, hats and clothing colours, combined at random. Phase 4's "fresh people every war" costs almost nothing in art.
+- **Two levels of people (decided 24/11/2026):**
+  - **The crowd** (ordinary workers, most of what you see from above): one body for men and one for women, the same for everyone. They differ only by job tool, team colour and 2 or 3 clothes colours. Plain on purpose: what someone is doing reads at a glance, and soldiers' classes (Phase 5) stand out against them.
+  - **Named people** (you, your household and the fixed roles such as Warden, Smith and Baker; about 10 to 15 at a time): the same two bodies, plus their own head, hair and hat, combined at random, and the painted face. You know your family on sight, and Phase 4's "fresh people every war" still costs almost nothing in art.
 - **Faces:** simple painted faces (eyes, brows, mouth) that work up close in first person. No detailed faces in step A or B.
 
 ### 5.2 Buildings
@@ -154,7 +156,7 @@ Kenney's CC0 sounds, and Freesound clips marked CC0 only (Likely). Each gets a l
 | CC0 packs for the first version | Free, allowed for selling, no credit rules to manage |
 | A licence line per asset | "Maybe sell later" (brief): we must prove every asset is allowed |
 | No AI-made art for now | Ownership and store rules are unclear |
-| One body, many parts for people | Endless villagers (Phase 4) at almost no art cost |
+| Two bodies: a plain crowd, own heads for named people | Jobs and soldiers read at a glance; your family is known on sight; endless villagers (Phase 4) at almost no art cost |
 | Burned building state | Pillar 3: the war leaves marks you can see |
 | glTF files mapped by role | Swappable art, as CLAUDE.md asks |
 
