@@ -187,6 +187,29 @@ The riskiest technical question (Phase 1 and 2 risks) is whether a phone browser
 
 **The test (S7, the director said yes):** before Phase 9, one short session adds a "crowd" switch to the live street: 30, 60, 120 and 200 animated Quaternius villagers walking about, with the frame rate shown, in both the usual and the "baked" animation ways (section 7.2). The director opens it on both test phones and reads off the numbers. No game rules, nothing else changes. Results go here.
 
+**Results, 24/11/2026, main test phone (a recent high-end iPhone, Safari).** Live street, Full look, daytime, isometric view at normal zoom, landscape, drawn at 2× sharpness, every villager casting a shadow, nearly all of them on screen, the house in front faded to see-through. The read-out shows the average frame rate over 3 seconds, the slowest frame and the draw calls (shadow pass included). One reading each, so treat ±3 frames a second as noise. The weak test phone wasn't tested; the director judged the iPhone results enough for now.
+
+| Villagers | Usual (own skeleton each): fps · slowest frame · draw calls | Baked: fps · slowest frame · draw calls |
+|---|---|---|
+| 30 | 32 · 36 ms · 575 | 40 · 36 ms · 334 |
+| 60 | 24 · 55 ms · 843 | **30** · 53 ms · 328 |
+| 120 | 19 · 58 ms · 1,361 | 23 · 46 ms · 332 |
+| 200 | 23 · 84 ms · 2,048 | 19 · 55 ms · 326 |
+
+**What it tells us**
+- **Baked animation works on the phone and is the way to go (Verified).** The draw calls stay flat at about 330 whatever the crowd size, against roughly 10 more per villager the usual way, and the frame rate is about 20–25% higher from 30 to 120 villagers. 60 baked villagers reach 30 frames a second, the target, but with nothing to spare.
+- **Draw calls are not the main limit (Likely).** Even with flat draw calls the frame rate still falls as villagers are added, and with only 30 villagers the street tops out at 40. The cost is mostly the drawing work itself: each Quaternius villager has about 2,300 to 7,200 corners (vertices), drawn twice (picture and shadow), on a screen drawn at 2× sharpness, with a see-through house on top.
+- **The town is over its budget (Likely):** about 300 draw calls with 30 baked villagers, against 150 in section 7.1.
+
+**What changes in the plan**
+- Villagers use baked animation (section 7.2 confirmed).
+- Lighter villager models for the isometric view: about 1,500 corners each, a cut made with glTF Transform (section 4) or simpler models.
+- Real shadows only for villagers near you; the rest get a soft round shadow on the ground.
+- The automatic sharpness step-down (section 7.2) is needed, not optional; start at 1.5× on phones if a second test shows it pays.
+- More of the town merged into fewer pieces, to get back under 150 draw calls.
+- The 60-people budget (section 7.1) stays, but only with the steps above. The weak phone is checked in Phase 11 with the Light look and fewer people drawn.
+- A second, short crowd test with switches for sharpness, villager shadows and lighter villagers would show which step matters most (proposed, not yet approved).
+
 ## 11. Words, sound, input
 - **Words:** every line is looked up by a short key (`order.timber.east_wall`) in one file per language: English first, Portuguese next (Phase 12). Both fonts cover Portuguese accents (Likely). The Portuguese call-outs (Phase 6) are sound files with their written word and meaning in the text files.
 - **Sound:** played through the browser's sound system (Web Audio) via Babylon.js. iPhones only allow sound after a tap, so the title screen's first tap turns it on. Files in MP3, which every phone plays; music loops are set to repeat without a gap. At most 16 sounds at once; the nearest win.
