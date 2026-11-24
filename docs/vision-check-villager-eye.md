@@ -68,3 +68,5 @@ The matches suggest that "working to survive" comes from three pressures, in thi
 **Recommended first step:** fold G1 to G4 and G7 to G9 into the phase docs before Phase 8, since they change the core loop. The rest can wait for their phases.
 
 **Done 24/11/2026:** the director approved this. G1 to G4 and G7 to G9 are now in docs 02, 03, 04, 05 and 07; G5 was partly covered at the same time (idle neighbours, Phase 2 section 2.10). G6 and G10 to G14 wait for their phases.
+
+**Placed 24/11/2026 ([Phase 10](10-scope-production.md), section 3):** G6, G10, G12 and G13 are in version 1.0; G11 waits for an update after 1.0, together with the parked homeless life; G14 is a fixed check in the test wars and in Phase 11's playtests.

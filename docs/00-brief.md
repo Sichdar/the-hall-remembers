@@ -19,7 +19,7 @@ Answers come from the director's intake answers. Anything marked **ASSUMPTION** 
 | Hard limits | Player never commands the AI factions. Free agency: every order is optional. Must work on a phone with two thumbs. |
 
 ## Intake decisions
-- **Title (Q1):** *The Hall Remembers: Bloodlines*.
+- **Title (Q1):** *The Hall Remembers: Bloodlines*. Subtitle kept after the name check (Q26, 24/11/2026).
 - **War length (Q4):** fought to the end, no time limit (stalemate breaker in Phase 2).
 - **Heirs (Q5):** unlimited.
 - **Movement (Q6):** joystick by default.
@@ -43,4 +43,5 @@ Answers come from the director's intake answers. Anything marked **ASSUMPTION** 
 - **Family and town life (S6, 24/11/2026):** your family lives in your house; you pick your heir from them (replaces Q8's random heir); your villagers have personality and blood traits; the town keeps a daily timetable. Picks P4, P5, P7 and P8 wait for their phases.
 - **Technical design (Phase 8, 24/11/2026):** the war runs as a simulation apart from the graphics; 1 tile = 2 metres; first map 160 × 96 tiles; smallest phone the iPhone SE (667 × 375); test phones: the director's recent high-end iPhone and an older Android phone (2018) for the weak-phone check.
 - **Business, ethics and legal (Phase 9, 24/11/2026):** free web link now; if sold, one price with the first war free and never ads, paid luck or tracking; children and the old are never hurt (target rating PEGI 12 / Apple 13+); no AI-made art, sound or voices; friends sign a consent for their voices; the repo is all rights reserved (`LICENSE`). See [09-business-ethics-legal.md](09-business-ethics-legal.md).
+- **Scope and production (Phase 10, 24/11/2026):** seven milestones (M0 to M6), each ending on the director's phone; the first playable (M3) is one map, two towns, two jobs, raids, death and an heir; a fun check with outside players at M3 decides go, change or stop; €0 until version 1.0 has been played; building starts after the whole design document is finished (Q27). See [10-scope-production.md](10-scope-production.md).
 - **Kept open for later:** short runs with lasting unlocks (see [later/other-parked-ideas.md](later/other-parked-ideas.md)).

@@ -167,7 +167,7 @@ The art folder is about 13 MB today, 11 MB of it the six characters (Verified). 
 | **Publishing** | Pushing to GitHub runs an automatic build (GitHub Actions, free for public repos) and publishes the result to the same link: https://sichdar.github.io/the-hall-remembers/ . Nothing built is stored in the repo by hand. |
 | **Offline and Home Screen** | A small "app description" file (web app manifest: name, icon, sideways or upright) and an offline helper (service worker) keep the game on the phone after the first visit. Added to the Home Screen, it opens full screen like an app, with no browser bars. |
 | **Updates** | When a new version is published, the game shows "A new version is ready" on the title screen and updates on the next start, never in the middle of a war. Saves carry their version (section 6). |
-| **Phone app, later** (brief) | Capacitor puts the same built game inside an iPhone app and an Android app. No rewrite. Needs: a Mac (or a paid online Mac service) to build the iPhone app, Apple's yearly developer fee and Google's one-time fee. Costs and store rules go to Phase 9; whether and when, to Phase 10. |
+| **Phone app, later** (brief) | Capacitor puts the same built game inside an iPhone app and an Android app. No rewrite. Needs: a Mac (or a paid online Mac service) to build the iPhone app, Apple's yearly developer fee and Google's one-time fee. Costs and store rules: Phase 9. When: the Android app once the web link or itch.io shows interest, the iPhone app after that ([Phase 10](10-scope-production.md), section 6). |
 
 ## 9. Testing
 | Test | What it checks | When |
@@ -176,7 +176,7 @@ The art folder is about 13 MB today, 11 MB of it the six characters (Verified). 
 | **Test wars** | The simulation plays whole wars with no picture, at hundreds of times normal speed, with a robot "player" (worker, soldier, coward, turncoat). Checks: every war ends; 95% by Day 10 (Phase 2); the first raid isn't too early; the bell rings at least 60 s ahead (Phase 2, section 2.9); a day earns 20 to 35 coin (Phase 5). This is also the **"threat check"** the vision check asked for (gap G14) and the balance tool for Phase 11. | Every change (10 quick wars); 500 wars overnight before each playtest |
 | **Data checks** | Every data file is complete: no missing text line, item, model or number; Portuguese text fits the 30% extra room (Phase 7) | Every change |
 | **Browser check** | The built game opens in real browsers at 667 × 375, 844 × 390 and 390 × 844, with no errors; a screenshot of each | Before every publish |
-| **The director's phone** | Feel, fun, frame rate, heat and battery | Each milestone (Phase 10) |
+| **The director's phone** | Feel, fun, frame rate, heat and battery | Each milestone ([Phase 10](10-scope-production.md), section 4) |
 
 **Testing aids (hidden from players):** adding `?debug` to the link shows the frame rate, draw calls and number of people, and allows test shortcuts: set the time of day, call a raid, add coin, jump a day. The mock-up's gear button grows into this.
 

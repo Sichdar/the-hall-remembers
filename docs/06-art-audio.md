@@ -15,7 +15,7 @@
 |---|---|---|---|
 | **A. Plain shapes** | Prototype (Phase 11) | Boxes, cones and cylinders in the final colours. Thatch = cone, house = box, person = capsule with a head and a team-coloured sash | €0, Claude makes them in code |
 | **B. Free low-poly packs** | First playable version | Ready-made low-poly buildings, trees, rocks and people from free packs that allow commercial use, recoloured to our palette | €0, licences checked one by one |
-| **C. End-goal detail** | After the game is proven fun | Dense, detailed towns like the reference (visual-direction.md): own models, either a paid pack plus edits or a hired 3D artist | Money; decided then (Phase 10) |
+| **C. End-goal detail** | After the game is proven fun | Dense, detailed towns like the reference (visual-direction.md): own models, either a paid pack plus edits or a hired 3D artist | Money; only after version 1.0 has been played by people outside family and friends, with a spending cap set then ([Phase 10](10-scope-production.md), section 6) |
 
 **Decision after the style test (22/11/2026):** step B uses **Quaternius** (Medieval Village MegaKit and RPG Character Pack, CC0). Plain shapes (A) stay in the game as the "Light" look, the fallback if the game turns out too heavy for phones. Kenney's models were tried and dropped (the director didn't like their themes). The village kit's walls have an inside face, and it has inside corners, floors and stairs, so house interiors can be built from it; it has no furniture, which would need another CC0 pack.
 

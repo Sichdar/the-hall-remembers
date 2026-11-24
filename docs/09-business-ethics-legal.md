@@ -108,7 +108,7 @@ The game is a war, so soldiers and working adults can fight and die, you include
 | Name | What the search found (24/11/2026) | Verdict |
 |---|---|---|
 | **The Hall Remembers** | No game with this title. Near names exist ("The Hall of Remembrance", "Hall of Memories", small itch.io projects) | Looks free to use (Likely) |
-| **Bloodlines** (subtitle) | A common word in game titles, but strongly tied to a well-known vampire role-playing series, whose maker filed a trademark on "Vampire Bloodlines" | Not a legal block by itself (Likely), but players searching the stores would land on the vampire games. Decide before any store page (Q26) |
+| **Bloodlines** (subtitle) | A common word in game titles, but strongly tied to a well-known vampire role-playing series, whose maker filed a trademark on "Vampire Bloodlines" | Not a legal block by itself (Likely), but players searching the stores would land on the vampire games. **Kept** by the director (Q26, 24/11/2026); the trademark search before any sale still covers it |
 | **Almara**, **Quintara** | No game or fantasy town with these names. Near spellings exist (Alvara, Almora) | Fine (Likely) |
 
 **Before any sale:** one free search of the trademark databases for the final title (the EU's and the US's free search sites), noted in this doc.
@@ -185,7 +185,7 @@ Written into the earlier docs on 24/11/2026, after the director's "go".
 ## Open questions and risks
 - ✅ **Q24:** yes, the `LICENSE` file is in the repo (the director, 24/11/2026). Section 4.7.
 - ✅ **Q25:** yes, children and old parents are never hurt; adults can still die (the director, 24/11/2026). Phase 2, section 2.7 changed. Section 3.1.
-- ❓ **Q26:** keep the subtitle "Bloodlines", or pick another before any store page? No rush: decide in Phase 12 at the latest. Section 4.2.
+- ✅ **Q26:** the subtitle "Bloodlines" stays (the director, 24/11/2026). Section 4.2.
 - ⚠️ **Store rules and prices change.** Re-check sections 2.2, 2.4 and 4.6 against the stores' own pages right before any launch.
 - ⚠️ **Tax is the director's**, not the store's: one talk with an accountant before the first sale (section 2.4).
 - ⚠️ **Paid phone games sell in small numbers** (section 2.5). The free link and itch.io test the interest first.
