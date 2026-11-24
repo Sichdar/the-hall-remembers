@@ -129,7 +129,7 @@ This replaces the earlier rule "the heir is a random son or daughter" (Q8): the 
 ### 2.8 Factions (run by the AI)
 - **First version:** 2 factions, each starts with a Hall, 6 villagers and 2 guards.
 - The AI runs a simple strategy plan: gather → build houses → build walls → train soldiers → scout → raid → full attack. It reacts to what it sees (rebuild after raids, call the muster when attacked).
-- **Size limit:** up to 30 villagers + 30 soldiers per faction, about 130 moving units in total (phone performance, Phase 8).
+- **Size limit:** up to 30 villagers + 30 soldiers per faction; with households, wolves and the Peddler the world holds up to 256 living beings, of which about 60 are drawn at once (phone performance, [Phase 8](08-technical-design.md), section 7).
 - **Growth costs grain:** a new villager arrives only when the granary can pay 50 grain (section 2.5).
 - **The enemy moves in (G8):** from Day 3 an AI may put up an **outpost** near the other town's outer fields or woods: a small palisade camp with 2 or 3 guards. Its raids start closer and its gatherers take the woods there. A villager who spots it can **report it** to the Captain (+3 reputation, 6 coin, and a "burn the outpost" order appears) or **help burn it** with a torch during a muster (Phase 5, section 3.3).
 
@@ -271,4 +271,4 @@ The game is **3D**, with two views. A **view button is on screen at all times** 
 - **What we can't and shouldn't do:** copy that game's art, buildings, units or interface. It's someone else's work and would block selling later.
 - **What fits €0 and no artist:** that game's detailed, realistic look comes from a large professional art team. With free 3D model packs that allow commercial use, the realistic target is a **clean, slightly stylised low-poly 3D look**: simple shapes, good lighting and colour. It can look very good, but it won't look like a big-budget game.
 - **Order of work stays the same:** plain 3D shapes first (boxes and cylinders) until the game is fun, then the real look. The full art direction comes in Phase 6.
-- **Engine:** Phaser (the 2D engine assumed in the brief) can't do 3D. Recommendation: **Babylon.js**, a free 3D engine for web browsers (Apache 2.0 licence, allows selling). It runs on phones and PC from the same GitHub page, and Claude can write it all as code. Confirmed in Phase 8.
+- **Engine:** Phaser (the 2D engine assumed in the brief) can't do 3D. Recommendation: **Babylon.js**, a free 3D engine for web browsers (Apache 2.0 licence, allows selling). It runs on phones and PC from the same GitHub page, and Claude can write it all as code. Confirmed in [Phase 8](08-technical-design.md) (Babylon.js 9).

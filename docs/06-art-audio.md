@@ -136,7 +136,7 @@ Kenney's CC0 sounds, and Freesound clips marked CC0 only (Likely). Each gets a l
 ## 9. Keeping art swappable (for Phase 8)
 - Every model is a **glTF file** (an open 3D format that Babylon.js reads directly), named by role: `building/house_stage2.glb`, `person/body.glb`, `prop/barrel.glb`.
 - A data file maps each role to a file. Swapping art = dropping in a new file with the same name, or changing one line.
-- Sizes and the ground point are fixed by rules (1 tile = 1 metre, feet at height 0), so a new model always fits.
+- Sizes and the ground point are fixed by rules (models in metres, 1 tile = 2 metres to match the art kit's 2 m wall pieces, feet at height 0), so a new model always fits. Changed from "1 tile = 1 metre" in [Phase 8](08-technical-design.md), section 5.1.
 
 ---
 

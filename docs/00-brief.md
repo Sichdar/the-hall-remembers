@@ -12,7 +12,7 @@ Answers come from the director's intake answers. Anything marked **ASSUMPTION** 
 | Players | Single-player. The factions are AI. |
 | Team | The director directs, decides and playtests. Claude writes all code and documents. No artist. |
 | Time and budget | Weekends. €0 budget. |
-| Engine / tools | ASSUMPTION (changed 20/11/2026 because the game is now 3D): Babylon.js (free, Apache 2.0 licence) with TypeScript, built with Vite, published on GitHub Pages. Confirmed or changed in Phase 8. |
+| Engine / tools | Confirmed in Phase 8 (24/11/2026): Babylon.js 9 (Apache 2.0) with TypeScript, built with Vite, published on GitHub Pages; Capacitor for a phone app later. See [08-technical-design.md](08-technical-design.md). |
 | Graphics and camera | 3D. Fixed isometric camera by default, first-person view one button away, always on screen (the director, 20/11/2026). Feel of classic isometric strategy games, with original art. |
 | Business model | Free for now; **keep the door open to selling later**. So every asset and library must allow commercial use. |
 | Inspiration (feel only) | Classic real-time strategy games with villagers, armies and town centres. No names, art, units or signature rules copied. |
@@ -41,4 +41,5 @@ Answers come from the director's intake answers. Anything marked **ASSUMPTION** 
 - **UI look (22/11/2026):** medieval in feel, with icons that are instantly readable and recognisable (Phase 7).
 - **Vision check (S5, 24/11/2026):** the land runs out and work moves outward; the granary pays for the town's growth; raids come with warning signs; a town falls in stages. Gaps G1-G4 and G7-G9 of [the report](vision-check-villager-eye.md) are in docs 02 to 05 and 07; the rest wait for their phases.
 - **Family and town life (S6, 24/11/2026):** your family lives in your house; you pick your heir from them (replaces Q8's random heir); your villagers have personality and blood traits; the town keeps a daily timetable. Picks P4, P5, P7 and P8 wait for their phases.
+- **Technical design (Phase 8, 24/11/2026):** the war runs as a simulation apart from the graphics; 1 tile = 2 metres; first map 160 × 96 tiles; smallest phone the iPhone SE (667 × 375); test phones: the director's recent high-end iPhone and an older Android phone (2018) for the weak-phone check.
 - **Kept open for later:** short runs with lasting unlocks (see [later/other-parked-ideas.md](later/other-parked-ideas.md)).

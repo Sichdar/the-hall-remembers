@@ -167,7 +167,7 @@ Each building appears at a town stage (see [visual-direction.md](visual-directio
 | **Hills** | Terraces and cliffs; Quintara's home ground, more stone | After 3 wars |
 | **Wolfwood** | Thick forest, short sight, many wolves | After winning a war on Banner |
 
-Map size, first pass: about 96 × 64 tiles; walking from Hall to Hall takes about 2 minutes (Likely; checked in the prototype).
+Map size, first pass: **160 × 96 tiles of 2 metres** (320 × 192 m; was 96 × 64, changed in [Phase 8](08-technical-design.md), section 5.1); walking from Hall to Hall takes about 2 minutes (Likely; checked in the prototype).
 
 **Land on every map (G1):** each map holds enough timber, stone and field space to finish a war, but the patches within 20 tiles of each Hall run thin by about Day 3. Every season changes what can be foraged (Phase 2, section 2.5); the guided war is set in summer.
 
