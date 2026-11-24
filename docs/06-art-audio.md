@@ -29,7 +29,7 @@
 
 **Rule:** every outside asset gets one line in `assets/LICENCES.md` (name, source link, licence, date downloaded). No line, no asset. "Free to download" is not the same as "free to sell": anything marked non-commercial is banned.
 
-**AI-made art:** not used for now. The rules on owning and selling AI-generated art are still unclear, and stores may ask about it (Phase 9).
+**AI-made art:** never used, for art, music or voices (decided in Phase 9, section 4.5): who owns it is unclear, stores ask about it, and players care.
 
 ## 3. Colour palette
 | Use | Colours |

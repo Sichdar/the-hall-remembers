@@ -1,0 +1,11 @@
+The Hall Remembers: Bloodlines
+Copyright (c) 2026 Sichdar (https://github.com/Sichdar). All rights reserved.
+
+This repository is public so people can play the game, read how it is made
+and learn from it. Looking is welcome. Unless a file says otherwise, you may
+not copy, change, publish, sell or reuse its code, design documents, game
+text, or the game's own art and sounds without written permission.
+
+Outside assets keep their own licences, listed in assets/LICENCES.md
+(for example the CC0 models by Quaternius). Libraries such as Babylon.js
+keep their own licences too (Apache 2.0).

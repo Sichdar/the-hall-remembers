@@ -222,7 +222,7 @@ The riskiest technical question (Phase 1 and 2 risks) is whether a phone browser
 - Fonts, engine and models are inside the game, so no font or code website learns who plays.
 - The public repo holds code, docs and assets only; logs and private notes stay off it (project rules).
 - Every outside asset keeps its line in `assets/LICENCES.md`; the game's **Credits** screen lists the engine, libraries, fonts and models with their licences (Apache 2.0 asks for its licence text to be included).
-- The game's own code licence (public but "all rights reserved", or open source) is a Phase 9 decision.
+- The game's own licence (Phase 9, section 4.7): all rights reserved, visible for learning, stated in the `LICENSE` file; outside assets keep their own licences.
 
 ## 13. Changes to earlier phases
 Written into the earlier docs on 24/11/2026, after the director's "go".

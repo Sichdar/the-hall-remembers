@@ -184,5 +184,5 @@ Traits show on the heir card, so choosing an heir means choosing a kind of perso
 - ✅ **S1:** yes to grudges; the enemy who killed you is marked (the director, 21/11/2026). See 7.1.
 - ⚠️ **Carry-over balance:** family standing and heirlooms must help a little, never decide a war. Phase 5 sets the limits.
 - ⚠️ **Writing load:** traits × roles × situations means hundreds of short lines. Start with about 150 lines for the first version and grow from playtests.
-- ⚠️ **Name checks:** *Almara* and *Quintara* may exist as real small places or in other media. Search before going public (Phase 9).
+- ✅ **Name checks:** no game or fantasy town called *Almara* or *Quintara* was found (web search, 24/11/2026; Phase 9, section 4.2).
 - ⚠️ **Voice:** spoken lines cost money. First version: text bubbles plus short grunts and murmurs, no full voice acting (Phase 6).

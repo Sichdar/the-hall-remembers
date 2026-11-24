@@ -14,7 +14,7 @@ Answers come from the director's intake answers. Anything marked **ASSUMPTION** 
 | Time and budget | Weekends. €0 budget. |
 | Engine / tools | Confirmed in Phase 8 (24/11/2026): Babylon.js 9 (Apache 2.0) with TypeScript, built with Vite, published on GitHub Pages; Capacitor for a phone app later. See [08-technical-design.md](08-technical-design.md). |
 | Graphics and camera | 3D. Fixed isometric camera by default, first-person view one button away, always on screen (the director, 20/11/2026). Feel of classic isometric strategy games, with original art. |
-| Business model | Free for now; **keep the door open to selling later**. So every asset and library must allow commercial use. |
+| Business model | Free for now on the web link; **keep the door open to selling later**, so every asset and library must allow commercial use. If sold (Phase 9): one price for the whole game, the first war free, no ads, no paid luck, no tracking; GitHub Pages stays the free link. |
 | Inspiration (feel only) | Classic real-time strategy games with villagers, armies and town centres. No names, art, units or signature rules copied. |
 | Hard limits | Player never commands the AI factions. Free agency: every order is optional. Must work on a phone with two thumbs. |
 
@@ -42,4 +42,5 @@ Answers come from the director's intake answers. Anything marked **ASSUMPTION** 
 - **Vision check (S5, 24/11/2026):** the land runs out and work moves outward; the granary pays for the town's growth; raids come with warning signs; a town falls in stages. Gaps G1-G4 and G7-G9 of [the report](vision-check-villager-eye.md) are in docs 02 to 05 and 07; the rest wait for their phases.
 - **Family and town life (S6, 24/11/2026):** your family lives in your house; you pick your heir from them (replaces Q8's random heir); your villagers have personality and blood traits; the town keeps a daily timetable. Picks P4, P5, P7 and P8 wait for their phases.
 - **Technical design (Phase 8, 24/11/2026):** the war runs as a simulation apart from the graphics; 1 tile = 2 metres; first map 160 × 96 tiles; smallest phone the iPhone SE (667 × 375); test phones: the director's recent high-end iPhone and an older Android phone (2018) for the weak-phone check.
+- **Business, ethics and legal (Phase 9, 24/11/2026):** free web link now; if sold, one price with the first war free and never ads, paid luck or tracking; children and the old are never hurt (target rating PEGI 12 / Apple 13+); no AI-made art, sound or voices; friends sign a consent for their voices; the repo is all rights reserved (`LICENSE`). See [09-business-ethics-legal.md](09-business-ethics-legal.md).
 - **Kept open for later:** short runs with lasting unlocks (see [later/other-parked-ideas.md](later/other-parked-ideas.md)).

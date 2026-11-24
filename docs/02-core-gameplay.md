@@ -113,8 +113,9 @@ As set in [Phase 1](01-concept.md): −100 to +100 per faction, five levels, hal
 
 ### 2.7 Your family and the bloodline
 **Your family lives in your house (P1).** You never live alone. Besides you, the household has 2 to 4 people: a spouse or a brother or sister, sometimes an old parent, and 1 or 2 children. They are real villagers you see every day: they eat at home, sleep there, tend the garden and run small errands near the house. At least one of them is always of working age.
-- **In a raid** they're in danger like anyone else. You can run home and lead them to the Hall (they follow you); getting them there earns a Chronicle line. If you don't, each one may hide, flee or be hurt.
-- **They can die.** A family member killed in a raid is gone for this war: a grave by the chapel and a line in the Chronicle.
+- **In a raid** the adults are in danger like anyone else. You can run home and lead them to the Hall (they follow you); getting them there earns a Chronicle line. If you don't, each one may hide, flee or be hurt.
+- **Children and old parents are never hurt** (Phase 9, section 3.1). When the raid bell rings they run to the cellar or the Hall on their own, and raiders walk past them. They follow you to the Hall too if you come for them.
+- **Adults can die.** A family member killed in a raid is gone for this war: a grave by the chapel and a line in the Chronicle.
 
 **When you die:**
 1. You fall. A short card: name, years lived, what they're remembered for.

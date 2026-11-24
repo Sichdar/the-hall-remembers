@@ -29,3 +29,7 @@ Then open http://localhost:5173/
 - 3D models: Quaternius (quaternius.com), CC0.
 - 3D engine: [Babylon.js](https://www.babylonjs.com/), Apache 2.0.
 - Design by the director; code and documents written with Claude.
+
+## Licence
+
+All rights reserved: see [LICENSE](LICENSE). Outside assets keep their own licences ([assets/LICENCES.md](assets/LICENCES.md)).
