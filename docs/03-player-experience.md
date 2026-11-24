@@ -69,9 +69,12 @@ Vibration works on Android browsers; iPhone browsers ignore it, so nothing impor
 | Hit an enemy | Flash and small knockback | Hit sound, grunt | 15 ms |
 | Take damage | Red edges of the screen; heartbeat below 30 health | Pain grunt, heartbeat | 30 ms |
 | Brace blocks a hit | Spark, shield shudder | Metal clang | 20 ms |
+| Raid sign (G7) | Smoke on the horizon, a scout at the field edge, a runner coming in; a small edge arrow | Distant crow calls, a worried gossip line | none |
+| Watchman's bell (G7) | The watchman ringing on the tower; banner at the top | Fast, uneven bell | 2 long pulses |
 | War horn | Banner icon at the screen edge pointing to the danger | Deep horn | 3 long pulses |
 | Dusk bell | Light shifts to orange; shadows stretch | Town bell | none |
 | Death | Slow motion, colour drains, heir card | Single drum, silence | 1 long pulse |
+| The town falls (G9) | Fires spread from the fields to the houses to the Hall over 2 to 3 minutes; the sky darkens with smoke | Bells stop one by one; shouting, then quiet | none |
 | Reputation level change | Big banner with the new level | Fanfare (up) or low drum (down) | none |
 
 ## 5. Accessibility
@@ -105,4 +108,4 @@ Vibration works on Android browsers; iPhone browsers ignore it, so nothing impor
 - ⚠️ **The guided war** is extra content to build and keep working as the game changes. Keep it short (Days 1–3) and data-driven.
 - ⚠️ **The on-beat ring** may annoy some players; the automatic option covers this, but playtests decide if it stays.
 - ⚠️ **iPhone has no vibration in the browser**, so iPhone players rely on sound and visuals only.
-- ✅ Q8: the heir is a **random son or daughter** (the director, 21/11/2026). No choice screen.
+- ✅ Q8: the heir is a **random son or daughter** (the director, 21/11/2026). No choice screen. **Replaced 24/11/2026 by S6, pick P2:** you choose the heir from your living family (Phase 2, section 2.7; heir card in Phase 7, section 3.8).

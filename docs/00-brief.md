@@ -39,4 +39,6 @@ Answers come from the director's intake answers. Anything marked **ASSUMPTION** 
 - **Phone app (22/11/2026):** if the game proves fun, it becomes a phone app (app stores) as well as the web page. Phase 8 picks tools that allow this.
 - **Jobs and mastery (22/11/2026):** the player takes jobs and levels up mastery in them (Phase 5, section 2.3).
 - **UI look (22/11/2026):** medieval in feel, with icons that are instantly readable and recognisable (Phase 7).
+- **Vision check (S5, 24/11/2026):** the land runs out and work moves outward; the granary pays for the town's growth; raids come with warning signs; a town falls in stages. Gaps G1-G4 and G7-G9 of [the report](vision-check-villager-eye.md) are in docs 02 to 05 and 07; the rest wait for their phases.
+- **Family and town life (S6, 24/11/2026):** your family lives in your house; you pick your heir from them (replaces Q8's random heir); your villagers have personality and blood traits; the town keeps a daily timetable. Picks P4, P5, P7 and P8 wait for their phases.
 - **Kept open for later:** short runs with lasting unlocks (see [later/other-parked-ideas.md](later/other-parked-ideas.md)).

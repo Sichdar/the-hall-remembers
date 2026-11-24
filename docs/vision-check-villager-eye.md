@@ -66,3 +66,5 @@ The matches suggest that "working to survive" comes from three pressures, in thi
 3. **War that builds up and then breaks the town** (G7 to G10). We have the timeline; we lack the warning signs before it and the long, readable fall after it.
 
 **Recommended first step:** fold G1 to G4 and G7 to G9 into the phase docs before Phase 8, since they change the core loop. The rest can wait for their phases.
+
+**Done 24/11/2026:** the director approved this. G1 to G4 and G7 to G9 are now in docs 02, 03, 04, 05 and 07; G5 was partly covered at the same time (idle neighbours, Phase 2 section 2.10). G6 and G10 to G14 wait for their phases.

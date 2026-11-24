@@ -1,6 +1,7 @@
 # Phase 4: World, story and characters
 
 *Draft 21/11/2026, S02-WORLD. Waiting for the director's "go". Names approved by the director (Q9); family carries on between wars (Q10); grudges added (S1). Before going public, each name gets a quick search against existing games and real places.*
+*Updated 24/11/2026: your household and choosing the heir (P1, P2), traits for your own villager (P3), and three new story events: trouble coming, an outpost, the town falls ([vision check](vision-check-villager-eye.md) G7-G9). Approved by the director (S5, S6).*
 
 ## 1. The world in one paragraph
 **The Sunward Coast** is a warm, dry shore of terraced hills, cork-oak woods, cypress lanes and white salt flats, where a river meets the sea. It's a made-up land with a Mediterranean and Iberian feel (see [visual-direction.md](visual-direction.md)). There's no magic, no dragons and no empire watching over it. Small towns live off grain, olives, fish and salt, and every town is ruled from its **Hall**: a feasting hall, courthouse, granary and last refuge in one building. Two of those towns have hated each other for longer than anyone can say.
@@ -86,7 +87,8 @@ Maps are random (except the guided first war), but every map is built from these
 - **What carries over** (numbers and limits in Phase 5): the family name, the family tree, earned nicknames, a small **family standing** (a reputation head start or stain from how the last chapter ended), and maybe one **heirloom** (for example the Gate-holder's axe). Coin, house and gear do not carry over, because every chapter is a new valley.
 - **Turncoat families:** if your line ended a chapter on the other side, the next chapter remembers it ("the Varelas who crossed over"), and **the family stays on its new side for good** (the director, Q11). Rules in Phase 5, section 4.1.
 - **Starting over:** you can always begin a new family, and old families stay in the Chronicle book.
-- **First names:** random from a pool of about 200 made-up names with a coastal feel, split by gender. Your heir is a random son or daughter (Q8).
+- **First names:** random from a pool of about 200 made-up names with a coastal feel, split by gender.
+- **Your household (P1, approved 24/11/2026):** you live with 2 to 4 family members: a spouse or a brother or sister, sometimes an old parent, and 1 or 2 children. They're named, have a face and a trait, and you see them every day (rules in Phase 2, section 2.7). **You pick your heir** from them when you die (P2); this replaces the earlier random son or daughter (Q8). With no one left, a cousin comes in from the outer farms.
 - **Nicknames are earned.** The Rememberer gives a nickname after a notable deed, and it shows on the death card and in the Chronicle: *"the Gate-holder"*, *"Half-loaf"* (caught stealing bread), *"the Turncoat"*, *"Who-Ran"* (fled 3 battles). Nicknames are the fastest way to make a nobody feel like a person.
 - **Death card** (Phase 2): name, nickname, days lived, one line from the Rememberer. For example: *"Afonso Varela, the Gate-holder. Lived 3 days. Held the north gate alone until the torches ran out."*
 
@@ -98,6 +100,13 @@ Maps are random (except the guided first war), but every map is built from these
 - **Limits:** only the latest 3 grudges stay marked, so the screen never fills with red. Wolves and accidents leave no grudge.
 - **Why it fits:** it turns a death into a goal for the next villager ("my daughter avenged her father"), costs one name tag and one rule, and never forces you to fight (pillar 2).
 - 💤 **Later (Phase 5):** grudges between families that last across chapters (the Varelas and *that* Quintara family).
+
+### 7.2 Traits for your own villager (P3, approved by the director 24/11/2026)
+Neighbours already have one trait each (section 6). Your villagers get them too, in two kinds:
+- **One personality trait**, for example *brave*, *diligent*, *thrifty*, *kind*, *loyal*, *nosy*. Acting in character earns a small reward (+1 reputation once a day, and the Rememberer notices). Acting against it leaves a **mark**; after 3 marks you get a nickname for it (a brave villager who flees three times becomes *"the Not-So-Brave"*) and the trait may change.
+- **Maybe one blood trait**, passed down in the family, for example *strong back*, *keen eyes*, *quick hands*, *hardy*. Each gives a small, always-on edge (numbers in Phase 5, section 2.5). A child has an even chance of inheriting a parent's blood trait.
+
+Traits show on the heir card, so choosing an heir means choosing a kind of person, not just a name.
 
 ## 8. How the story is told
 **No cutscenes and no fixed plot.** The story is whatever happens in the war, told back to the player through five channels:
@@ -120,6 +129,9 @@ Maps are random (except the guided first war), but every map is built from these
 | The Hall is attacked | An enemy army reaches the Hall | Muster opens to everyone (Phase 2), the Warden appears on the wall |
 | Feast day | The town reaches growth stage 2 or 3 | Free bread for one day, music, every villager rests at dusk |
 | The Stone moves | Once per war, at random, at night | Pure gossip and a joke, plus +2 anger on both sides |
+| Trouble coming | An enemy army sets out for a raid | Warning signs one by one: a scout, smoke, a wounded runner, worried gossip, then the watchman's bell (Phase 2, section 2.9) |
+| An outpost appears | The enemy builds a camp near your outer fields | Gossip about strangers in the woods; whoever reports it gets the "burn the outpost" order |
+| The town falls | The enemy breaks into your town for good | Fields, houses, then the Hall burn over 2 to 3 minutes; what you saved or who you led out goes in the Chronicle (Phase 2, section 3) |
 
 ### Sample Chronicle page
 > **Chapter 4: The Spring of the Burnt Bridge**
@@ -153,6 +165,8 @@ Maps are random (except the guided first war), but every map is built from these
 | Decision | Why |
 |---|---|
 | Reputation = the Hall's written Roll | Makes the title, the reputation rules and the Chronicle one idea that players understand without a tutorial |
+| A household you see, and you pick the heir (S6, P1, P2) | The next villager is someone you already know; a dynasty of nobodies needs faces, not just a family name |
+| Personality and blood traits for your villager (S6, P3) | Gives each heir a different feel, and nicknames a second source besides deeds |
 | A slightly silly feud (the moving Stone) | Fits "grounded, light humour" and keeps the war from needing a dark backstory |
 | Each war is a chapter, not one long fixed story | Matches random maps and short runs; the Chronicle book still feels like a saga |
 | Roles fixed, people generated | One set of systems makes endless villagers; fixed cast only for the guided war |

@@ -1,6 +1,7 @@
 # Phase 7: UI and UX
 
 *Draft 22/11/2026, S07-UI. Waiting for the director's "go". Builds on the controls (Phase 2, section 5), onboarding and accessibility (Phase 3), the Roll and the Chronicle (Phase 4), the shop list (Phase 5) and the palette (Phase 6). Sizes are for a typical phone held sideways (844 × 390 screen points) and get checked on the director's phone.*
+*Updated 24/11/2026: the heir card becomes a choice between family members (P2), a hint when your patch runs out, and raid signs in the message order ([vision check](vision-check-villager-eye.md) G2, G7). Approved by the director (S5, S6).*
 
 ## 1. UI pillars
 | # | Pillar | In practice |
@@ -189,7 +190,8 @@ Opened from the Pause menu or by tapping the feather on the HUD. A page of the R
 
 ### 3.8 Death card and heir card
 - **Death card** (full screen, world in grey behind): name, nickname, days lived, the Rememberer's line, and "Killed by ..." for a grudge. Stays at least **2 seconds** so a stray tap can't skip it; then "Tap to go on".
-- **Heir card:** the heir's name, "son" or "daughter", and what they get as a short list with icons: house, chest, coin at home, half the reputation (shown as a number), know-how one rank lower, **Second wind** when it applies (Phase 3, shown openly). Then the heir wakes at home.
+- **Heir card (a choice, P2):** one small card per living family member of working age, side by side (2 to 4; in portrait they stack). Each shows the face, name, relation ("wife", "brother", "eldest daughter"), age, personality trait, blood trait if any, and their knack job. Tap one to see it larger, then **Carry on as ...** to confirm. There's no timer. With no one left, a single card: "A cousin comes from the outer farms."
+- **What the heir gets**, shown under the chosen card as a short list with icons: house, chest, coin at home, half the reputation (shown as a number), know-how one rank lower, **Second wind** when it applies (Phase 3, shown openly). Then the heir carries on from home.
 
 ### 3.9 Chronicle
 - **End of a war:** the Chronicle page (Phase 4 sample), then the score line by line (days alive, deeds, generations, bonuses, Phase 5), the deeds earned this war, and the **heirloom pick**: one card per item the last living family member owned. Buttons: **Next chapter**, **Title**.
@@ -226,9 +228,9 @@ When many things happen at once, the screen shows them in this order and drops t
 | Priority | Kind | Example | Rule |
 |---|---|---|---|
 | 1 | Danger to you | Enemy close, health low | Red edges, edge arrow, sound |
-| 2 | War events | Horn, muster, Hall attacked | One banner at the top, 3 seconds, edge arrow |
-| 3 | Your orders | New orders, deadline near | Tracker blinks once |
-| 4 | Hints | "Bring it to the yard" | Waits until priorities 1–2 are quiet |
+| 2 | War events | Horn, muster, Hall attacked, the watchman's bell | One banner at the top, 3 seconds, edge arrow |
+| 3 | Your orders, raid signs | New orders, deadline near; "Smoke to the east" | Tracker blinks once; a raid sign gets an edge arrow toward it |
+| 4 | Hints | "Bring it to the yard"; "This tree is done" with three choices: next patch (arrow), notice board, ask the Steward | Waits until priorities 1–2 are quiet |
 | 5 | Gossip | "Quintara moved the Stone again." | Dropped first when busy |
 
 **Numbers that float up** (+2 coin, +1 reputation) are small and gold, and merge when they come fast ("+6"), so a busy moment isn't a cloud of numbers. The faction's stock is shown in the world (a sign over each store that ticks up when you deliver), not on the HUD.
@@ -271,6 +273,7 @@ When many things happen at once, the screen shows them in this order and drops t
 | Decision | Why |
 |---|---|
 | No minimap | A nobody doesn't see the whole war (pillar 1); saves space |
+| Heir card is a choice with no timer (S6, P2) | Choosing who carries on is a story moment; nothing is lost by taking a moment over it |
 | Same HUD in both views | Nothing to relearn when switching (Phase 2: same rules in both views) |
 | Fight buttons only when armed | A farmer's screen stays clean; arming yourself feels like a change |
 | One-tap "Store all" at the chest | Makes banking coin before night a quick habit (Phase 1, inheritance) |

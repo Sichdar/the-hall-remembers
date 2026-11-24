@@ -1,6 +1,7 @@
 # Phase 5: Content and progression
 
 *Draft 21/11/2026, S02-WORLD. Waiting for the director's "go". All numbers are first-pass, to be tuned in playtests (Phase 11).*
+*Updated 24/11/2026: foraged food and bread prices that follow the granary, trait numbers, drop-off camps and grain for growth, enemy outposts, land that runs out, your household across chapters ([vision check](vision-check-villager-eye.md) G1-G4, G8; picks P1, P3). Approved by the director (S5, S6).*
 
 ## 1. Two kinds of progression
 | | **Within a war** (one chapter, 20–40 min) | **Across wars** (the family saga) |
@@ -27,6 +28,8 @@ Based on Phase 2 pay and a 4-minute day:
 
 A war of 6–8 days earns roughly **120–220 coin** in total. Prices are set so you can afford one big purchase every day or two.
 
+**Later in the war the walks get longer** as the land near the Hall runs out (Phase 2, section 2.2): fewer loads a day, but loads from beyond the outermost camp pay +1 coin, so a day's earnings stay roughly the same while the danger rises.
+
 ### 2.2 Gear and prices
 Sold by the **Smith** (tools, weapons, armour), the **Baker** (food), the **general store** at the market (bags, light) and the **Peddler** (rare items). Reputation limits what you may buy (Phase 1 levels).
 
@@ -44,7 +47,9 @@ Sold by the **Smith** (tools, weapons, armour), the **Baker** (food), the **gene
 | Torch | 3 | Sight 6 at night, lasts one night | |
 | Lantern | 30 (Peddler) | Sight 6 every night, hands free for a shield | |
 | **Food** | | | |
-| Bread | 2 | +50 hunger | |
+| Bread | 2 (3 when the granary is low, 4 in a siege or after the fields burn) | +50 hunger | |
+| Foraged berries, nuts or shellfish | free (found, not bought; depends on the season) | +15 hunger each | outside the walls |
+| Snared bird | free (snare 5 at the general store, checked at dawn) | +40 hunger | outside the walls |
 | Salted fish (Almara) / olives and cheese (Quintara) | 4 | +80 hunger, +10 health | |
 | Feast pie | 8 | +100 hunger, +30 health | Trusted |
 | **Weapons** (lent at the muster or bought) | | | |
@@ -71,6 +76,8 @@ Phase 1 promised "family know-how". Each job has 3 ranks, earned by doing the wo
 
 **When you die, your heir keeps family know-how at one rank lower** (Master becomes Skilled, Skilled becomes Novice).
 
+**Knack:** each family member is good at one job (shown on the heir card, Phase 2, section 2.7): +10% speed in it from the start, on top of family know-how. A cousin from the outer farms has no knack.
+
 ### 2.4 Reputation (Phase 1 list, updated)
 | Action | Change |
 |---|---|
@@ -84,6 +91,30 @@ Phase 1 promised "family know-how". Each job has 3 ranks, earned by doing the wo
 | Flee from a battle you joined | −8 |
 | Caught stealing | −15 |
 | Defect | old town −100 |
+
+### 2.5 Traits (P3, Phase 4 section 7.2)
+**Personality traits** (one each). Acting in character: +1 reputation, once a day. Acting against it: a mark; 3 marks bring a nickname and the trait may change.
+
+| Trait | In character | Against character |
+|---|---|---|
+| Brave | Fight in a battle, guard a night | Flee a battle |
+| Diligent | Deliver 5 loads in a day | Do no work for a whole day |
+| Thrifty | End the day with more coin at home than the day before | Spend more than half your savings in a day |
+| Kind | Save a villager in a raid, lead your family to safety | Leave a family member behind in a raid |
+| Loyal | Answer the muster, finish an accepted order | Fail an accepted order, defect (3 marks at once) |
+| Nosy | Talk to 3 neighbours in a day (you hear one extra rumour) | Go a whole day without talking to anyone |
+
+**Blood traits** (none or one; a child inherits a parent's blood trait half the time):
+
+| Blood trait | Edge |
+|---|---|
+| Strong back | +2 per load |
+| Keen eyes | +1 tile of sight at night |
+| Quick hands | Good-stroke window +10% |
+| Hardy | Hunger drops 20% slower |
+| Sure feet | Full loads slow you 5% less |
+
+Small on purpose: a trait colours a villager, it never decides a war.
 
 ## 3. The world's content (first version)
 
@@ -109,7 +140,11 @@ Each building appears at a town stage (see [visual-direction.md](visual-directio
 
 **When a town moves up a stage** (AI stock, first pass): Stage 2 when it has stored 300 timber, 200 stone and 300 grain in total, and has at least 15 villagers. Stage 3 at 600 stone and 25 villagers. Usually Day 2–3 and Day 4–6.
 
-**About 14 building types** in the first version, each with up to 3 looks.
+**Drop-off camps (G3):** a timber camp and a stone camp, small open sheds the Warden places at the edge of the worked land and moves outward as it's used up (Phase 2, section 2.2). They count as stores. Any stage.
+
+**Growth costs grain (G4):** each new villager costs the town 50 grain from the granary. The stage thresholds above already need stored grain, so failed or burned fields slow the whole town.
+
+**About 15 building types** in the first version (14 plus the drop-off camp), each with up to 3 looks.
 
 ### 3.3 Enemies and dangers
 | Enemy | Health / attack / defence | When | Behaviour |
@@ -120,6 +155,7 @@ Each building appears at a town stage (see [visual-direction.md](visual-directio
 | Guard | 100 / 10 / 4 | Around the enemy Hall and gates | Holds its post, doesn't chase far |
 | Captain | 150 / 13 / 5 | Leads big attacks, named | Buffs nearby soldiers +10% attack; killing them breaks the squad |
 | Battering ram | 300 / 0 / 8, slow | Day 8 on (stalemate breaker) | Breaks gates; needs 4 pushers; burn it with a torch (5 s) |
+| Outpost (G8) | 200 / 0 / 6, a building | Day 3 on, near the other town's outer fields or woods | 2 or 3 guards; raids start from it. Report it to the Captain (+3 reputation, 6 coin), or burn it with a torch (8 s) during a muster |
 | 💤 Later | archer, horse rider, catapult | | |
 
 ### 3.4 Maps
@@ -132,6 +168,8 @@ Each building appears at a town stage (see [visual-direction.md](visual-directio
 | **Wolfwood** | Thick forest, short sight, many wolves | After winning a war on Banner |
 
 Map size, first pass: about 96 × 64 tiles; walking from Hall to Hall takes about 2 minutes (Likely; checked in the prototype).
+
+**Land on every map (G1):** each map holds enough timber, stone and field space to finish a war, but the patches within 20 tiles of each Hall run thin by about Day 3. Every season changes what can be foraged (Phase 2, section 2.5); the guided war is set in summer.
 
 ### 3.5 Deeds (first version: 17)
 Each deed adds a line to the Chronicle; some give a nickname (Phase 4).
@@ -162,6 +200,8 @@ Each deed adds a line to the Chronicle; some give a nickname (Phase 4).
 | Carries over | How | Limit |
 |---|---|---|
 | **Family name and tree** | Every villager you played, nickname, how they died, which side | none |
+| **Your household (P1)** | The next chapter's villager starts with their own household (spouse or sibling, 1 or 2 children); a family member who survived the last chapter may return as the old parent | 2 to 4 people besides you |
+| **Blood traits (P3)** | Passed down the line (section 2.5) | One per villager |
 | **Family standing** | From how the last chapter ended: won and well liked → +; lost, fled, stole or turned coat → − | Starting reputation +10 (Phase 1) **plus −10 to +10**. Never reaches Trusted on Day 1. |
 | **Family trade** | The job your family did most last chapter | The first villager starts at **Skilled** in it (not Master) |
 | **One heirloom** | When a chapter ends, pick one item the last living member owned | A "named" version: **+10%** on its one stat, with the owner's name (*"Afonso's Axe"*). Only one at a time. |
@@ -230,6 +270,8 @@ If a member of your family earns 3 or more deeds in one chapter and your town wi
 | Decision | Why |
 |---|---|
 | Across-war power capped at +10 reputation, Skilled rank, one +10% heirloom | Every chapter stays a fair, fresh start (Q10 decision noted "help a little, never decide a war") |
+| Outer loads pay +1 coin; growth costs 50 grain a villager (S5) | Keeps earnings steady as walks grow, and ties the fields to the town's growth (vision check G3, G4) |
+| Traits are small: +1 reputation a day, blood edges of 5–20% (S6, P3) | Colour, not power, the same rule as the heirloom |
 | Load reputation capped at +5 per day | Stops hauling all day from making you Honoured; fighting, orders and guarding matter too |
 | Heirlooms can be lost for good | Gives death a real cost across chapters, and a story |
 | Top gear costs about twice what one war earns | Forces choices: worker, soldier or survivor (pillar 2) |
