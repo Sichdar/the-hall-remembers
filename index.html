@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>The Hall Remembers</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
@@ -20,6 +20,11 @@
 }
 [hidden] { display: none !important; }
 html, body { height: 100%; margin: 0; overflow: hidden; background: #0E1116; color: var(--ink); font-family: var(--font-ui); }
+/* No browser zoom (docs/07): a double tap or pinch never zooms the page. Every element allows taps and panning only;
+   the 3D canvas and the touch layer below keep touch-action: none (their id rules win). */
+html, body, body * { touch-action: manipulation; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
 #c { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; outline: none; }
 #touch { position: fixed; inset: 0; touch-action: none; z-index: 1; }
 #vig { position: fixed; inset: 0; pointer-events: none; z-index: 2; opacity: 0;
@@ -70,6 +75,23 @@ html, body { height: 100%; margin: 0; overflow: hidden; background: #0E1116; col
 #loading { position: fixed; inset: 0; z-index: 5; display: grid; place-items: center; background: #0E1116; color: var(--ink-dim); font-size: 14px; }
 @media (prefers-reduced-motion: reduce) { #joy { transition: none; } }
 </style>
+<script>
+// No browser zoom (docs/07). iPhone Safari ignores user-scalable=no, so its pinch gestures are blocked here,
+// and a quick second tap on a part of the HUD that isn't a button (bars, panels, text) is stopped before it can zoom.
+(() => {
+  const stop = e => e.preventDefault();
+  for (const t of ["gesturestart", "gesturechange", "gestureend"]) document.addEventListener(t, stop, { passive: false });
+  let lastEnd = 0;
+  document.addEventListener("touchend", e => {
+    const now = e.timeStamp, quick = now - lastEnd < 350;
+    lastEnd = now;
+    if (!quick || e.touches.length || e.changedTouches.length !== 1) return;
+    const t = e.target;
+    if (!(t instanceof Element) || t.closest("button, a, input, select, textarea, label, [role=button], canvas, #touch, #ring")) return;
+    e.preventDefault();
+  }, { passive: false });
+})();
+</script>
 
 <canvas id="c"></canvas>
 <div id="touch"></div>
