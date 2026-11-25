@@ -113,7 +113,7 @@ The biggest build (Phase 1 risk). It's built in layers so the smallest version p
 | **Squads** | 0.2 game s | Who fights whom inside a battle; the squad leader's target (Phase 7, section 2.5). |
 
 - **Fairness rule:** the AI sees what its own people see (their sight circles, its scouts' reports), never the whole map. Hard difficulty makes it faster and bolder, not all-seeing (Phase 3).
-- **The stalemate breaker** (Phase 2) is a rule the plan layer must obey: forced attacks from Day 6, rams from Day 8.
+- **The stalemate breaker** (Phase 2) is a rule the plan layer must obey: forced attacks from Day 4, rams from Day 5 (Q30).
 
 ### 5.5 Dice and determinism
 - One small random-number maker written by us, started from the war's seed. The simulation never uses the clock or the browser's own dice.
@@ -173,7 +173,7 @@ The art folder is about 13 MB today, 11 MB of it the six characters (Verified). 
 | Test | What it checks | When |
 |---|---|---|
 | **Rule tests** | Pay, prices, reputation, hunger, inheritance, traits, the Roll: each rule from Phases 1 to 5 has a small automatic test | Every change, in seconds |
-| **Test wars** | The simulation plays whole wars with no picture, at hundreds of times normal speed, with a robot "player" (worker, soldier, coward, turncoat). Checks: every war ends; 95% by Day 10 (Phase 2); the first raid isn't too early; the bell rings at least 60 s ahead (Phase 2, section 2.9); a day earns 20 to 35 coin (Phase 5). This is also the **"threat check"** the vision check asked for (gap G14) and the balance tool for Phase 11. | Every change (10 quick wars); 500 wars overnight before each playtest |
+| **Test wars** | The simulation plays whole wars with no picture, at hundreds of times normal speed, with a robot "player" (worker, soldier, coward, turncoat). Checks: every war ends; 95% by Day 7 (Phase 2); the first raid isn't too early; the bell rings at least 60 s ahead (Phase 2, section 2.9); a day earns 20 to 35 coin (Phase 5). This is also the **"threat check"** the vision check asked for (gap G14) and the balance tool for Phase 11. | Every change (10 quick wars); 500 wars overnight before each playtest |
 | **Data checks** | Every data file is complete: no missing text line, item, model or number; Portuguese text fits the 30% extra room (Phase 7) | Every change |
 | **Browser check** | The built game opens in real browsers at 667 × 375, 844 × 390 and 390 × 844, with no errors; a screenshot of each | Before every publish |
 | **The director's phone** | Feel, fun, frame rate, heat and battery | Each milestone ([Phase 10](10-scope-production.md), section 4) |
@@ -244,7 +244,7 @@ Written into the earlier docs on 24/11/2026, after the director's "go".
 - The AI is built in layers (Warden plan, Steward needs and orders, workers, Captain, squads) and sees only what its people see.
 - Saves are versioned snapshots on the device, with an export file for the family book because iPhone Safari can wipe web storage.
 - Budgets: 30 frames a second, 150 draw calls, 60 animated people on screen, under 15 MB to download; the smallest phone is the iPhone SE.
-- Biggest risk: drawing many animated people on a phone. A short crowd test (S7) checks it before more is built.
+- Biggest risk: drawing many animated people on a phone. The crowd test (S7, section 10) reached the target with 60 baked villagers on the director's iPhone, with nothing to spare; the real crowd is tested again in its own prototype (Phase 11, section 3).
 
 ## Decisions and why
 | Decision | Why |

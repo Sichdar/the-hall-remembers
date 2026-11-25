@@ -77,7 +77,7 @@ The game still sends nothing (Phase 9, pillar 3). We learn from:
 - **What people write:** comments on the game's page and messages; players can paste the "Copy bug report" and "Copy playtest summary" text (Phase 8, section 9; Phase 11, section 5).
 - **Simple counts the page itself shows:** a free itch.io page counts views and plays of a browser game and shows them to the owner (Likely); GitHub shows the repo's visitors. Neither needs anything inside the game.
 
-**Proposed (Q28):** at 1.0, open a **free itch.io page** for the game next to the GitHub link. It gives the play counts above, a comments section, short news posts ("devlogs") for each update, and an audience that looks for small games. Free to open (Phase 9, section 2.4); it is also where a sale would happen later, so the page and its followers carry over. The GitHub link stays as it is. Feedback then goes to the itch.io comments, so the director's own e-mail never appears in public.
+**Proposed (Q28; the director, 25/11/2026: not yet, decided near 1.0):** at 1.0, open a **free itch.io page** for the game next to the GitHub link. It gives the play counts above, a comments section, short news posts ("devlogs") for each update, and an audience that looks for small games. Free to open (Phase 9, section 2.4); it is also where a sale would happen later, so the page and its followers carry over. The GitHub link stays as it is. Feedback then goes to the itch.io comments, so the director's own e-mail never appears in public.
 
 ## 6. After launch: updates
 - **Rhythm (Guess):** a small update every 1 to 2 months, one or two features each, always with fixes. Hotfixes for blockers in between.
@@ -127,14 +127,14 @@ For the apps, add: the store account, the age-rating questionnaire (target PEGI 
 ## 9. Changes to earlier phases (written 25/11/2026, after the director's "go")
 - **Brief:** a line for Phase 12 (polish passes, release bar, free launch, updates without pressure, the gates).
 - **Phase 7, section 3.10:** Language tab "Portuguese next (Phase 12)" becomes "Portuguese in update 1.1 (Phase 12, section 6.1)".
-- **Phase 9, open questions:** "Phase 12's launch list collects them" points to sections 3 and 8 here. Still to do once Q28 is answered: if yes, section 2.2's itch.io row notes the free page opens at 1.0.
+- **Phase 9, open questions:** "Phase 12's launch list collects them" points to sections 3 and 8 here. Q28 is decided near 1.0: if yes then, section 2.2's itch.io row notes the free page opens at 1.0.
 - **Phase 10, section 3.3 and section 6:** point to section 6.1 (update order) and section 7 (the gates) here.
 - **README:** at 1.0 only (section 3), not now.
 
 ## Phase 12 summary
 - Polish is eight passes in M5 and M6 (feel, readability, sound, speed, words, balance, interruptions, accessibility), with bugs in three levels and a release bar: no blockers, no majors, saves always open.
 - Version 1.0 launches free on the web link with a credits screen, a privacy note, a press kit and a licence check; the director's last check first, then two or three communities; no paid ads.
-- Players are heard through what they write and the page's own counts; the game still sends nothing. A free itch.io page at 1.0 is proposed (Q28).
+- Players are heard through what they write and the page's own counts; the game still sends nothing. A free itch.io page at 1.0 is proposed, decided near 1.0 (Q28).
 - Updates every 1 to 2 months without pressure; a proposed road from 1.1 (Portuguese) to 1.6, reordered by what players say.
 - Money and apps wait for gates measured 3 months after launch; if the first gate is never met, the game stays free and finished.
 
@@ -151,7 +151,7 @@ For the apps, add: the store account, the age-rating questionnaire (target PEGI 
 | A good quiet ending | A free, finished game is worth having; saying so now removes the pressure to make it something it isn't |
 
 ## Open questions and risks
-- ⏳ **Q28:** open a free itch.io page for the game at 1.0, next to the GitHub link (section 5)? Recommended: yes.
+- ✅ **Q28:** a free itch.io page at 1.0, next to the GitHub link (section 5)? Not yet: decided near 1.0 (the director, 25/11/2026).
 - ⚠️ **The gate numbers are guesses.** They are a starting point, to be changed openly at the first check if they turn out clearly too high or too low, never quietly.
 - ⚠️ **Few people may find the game.** Small free web games get little attention without ads. The itch.io page and short, honest community posts are the cheap answer; the quiet ending in section 7 is the honest one.
 - ⚠️ **After launch, feedback can crowd out the plan.** One update at a time, chosen at the end of the previous one (Phase 10, pillar 5).

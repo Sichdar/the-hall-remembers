@@ -34,7 +34,7 @@ Each is the **first piece built in its milestone**, on the real setup from M0 (n
 | **P-DAY** | **One full day** | Does a 6-minute day hold enough to do? | P-WORK plus the Baker, hunger, the dusk bell and sleeping at home | The director finishes a day without waiting around for more than 30 seconds at a time | Change the day length in the data file (5 or 8 minutes) and try again | M1, end |
 | **P-RAID** | **The first raid** | Does a raid feel scary but fair? (G14) | A fixed raid of 3 scouts on Day 2 with all the warning signs and the bell, on the M1 town | The director sees it coming, says "I had time to choose", and the raid still hurts (a house burns or coin is lost) | Earlier or louder warnings (more time), or a harder raid (more hurt) | M2, first weekend |
 | **P-DEATH** | **Death and the heir** | Is dying sad but not punishing? | The death card, the heir card, inheriting the sack, on P-RAID | The director wants to carry on as the heir straight away; can say who the heir is and what they got | Change what is kept (Phase 2, section 2.7) or slow the moment down | M2 |
-| **P-AI** | **A war with nobody watching** | Can the faction AI play a whole war on its own? | Two towns that gather, grow and raid, with no picture at all, run as test wars | 10 quick wars all end; 95% of 500 end by Day 10 (Phase 2); neither town wins more than 65% of the time on the even map | Simplify the AI's choices (Phase 8, section 5.4) before adding graphics to it | M2 to M3, before the first whole war |
+| **P-AI** | **A war with nobody watching** | Can the faction AI play a whole war on its own? | Two towns that gather, grow and raid, with no picture at all, run as test wars | 10 quick wars all end; 95% of 500 end by Day 7 (Phase 2); neither town wins more than 65% of the time on the even map | Simplify the AI's choices (Phase 8, section 5.4) before adding graphics to it | M2 to M3, before the first whole war |
 | **P-CROWD** | **The real crowd** | Do the crowd fixes from Phase 8 hold up with a real town? | M1's town with 60 baked, lighter villagers, near-only shadows, sharpness step-down | 30 frames a second on the iPhone; 20 on the 2018 Android with the Light look | The fallbacks in Phase 8, section 10, in order | M1 and M2 |
 
 **If P-WORK fails**, two other work ideas are tried, one weekend each, before rethinking the core (Phase 10, section 5):
@@ -59,7 +59,7 @@ The game counts these during a war, **on the phone only**. At the end of a war (
 
 | Number | Target (Guess) | Why it matters |
 |---|---|---|
-| War length | 20 to 40 minutes; 95% end by Day 10 | The brief's session length |
+| War length | 20 to 40 minutes; 95% end by Day 7 (Q30) | The brief's session length |
 | Wars finished | Most players finish their first war | A war nobody finishes can't be fun |
 | First raid | Not before Day 3 on Banner (Day 4 Hearth, Day 2 Blood) | Phase 3 difficulty table |
 | Warning time | The bell rings at least 60 seconds before the first enemy reaches the town | G7 and G14: you had time to choose |
@@ -83,7 +83,8 @@ The director plays the build for at least one game day (M1) or one whole war (M3
 | 4 | Did anything look broken or wrong? | List; screenshots to Claude |
 | 5 | Was the phone warm, slow or draining fast? | Yes or no, and after how long |
 | 6 | Best moment and worst moment | One line each |
-| 7 | Go, change or stop? | One word (Phase 10, section 4) |
+| 7 | Did everything you tried work the same in the view from above and in first person? | What broke, and in which view (the director's phone test, 25/11/2026: fighting the straw dummy with a spear went wrong) |
+| 8 | Go, change or stop? | One word (Phase 10, section 4) |
 
 The playtest summary (section 5) goes with the sheet. Claude reads both, writes the findings into the project log, and proposes changes for the director's yes or no.
 

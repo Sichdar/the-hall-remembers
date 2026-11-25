@@ -1,6 +1,6 @@
 # Vision check: a villager's-eye view of two strategy matches
 
-*Report 23/11/2026, S15-RAID. Waiting for the director's decision on which gaps to fold into the phase docs. Covers two matches Claude played against the computer in an existing medieval town-building strategy game, on the director's PC, between 22 and 23/11/2026.*
+*Report 23/11/2026, S15-RAID. The director chose which gaps to fold in (S5, 24/11/2026); they are in the phase docs (see the brief). Covers two matches Claude played against the computer in an existing medieval town-building strategy game, on the director's PC, between 22 and 23/11/2026.*
 
 ## 1. Why and how
 The director felt the build is still far from "a villager who has to work to survive". To find out what that feeling is made of, Claude played two matches of a classic top-down strategy game as the usual commanding hand, and wrote down after every few minutes what the same moments would mean to one villager on the ground.

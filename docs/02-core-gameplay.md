@@ -1,6 +1,6 @@
 # Phase 2: Core gameplay
 
-*Draft 20/11/2026, S01-DESIGN. Waiting for the director's "go". All numbers are first-pass and get balanced in Phase 5.*
+*Draft 20/11/2026, S01-DESIGN. Approved by the director ("go"). All numbers are first-pass and get balanced in Phase 5.*
 *Updated 24/11/2026: land that runs out, the "job ended" moment, edge camps, food from the land, raid warnings, enemy outposts and a slow fall of the Hall ([vision check](vision-check-villager-eye.md) gaps G1-G4 and G7-G9, S5); a family at home, choosing the heir and the town's timetable (S6, picks P1, P2, P6). All approved by the director.*
 
 ## 1. The three loops
@@ -20,14 +20,14 @@
 |---|---|---|
 | 0–1 min | New map, your villager wakes at home on Day 1 | Learns to work and deliver (taught by play, Phase 3) |
 | Days 1–2 | Both AI towns grow: more villagers, houses, walls | Earn coin, take orders, buy a better tool or a bag |
-| Days 2–4 | Scouts, then the first raids at night | Choose: keep working, guard the walls, or answer the muster |
-| Days 4–6 | Armies clash; buildings burn; the war tips one way | Fight, flee, haul for the army, or defect |
-| Day 6 onwards | The war is fought to the end: it only stops when one Hall falls | Survive to the end |
+| Days 2–3 | Scouts, then the first raids at night | Choose: keep working, guard the walls, or answer the muster |
+| Days 3–5 | Armies clash; buildings burn; the war tips one way | Fight, flee, haul for the army, or defect |
+| Day 5 onwards | The war is fought to the end: it only stops when one Hall falls | Survive to the end |
 | End | **The Chronicle**: what you and your bloodline did | Read your story, see the score, start a new war |
 
-**One in-game day = 6 real minutes:** day 4 min, dusk 30 s, night 1 min 30 s. A typical war of 5–8 days = 30–50 min. **No time limit** (the director, Q4).
+**One in-game day = 6 real minutes:** day 4 min, dusk 30 s, night 1 min 30 s. A typical war of 4–6 days = 24–36 min, inside the **20–40 minute target** (the director, Q30, 25/11/2026: tried first, tuned in tests). **No time limit** (the director, Q4).
 
-**Stalemate breaker** (so a war can't drag on for hours): from Day 6 each AI must launch a full attack at least every 2 nights; from Day 8 both sides can build siege engines that break walls fast. Target: 95% of wars end by Day 10 (60 min).
+**Stalemate breaker** (so a war can't drag on for hours): from Day 4 each AI must launch a full attack at least every 2 nights; from Day 5 both sides can build siege engines that break walls fast. Target: 95% of wars end by Day 7 (about 40 min). *Changed 25/11/2026 (Q30): was Day 6, Day 8 and Day 10 (60 min).*
 
 **Saving mid-war:** because a war has no time limit and phones get interrupted, the game saves automatically at every dawn and whenever the app goes to the background.
 
@@ -225,7 +225,7 @@ The game is **3D**, with two views. A **view button is on screen at all times** 
 | Combat | Fights | Targets, stats, Brace/Strike | Damage, deaths | Health, Reputation, AI |
 | Health and hunger | Keeps you alive | Damage, food, rest | Death | Bloodline, Economy |
 | Family | Your household at home | Raids, deaths, chapter start | Family members, heir choices | Bloodline, Villager AI |
-| Bloodline | Heirs and inheritance | Death, your heir pick, traitor flag, Q3 roll | New villager, starting reputation | Family, Reputation, Chronicle |
+| Bloodline | Heirs and inheritance | Death, your heir pick, traitor flag (Q31) | New villager, starting reputation | Family, Reputation, Chronicle |
 | Defection | Changing sides | Player choice, guards' reaction | New faction, Outcast start | Reputation, Bloodline |
 | Chronicle | Records the run | Deeds, deaths, result | Story page, score, deeds | Meta loop |
 
@@ -233,7 +233,7 @@ The game is **3D**, with two views. A **view button is on screen at all times** 
 
 ## Phase 2 summary
 - Core loop: pick a job, work with optional on-beat taps, carry, deliver, get paid, react to danger.
-- One war = 5–8 in-game days of 6 minutes each, fought until a Hall falls; a stalemate breaker keeps it near an hour at most.
+- One war = 4–6 in-game days of 6 minutes each (20–40 minutes, Q30), fought until a Hall falls; a stalemate breaker keeps it near 40 minutes at most.
 - 3D world, fixed isometric camera, with a first-person view one button away; joystick movement.
 - The AI's real shortages become orders on the notice board; you may ignore any of them.
 - Combat: tap to target, auto-attack, plus Brace and Heavy strike; join and leave the army freely, at a reputation cost if you flee mid-battle.
@@ -248,7 +248,7 @@ The game is **3D**, with two views. A **view button is on screen at all times** 
 | 3D with isometric and first-person views (the director) | First person needs a real 3D world; both views share the same rules so neither is "the right way" to play. |
 | On-beat "good stroke" tap while working | Gives gathering a skill element without forcing it. Biggest risk, prototype first. |
 | Orders come from the AI's real shortages | Makes "the town lives without you" visible: your work fills a real gap (pillar 3). |
-| Fight to the end, with a stalemate breaker (the director, Q4) | The war has a real ending; forced attacks and siege engines keep it near an hour at most (pillar 5). |
+| Fight to the end, with a stalemate breaker (the director, Q4) | The war has a real ending; forced attacks and siege engines keep it near 40 minutes at most (pillar 5, Q30). |
 | Unlimited heirs (the director, Q5) | Death never ends the run; it costs items, time and reputation. |
 | Night pays +50% | Risk for reward at night (pillar 4). |
 | Formation bonus | Rewards sticking with the army without forcing it (pillar 2). |
@@ -261,6 +261,7 @@ The game is **3D**, with two views. A **view button is on screen at all times** 
 ## Open questions and risks
 - ⚠️ **The faction AI** is still the biggest build. The 7-step plan above is the smallest version that feels like a real war.
 - ⚠️ **Tap-to-move during combat** can mis-tap on a crowded screen. Tapping an enemy targets it, tapping ground moves; we may need a larger "tap area" around units.
+- ⚠️ **20–40 minute wars** (Q30) are tried first: if wars feel rushed, the stalemate breaker's days move later in the data file; the test wars and the fun check decide (Phase 11).
 - ⚠️ **Six-minute days** may feel short or long: tested by P-DAY in M1 and tuned in the data file ([Phase 11](11-prototyping-playtesting.md), sections 3 and 8.1).
 - ⚠️ **3D on a phone browser:** about 130 moving 3D units plus a town must run smoothly. Needs simple models, many copies of the same model drawn at once, and fog to limit how far first person draws. Test early on the director's phone.
 - ⚠️ **First-person view doubles some work:** the world must look right up close (ground, walls, faces), not just from above.

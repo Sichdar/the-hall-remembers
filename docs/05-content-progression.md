@@ -1,6 +1,6 @@
 # Phase 5: Content and progression
 
-*Draft 21/11/2026, S02-WORLD. Waiting for the director's "go". All numbers are first-pass, to be tuned in playtests (Phase 11).*
+*Draft 21/11/2026, S02-WORLD. Approved by the director ("go"). All numbers are first-pass, to be tuned in playtests (Phase 11).*
 *Updated 24/11/2026: foraged food and bread prices that follow the granary, trait numbers, drop-off camps and grain for growth, enemy outposts, land that runs out, your household across chapters ([vision check](vision-check-villager-eye.md) G1-G4, G8; picks P1, P3). Approved by the director (S5, S6).*
 
 ## 1. Two kinds of progression
@@ -138,7 +138,7 @@ Each building appears at a town stage (see [visual-direction.md](visual-directio
 | Wooden palisade with a gate | Stone wall, gatehouse, 2 towers | Thick walls, 4 towers |
 | Little dock (scenery) | | |
 
-**When a town moves up a stage** (AI stock, first pass): Stage 2 when it has stored 300 timber, 200 stone and 300 grain in total, and has at least 15 villagers. Stage 3 at 600 stone and 25 villagers. Usually Day 2–3 and Day 4–6.
+**When a town moves up a stage** (AI stock, first pass): Stage 2 when it has stored 300 timber, 200 stone and 300 grain in total, and has at least 15 villagers. Stage 3 at 600 stone and 25 villagers. Usually Day 2 and Day 3–4 (wars of 4–6 days, Q30).
 
 **Drop-off camps (G3):** a timber camp and a stone camp, small open sheds the Warden places at the edge of the worked land and moves outward as it's used up (Phase 2, section 2.2). They count as stores. Any stage.
 
@@ -154,7 +154,7 @@ Each building appears at a town stage (see [visual-direction.md](visual-directio
 | Spearman | 80 / 9 / 2 | Raids and battles | Fights in squads |
 | Guard | 100 / 10 / 4 | Around the enemy Hall and gates | Holds its post, doesn't chase far |
 | Captain | 150 / 13 / 5 | Leads big attacks, named | Buffs nearby soldiers +10% attack; killing them breaks the squad |
-| Battering ram | 300 / 0 / 8, slow | Day 8 on (stalemate breaker) | Breaks gates; needs 4 pushers; burn it with a torch (5 s) |
+| Battering ram | 300 / 0 / 8, slow | Day 5 on (stalemate breaker) | Breaks gates; needs 4 pushers; burn it with a torch (5 s) |
 | Outpost (G8) | 200 / 0 / 6, a building | Day 3 on, near the other town's outer fields or woods | 2 or 3 guards; raids start from it. Report it to the Captain (+3 reputation, 6 coin), or burn it with a torch (8 s) during a muster |
 | 💤 Later | archer, horse rider, catapult | | |
 

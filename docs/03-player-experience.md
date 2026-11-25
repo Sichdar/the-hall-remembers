@@ -1,6 +1,6 @@
 # Phase 3: Player experience
 
-*Draft 21/11/2026, S01-DESIGN. Waiting for the director's "go". Numbers are first-pass.*
+*Draft 21/11/2026, S01-DESIGN. Approved by the director ("go"). Numbers are first-pass.*
 
 ## 1. Emotional arc
 
@@ -14,7 +14,7 @@
 | 6–8 | First night, nothing attacks (guaranteed). You look around in first person, then sleep or work for night pay. | Relief, and a taste of fear |
 | 8–10 | Day 2: a scout in red is seen at the forest edge. Gossip about the other town. | Anticipation: "something is coming" |
 
-### First hour (the first full war)
+### First whole war (20 to 40 minutes)
 Curiosity → competence → **first loss** (a raid burns a house, or your first death and your heir's card) → **first real choice** (answer the muster or not) → **first battle** → the war tips → the Hall falls (yours or theirs) → the Chronicle page. The player should finish with a story they want to tell.
 
 ### Full game (many wars)

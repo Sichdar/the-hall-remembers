@@ -8,8 +8,8 @@ The look of a town changes as the AI's town advances. This is the visual proof o
 | Stage | When | What it looks like |
 |---|---|---|
 | **1. Founding** (start of every war) | Day 1 | Small wooden houses with thatched roofs, a wooden palisade, a little dock, open grass, a few fields, piles of stone and timber, plenty of trees |
-| **2. Growing** | Days 2–4 | Stone foundations, timber-frame walls, red tiled roofs, windmills among patchwork fields, orchards, hedges and cypress trees, a stone wall with a gatehouse |
-| **3. Downtown** | Days 4+ | A big stone keep or tower, a wide cobbled square, market stalls, statues, thick walls with towers and gates, a harbour with sailing ships, dense streets of tiled-roof houses |
+| **2. Growing** | Days 2–3 | Stone foundations, timber-frame walls, red tiled roofs, windmills among patchwork fields, orchards, hedges and cypress trees, a stone wall with a gatehouse |
+| **3. Downtown** | Days 3–4 on | A big stone keep or tower, a wide cobbled square, market stalls, statues, thick walls with towers and gates, a harbour with sailing ships, dense streets of tiled-roof houses |
 
 ## Qualities to aim for
 - **Warm, sunny daylight:** golden grass, ochre paths, terracotta roofs, deep blue water.

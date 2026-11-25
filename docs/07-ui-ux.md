@@ -1,6 +1,6 @@
 # Phase 7: UI and UX
 
-*Draft 22/11/2026, S07-UI. Waiting for the director's "go". Builds on the controls (Phase 2, section 5), onboarding and accessibility (Phase 3), the Roll and the Chronicle (Phase 4), the shop list (Phase 5) and the palette (Phase 6). Sizes are for a typical phone held sideways (844 × 390 screen points) and get checked on the director's phone.*
+*Draft 22/11/2026, S07-UI. Approved by the director ("go"). Builds on the controls (Phase 2, section 5), onboarding and accessibility (Phase 3), the Roll and the Chronicle (Phase 4), the shop list (Phase 5) and the palette (Phase 6). Sizes are for a typical phone held sideways (844 × 390 screen points) and get checked on the director's phone.*
 *Updated 24/11/2026: the heir card becomes a choice between family members (P2), a hint when your patch runs out, and raid signs in the message order ([vision check](vision-check-villager-eye.md) G2, G7). Approved by the director (S5, S6).*
 
 ## 1. UI pillars
@@ -51,6 +51,8 @@
 - The camera shows the same width of the world either way, so your villager is the same size; first person keeps a natural up-down view so the screen edges don't warp.
 
 **Phone edges:** nothing sits inside the notch side or the home-bar strip at the bottom (the phone's "safe area"). The joystick and Action button sit 24 points above the bottom edge so a swipe doesn't send the game to the background.
+
+**No browser zoom:** a double tap or a pinch anywhere in the game (buttons, bars and panels included) never zooms the page the way Safari zooms a website; only the game's own zoom toggle and the map's pinch zoom change the view. This holds in the browser and from the Home Screen (the director's iPhone test, 25/11/2026: a double tap zoomed the whole page, and only another double tap undid it). Technical note: every element gets `touch-action: manipulation` or `none`, and iPhone's page-zoom gestures are blocked (Phase 8).
 
 ### 2.2 The Action button changes with what's in front of you
 | In front of you | Button shows | Pressing it |
@@ -115,7 +117,7 @@ Title ──► Continue ──────────────────�
      ├─► Death card ─► Heir card ─────────────────────────────────────┘
      └─► War ends ─► Chronicle page ─► Pick heirloom ─► Next chapter or Title
 ```
-**Rule:** anything in a war is at most **2 taps** from the play screen. Every panel closes with the same ✕ in its top-right corner, the Android back gesture, or Esc.
+**Rule:** anything in a war is at most **2 taps** from the play screen. Every panel closes with the same ✕ in its top-right corner, a tap anywhere outside it, the Android back gesture, or Esc. A tap outside only closes the panel: it doesn't also move you or act (the director's phone test, 25/11/2026: the mock-up's panels ignored taps outside them).
 
 ### 3.2 Title and setup
 - **Title:** the Hall at dawn, slow camera drift. Buttons: **Continue** (if a war is saved), **New war**, **Chronicle book**, **Settings**.

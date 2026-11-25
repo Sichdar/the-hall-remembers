@@ -1,6 +1,6 @@
 # Phase 6: Art and audio direction
 
-*Draft 21/11/2026, S02-WORLD. Waiting for the director's "go". Builds on [visual-direction.md](visual-direction.md) (end goal) and the brief's art path (Q7). Every asset must allow commercial use, because the game may be sold later.*
+*Draft 21/11/2026, S02-WORLD. Approved by the director ("go"). Builds on [visual-direction.md](visual-direction.md) (end goal) and the brief's art path (Q7). Every asset must allow commercial use, because the game may be sold later.*
 
 ## 1. Art pillars
 | # | Pillar | In practice |
@@ -162,7 +162,7 @@ Kenney's CC0 sounds, and Freesound clips marked CC0 only (Likely). Each gets a l
 
 ## Open questions and risks
 - ✅ **Q12:** short real words in Portuguese (the director, 21/11/2026). See 8.4.
-- 💡 **S2 (suggestion):** before Phase 7, build a **one-street style test** in the browser: the same Almara street in plain shapes and with a free CC0 pack, at day and at night, to see on your phone which look works. Cost: one short session; no game code yet.
+- ✅ **S2 (done 22/11/2026):** before Phase 7, build a **one-street style test** in the browser: the same Almara street in plain shapes and with a free CC0 pack, at day and at night, to see on your phone which look works. Cost: one short session; no game code yet. Result: Quaternius became the look ("Full") and plain shapes the "Light" fallback (the director, 22/11/2026).
 - ⚠️ **Mixing packs** from different makers can look patchy. Pick one main pack family and recolour everything to our palette.
 - ⚠️ **The end-goal look** needs money and a phone performance check; it may need a "high detail" setting for PCs and newer phones only.
 - ⚠️ **Licences can change** on a site; that's why we record the licence and date when we download, and keep a copy of the licence text.

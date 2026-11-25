@@ -1,6 +1,6 @@
 # Phase 1: Concept
 
-*Draft 20/11/2026, S01-DESIGN. Waiting for the director's "go".*
+*Draft 20/11/2026, S01-DESIGN. Approved by the director ("go").*
 
 ## Title
 **The Hall Remembers: Bloodlines** (chosen by the director 20/11/2026, Q1). Check it against existing games before going public.
@@ -86,12 +86,12 @@ You can defect to the enemy town, **at great cost and risk of life**.
 3. **Prove yourself.** You join the enemy at **Outcast (−60)**. You raise it by bringing something they want: news of your old town's army, goods, or fighting for them. Until you reach Distrusted you sleep outside the walls, where night is most dangerous.
 4. **What you lose:** your house, chest and savings stay behind and are taken by your old town. You keep only what you carry. Your old town marks you as a traitor (−100) for the rest of the war.
 
-**If a traitor dies:** the heir carries the **"traitor's child"** mark and has to build their name back up, one order and one battle at a time. Where the heir lives is rolled at random (the director, Q3), as if the child was born before or after the defection:
+**If a traitor dies:** the heir carries the **"traitor's child"** mark and has to build their name back up, one order and one battle at a time. You **choose the heir**, as with any death (the director, Q31, 25/11/2026, until tested; this replaces the earlier 75/25 roll of Q3). A child born before the defection lives in the betrayed town, one born after lives in the new town, and each card in the heir pick shows where they live and what they'd start with:
 
-| Roll | The heir... | Starts in | Reputation there | Reputation with the other side | Inherits |
+| Family member | The heir... | Starts in | Reputation there | Reputation with the other side | Inherits |
 |---|---|---|---|---|---|
-| **75%** born before | grew up in the town that was betrayed | Old home town | −40 (Distrusted) | Outcast | Nothing: the family home was taken. Only what the traitor dropped, if it can be found. |
-| **25%** born after | was born in the new town | New town | −40 at best (half the traitor's score, capped at −40) | Outcast | What the traitor built up in the new town |
+| **Born before** | grew up in the town that was betrayed | Old home town | −40 (Distrusted) | Outcast | Nothing: the family home was taken. Only what the traitor dropped, if it can be found. |
+| **Born after** | was born in the new town | New town | −40 at best (half the traitor's score, capped at −40) | Outcast | What the traitor built up in the new town |
 
 **Why −40 and not Outcast in their own town:** an Outcast is attacked by guards on sight, so the heir could not play. −40 keeps them inside the walls, but with the worst jobs and no weapons until they earn trust.
 
@@ -125,4 +125,5 @@ You can defect to the enemy town, **at great cost and risk of life**.
 - ⚠️ **Folder name:** the project folder mentions a famous game. Fine locally, but the public repo and game must not use that name.
 - ✅ Q1: title is **The Hall Remembers: Bloodlines**.
 - ✅ Q2: yes, you can change sides, at great cost and risk; the heir carries the traitor's mark. See "Changing sides" and "Reputation" above.
-- ✅ Q3: random, 75% the old home town (born before), 25% the new town (born after). See "Changing sides".
+- ✅ Q3: random, 75% the old home town (born before), 25% the new town (born after). *Replaced 25/11/2026 by Q31.*
+- ✅ Q31: you choose the traitor's heir like any heir, no dice; each shows where they live and what they'd start with (the director, until tested). See "Changing sides".

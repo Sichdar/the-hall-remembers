@@ -1,6 +1,6 @@
 # Phase 4: World, story and characters
 
-*Draft 21/11/2026, S02-WORLD. Waiting for the director's "go". Names approved by the director (Q9); family carries on between wars (Q10); grudges added (S1). Before going public, each name gets a quick search against existing games and real places.*
+*Draft 21/11/2026, S02-WORLD. Approved by the director ("go"). Names approved by the director (Q9); family carries on between wars (Q10); grudges added (S1). Before going public, each name gets a quick search against existing games and real places.*
 *Updated 24/11/2026: your household and choosing the heir (P1, P2), traits for your own villager (P3), and three new story events: trouble coming, an outpost, the town falls ([vision check](vision-check-villager-eye.md) G7-G9). Approved by the director (S5, S6).*
 
 ## 1. The world in one paragraph
@@ -185,4 +185,4 @@ Traits show on the heir card, so choosing an heir means choosing a kind of perso
 - ⚠️ **Carry-over balance:** family standing and heirlooms must help a little, never decide a war. Phase 5 sets the limits.
 - ⚠️ **Writing load:** traits × roles × situations means hundreds of short lines. Start with about 150 lines for the first version and grow from playtests.
 - ✅ **Name checks:** no game or fantasy town called *Almara* or *Quintara* was found (web search, 24/11/2026; Phase 9, section 4.2).
-- ⚠️ **Voice:** spoken lines cost money. First version: text bubbles plus short grunts and murmurs, no full voice acting (Phase 6).
+- ✅ **Voice:** no full voice acting; text bubbles plus short real Portuguese words, recorded by the director (Q12; Phase 6, section 8.4).

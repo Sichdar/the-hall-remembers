@@ -9,9 +9,10 @@ You are not the king: you are one villager in a town at war. When you die, your 
 
 - `index.html`: the game (Babylon.js). Right now one street of Almara with a clickable interface mock-up (Phase 7): dawn, day, dusk and night, a founding or growing town, isometric and first-person view. Two looks: **Full** (Quaternius's CC0 models) and **Light** (plain shapes, for slower phones; the choice is remembered on each device).
 - `ui/`: the interface (buttons, bars, menus), kept apart from the 3D world so it can be swapped.
-- `docs/`: the game design, one file per phase. Start with [docs/00-brief.md](docs/00-brief.md).
+- `docs/`: the game design, one file per phase. Start with the one-page [docs/summary.md](docs/summary.md); everything in one file: [docs/gdd.md](docs/gdd.md).
 - `assets/`: outside art, each with its licence in [assets/LICENCES.md](assets/LICENCES.md).
 - `tools/dev-server.mjs`: a tiny local web server for testing.
+- `tools/build-gdd.mjs`: rebuilds `docs/gdd.md` from the phase files.
 - `prototypes/style-test/`: the old address of the style test; it now forwards to the game.
 
 ## Run it on your own PC
