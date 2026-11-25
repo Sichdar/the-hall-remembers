@@ -1674,6 +1674,8 @@ All allow selling the game ("maybe sell later"). Versions are the latest on 24/1
 
 **Upgrading Babylon.js 7 → 9:** the mock-up uses version 7 from a public code website. The game moves to version 9, packed inside the game itself, so phones don't fetch code from anyone else and it works offline. The mock-up stays as it is until the first playable build replaces it.
 
+**M0 (25/11/2026):** the setup is in place. The mock-up runs on Babylon.js 9.37 packed inside the game, built by Vite 8.3, checked by TypeScript 7.0 and tested by Vitest 5.1; every push to `main` tests, builds and publishes it (GitHub Actions), and an offline helper keeps it on the phone after the first visit (models are kept the first time they're used, so the Light look never downloads them). The mock-up's code moved to `src/mockup/` unchanged, as plain JavaScript, and becomes TypeScript part by part from M1; new code is strict TypeScript, starting with the dice (`src/sim/dice.ts`, section 5.5). Not in M0, added when first needed: the Playwright browser check (before M1's first publish), glTF Transform, idb-keyval and the fonts. The code download is about 7.8 MB (1.7 MB compressed) because the mock-up takes the whole engine, close to today's page; it shrinks as the street moves to TypeScript with only the engine parts it uses.
+
 ### 5. The world in the simulation
 
 #### 5.1 Grid, sizes and units

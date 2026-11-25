@@ -6,3 +6,7 @@ CLAUDE.md
 backups/
 
 asset-sources/
+
+# Build output and installed packages
+node_modules/
+dist/

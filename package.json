@@ -1,0 +1,26 @@
+{
+  "name": "the-hall-remembers",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The Hall Remembers: Bloodlines, a villager's-eye strategy war game for phones and PC.",
+  "license": "SEE LICENSE IN LICENSE",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "npm run check && vite build",
+    "preview": "vite preview --host",
+    "test": "vitest run",
+    "check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
+    "gdd": "node tools/build-gdd.mjs"
+  },
+  "dependencies": {
+    "@babylonjs/core": "9.37.2",
+    "@babylonjs/loaders": "9.37.2"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.10",
+    "typescript": "7.0.2",
+    "vite": "8.3.8",
+    "vitest": "5.1.2"
+  }
+}

@@ -1,9 +1,12 @@
+// M0: the mock-up interface (Phase 7), moved here unchanged from ui/hud.js. It stays plain JavaScript until M1-M3
+// rebuild each part in TypeScript (docs/08, section 4: "the mock-up stays as it is until the first playable build replaces it").
+import * as BABYLON from "@babylonjs/core";
 // Interface layer: Phase 7 HUD mock-up (docs/07-ui-ux.md). Clickable, with mock rules and fast mock timings.
 // It only talks to the 3D page through window.THR, so the whole interface can be swapped without touching the world.
 (function () {
 "use strict";
 const W = window.THR; if (!W) return;
-const BAB = window.BABYLON, V3 = BAB.Vector3;
+const BAB = BABYLON, V3 = BAB.Vector3;
 const $ = (s, r) => (r || document).querySelector(s);
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 const dist = (a, b) => Math.hypot(a.x - b.x, a.z - b.z);
