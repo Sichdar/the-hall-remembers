@@ -185,6 +185,21 @@ window.addEventListener("keydown", e => {
 });
 function toggle(kind, fn) { if (panelKind === kind) closePanel(); else fn(); }
 
+// A tap outside an open panel or the Test drawer only closes it: it doesn't also move you or act (docs/07).
+// The panel buttons (top-right icons, the Roll row) keep their own job: switch to their panel, or close it.
+let eatClick = false;
+window.addEventListener("pointerdown", e => {
+  eatClick = false;
+  const t = e.target instanceof Element ? e.target : null;
+  if (!t) return;
+  const panelButton = !!t.closest("#icons, #repRow");
+  let closed = false;
+  if (drawer.classList.contains("on") && !t.closest("#drawer, #testB")) { drawer.classList.remove("on"); closed = true; }
+  if (panelKind && !t.closest("#panel") && !panelButton) { closePanel(); closed = true; }
+  if (closed && !panelButton) { e.stopPropagation(); e.preventDefault(); eatClick = true; }
+}, true);
+window.addEventListener("click", e => { if (eatClick) { eatClick = false; e.stopPropagation(); e.preventDefault(); } }, true);
+
 // notice board
 const BOARD = [
   { id: "timber", icon: "axe", text: "TIMBER. To the cart. Properly stacked, please.", coin: 8, rep: 3, need: 3, unit: "loads", dl: "Before dusk", dlI: "sun" },
