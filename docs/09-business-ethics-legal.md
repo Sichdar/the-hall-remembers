@@ -29,7 +29,7 @@ Only after Phase 11's playtests say the game is fun (the brief: "if the game pro
 
 **The model:** one price for the whole game, the first war free. No ads, no in-game shop for real money, no subscriptions.
 - 💤 A later, optional "supporter edition" with cosmetic extras only (a family crest, a banner colour) is allowed by pillar 1. It's not planned.
-- The free web link stays up even after a sale starts: the demo, and the version friends already know.
+- The free web link stays up even after a sale starts: the demo, and the version early players already know.
 
 ### 2.3 What we never do
 Each of these is a common money-maker in phone games. All are out, for good:
@@ -120,10 +120,10 @@ The game is a war, so soldiers and working adults can fight and die, you include
 | Quaternius models | CC0 (Verified in `assets/LICENCES.md`) | Nothing; credit is kind and given |
 | Fonts (Alegreya, Atkinson Hyperlegible Next) | SIL Open Font Licence (Phase 8) | Ship the licence with the fonts; don't sell the fonts on their own |
 | Music and sound effects | Not chosen yet (Phase 6) | Only CC0, CC-BY with credit, or made by us. No "non-commercial" licences |
-| **Portuguese voice words** | Recorded by the director and friends (Phase 6) | A short signed consent per speaker (section 4.4) |
+| **Portuguese voice words** | Recorded by the director (Phase 6, changed 25/11/2026) | Nothing for the director's own voice; a short signed consent for anyone else who records (section 4.4) |
 
-### 4.4 Friends' voices
-A recorded voice is personal data under EU privacy rules (Likely). Before a friend's recording goes in the game, they sign a one-page consent:
+### 4.4 Other people's voices
+The director records the voice words (25/11/2026), so no consent is needed for now. A recorded voice is personal data under EU privacy rules (Likely). If anyone else records later, before their recording goes in the game they sign a one-page consent:
 - what they recorded and that it's used in this game, including if it's sold later, in any country, with no payment (or the payment agreed);
 - whether their name goes in the Credits;
 - that they can ask for their voice to be removed from **future** versions; copies people already have can't be recalled.
@@ -167,7 +167,7 @@ Written into the earlier docs on 24/11/2026, after the director's "go".
 - If playtests show it's fun: one price for the whole game, the first war free, on itch.io first, then Google Play and the App Store. Costs only start then: $25 once for Google, $99 a year for Apple.
 - Never: ads, loot boxes, timers that sell waiting, daily-login pressure, pay to win, fake currency, tracking.
 - Violence is stylised; children and the old are never hurt. Target rating PEGI 12 / Apple 13+.
-- Only assets that allow selling; friends sign a consent for their voices; no AI-made art, sound or voices.
+- Only assets that allow selling; anyone besides the director who records a voice signs a consent; no AI-made art, sound or voices.
 - The title looks free; "Bloodlines" may be confused with a famous vampire series in store searches.
 - The repo has an "all rights reserved" licence file (Q24).
 
@@ -180,7 +180,7 @@ Written into the earlier docs on 24/11/2026, after the director's "go".
 | Children and the old are never hurt | Cruelty adds nothing to the story; it would push the rating to 16 or 18 |
 | No AI-made art, sound or voices | Unclear ownership, store questions, players' trust |
 | All rights reserved, source visible | Keeps selling possible; opening it later stays an option |
-| Consent forms for friends' voices | Their voice is theirs; a sale later must not surprise them |
+| Consent forms for anyone else's voice | Their voice is theirs; a sale later must not surprise them |
 
 ## Open questions and risks
 - ✅ **Q24:** yes, the `LICENSE` file is in the repo (the director, 24/11/2026). Section 4.7.
@@ -189,6 +189,6 @@ Written into the earlier docs on 24/11/2026, after the director's "go".
 - ⚠️ **Store rules and prices change.** Re-check sections 2.2, 2.4 and 4.6 against the stores' own pages right before any launch.
 - ⚠️ **Tax is the director's**, not the store's: one talk with an accountant before the first sale (section 2.4).
 - ⚠️ **Paid phone games sell in small numbers** (section 2.5). The free link and itch.io test the interest first.
-- ⚠️ **"Free" stays easy only while nothing is sold:** the first sale brings tax forms, store accounts, a privacy page and the consent forms. Phase 12's launch list collects them.
+- ⚠️ **"Free" stays easy only while nothing is sold:** the first sale brings tax forms, store accounts, a privacy page and the consent forms. Phase 12's launch list (section 3) and sale list (section 8) collect them.
 
 **Sources checked 24/11/2026:** GitHub Pages limits (docs.github.com); Apple developer enrolment and the July 2025 age-rating news (developer.apple.com); itch.io payments docs (itch.io/docs/creators/payments); PEGI label descriptions (pegi.info and guides); web searches for the title and town names.

@@ -207,7 +207,7 @@ Opened from the Pause menu or by tapping the feather on the HUD. A page of the R
 | Display | Look: Full or Light (section 6), text size (3), night brightness, reduce flashing and shaking, show meanings under Portuguese words |
 | Sound | Music, effects, voices, captions |
 | Game | Game speed 0.75×, Second wind, hints on or off |
-| Language | English first; Portuguese next (Phase 12) |
+| Language | English first; Portuguese in update 1.1 (Phase 12, section 6.1) |
 
 ## 4. Words on screen
 

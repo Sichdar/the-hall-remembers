@@ -16,9 +16,9 @@
 ## 2. Who does what
 | Who | Does |
 |---|---|
-| **The director** | Decides, playtests on the iPhone (and the older Android phone at the milestone checks), says "go", records the Portuguese voice words with friends (Phase 6, section 8.4; consent forms from Phase 9, section 4.4), finds a few outside playtesters for milestone 3 |
+| **The director** | Decides, playtests on the iPhone (and the older Android phone at the milestone checks), says "go", records the Portuguese voice words (Phase 6, section 8.4), plays the fun check alone at milestone 3 ([Phase 11](11-prototyping-playtesting.md), section 7), and brings in outside players when ready |
 | **Claude** | All code, data files, tests and test wars, model assembly from the free packs, documents, the project log, the public repo |
-| **Friends (later)** | Play the first playable and the 1.0 candidate; record voices |
+| **Outside players (later)** | Play a whole war when the director is ready, at the latest before 1.0 ([Phase 11](11-prototyping-playtesting.md), section 7.5); anyone else who records a voice signs a consent (Phase 9, section 4.4) |
 
 **Rhythm (Guess):** most work happens at weekends, one or two sessions a day. A session is one to three hours of the director's attention. Claude's typing speed is not the limit; the limits are the director's playtest time and how much one session can hold before it needs a fresh start (the log carries everything across sessions).
 
@@ -66,6 +66,8 @@ Everything in 3.1, plus:
 - **Languages:** English, with the text kept in data files so a Portuguese translation can follow in an update.
 
 ### 3.3 Updates after 1.0 (no order yet)
+A proposed order, 1.1 to 1.6, is in Phase 12, section 6.1.
+
 - Maps: River, Hills, Wolfwood. Starting in Quintara.
 - Jobs: fisher, salt raker, olive picker, baker's helper, scout (one or two per update).
 - Enemies: archer, horse rider, catapult.
@@ -103,14 +105,14 @@ Each milestone starts with its prototype, the piece most likely to fail ([Phase 
 ## 5. The fun check (end of M3)
 The one decision that shapes everything after it.
 
-- **Who plays:** the director, plus at least 3 friends who didn't help design it, each for one whole war on their own phone. The exact questions, the observation sheet and how a session runs are in [Phase 11](11-prototyping-playtesting.md), section 7.
-- **Passes if** (first pass; the six-part rule with "close" and "fail" is in [Phase 11](11-prototyping-playtesting.md), section 7.4): most players finish the war and want another one; they can say what they were doing and why; at least one moment is told as a story afterwards ("my heir took revenge on the man who killed me").
+- **Who plays:** the director alone first, three whole wars on three different days (changed 25/11/2026, the director); at least 3 outside players later, when the director is ready. The exact questions, the observation sheet and how a session runs are in [Phase 11](11-prototyping-playtesting.md), section 7.
+- **Passes if** (in short; the seven-part rule with "close" and "fail" is in [Phase 11](11-prototyping-playtesting.md), section 7.4): the wars are finished and the director wants another one; each war had its own goal; at least one moment is told as a story afterwards ("my heir took revenge on the man who killed me").
 - **If it passes:** go to M4.
 - **If it's close:** one or two "change" rounds of about 2 weekends each, aimed at what the players said, then check again.
 - **If it still isn't fun after two rounds:** stop and rethink before adding content. Options then: a smaller game (one town and wolves, no war AI), a different core loop, or parking the project. Saying this now keeps a weak idea from eating months.
 
 ## 6. Money and the decisions waiting for proof
-Everything up to version 1.0 costs **€0** (Phase 9, section 2.4).
+Everything up to version 1.0 costs **€0** (Phase 9, section 2.4). What counts as proof for each step, with numbers, is in Phase 12, section 7 (the gates).
 
 | Decision | Waits for | Then |
 |---|---|---|
@@ -169,7 +171,7 @@ Nothing in section 3.5 is ever on this list.
 |---|---|
 | Milestones that each end on the phone | The director judges by playing; a milestone that can't be played can't be judged |
 | Two jobs in the first playable | Woodcutter and Farmer feed the two things the war needs (timber to build, grain to grow); four jobs would slow the fun check |
-| Fun check with outside players at M3 | The designer can't judge their own game's fun alone; M3 is the cheapest point to change course |
+| Fun check at M3, the director alone first, outside players later | M3 is the cheapest point to change course; outside players aren't counted on yet (the director, 25/11/2026), so the solo check is made as strict as it can be, and strangers still decide every money step (Phase 12, section 7) |
 | A written "stop" rule | Keeps a weak core from absorbing months of content work |
 | €0 until 1.0 is played by strangers | Phase 9: find out whether people want it before paying for art or store fees |
 | Ideas parked between milestones | New ideas are welcome, but starting them mid-milestone is the fastest way to finish nothing |
@@ -177,5 +179,5 @@ Nothing in section 3.5 is ever on this list.
 ## Open questions and risks
 - ✅ **Q27:** building starts after the whole design document is finished (Phases 11 and 12, then the combined document); then M0 (the director, 24/11/2026).
 - ⚠️ **All time estimates are guesses** until M0 and M1 show the real pace; section 4 is updated after each milestone.
-- ⚠️ **The fun check needs at least 3 outside players**; finding them is the director's job and can take time, so ask early (during M2).
+- ⚠️ **A designer can't fully judge their own game's fun.** The solo fun check catches a game that isn't fun even for its maker; outside players or the first strangers are still needed before any money is spent.
 - ⚠️ **The faction AI** remains the biggest single risk to the schedule (Phase 8).

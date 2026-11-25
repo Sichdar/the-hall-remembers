@@ -123,7 +123,7 @@ Kenney's CC0 sounds, and Freesound clips marked CC0 only (Likely). Each gets a l
 - **Short voice sounds** carry the feeling: grunts, laughs, "hey!", a gasp, a cheer, a tired sigh.
 - **Short real words in Portuguese** (the director, Q12): they give the Sunward Coast a real accent. They stay in Portuguese in every translation, like a regional accent, and the text bubbles carry the meaning.
 - **First word list (about 30):** "Bom dia!", "Boa noite", "Olá!", "Ai!", "Vamos!", "Força!", "Cuidado!", "Socorro!", "Olha!", "Obrigado!" / "Obrigada!", "Anda cá!", "Ora bolas!", "Às armas!", "Fujam!", "Viva!", plus laughs, grunts and sighs.
-- **Who records them:** The director and willing friends on a phone (Likely the cheapest way: free, and we own the recordings). Several voices (young and old, men and women), 2–3 takes per word, so the same word doesn't sound identical each time. Each recording gets a line in `assets/LICENCES.md` with who recorded it.
+- **Who records them:** the director, on a phone (changed 25/11/2026, the director; free, and we own the recordings), in different moods and pitches; the game varies the pitch a little per villager. Guess: enough for men's voices; women's and children's words may stay as murmurs until a willing speaker records them, with a signed consent (Phase 9, section 4.4). 2–3 takes per word, so the same word doesn't sound identical each time. Each recording gets a line in `assets/LICENCES.md` with who recorded it.
 - **Enemy accent:** Quintara uses the same words in a rougher, slower delivery, so you hear which side someone is on (always also shown by banner and colour).
 
 ### 8.5 Ambient sound by place
