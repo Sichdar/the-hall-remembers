@@ -180,7 +180,7 @@ The art folder is about 13 MB today, 11 MB of it the six characters (Verified). 
 
 **Testing aids (hidden from players):** adding `?debug` to the link shows the frame rate, draw calls and number of people, and allows test shortcuts: set the time of day, call a raid, add coin, jump a day. The mock-up's gear button grows into this.
 
-**Bug reports from the phone:** a "Copy bug report" button in Settings copies the war's seed, version, phone type and the last minutes of commands, which can be pasted into a message. Nothing is sent automatically.
+**Bug reports from the phone:** a "Copy bug report" button in Settings copies the war's seed, version, phone type and the last minutes of commands, which can be pasted into a message. Nothing is sent automatically. Next to it, a **"Copy playtest summary"** button (also shown at the end of a war) copies the ten playtest numbers of [Phase 11](11-prototyping-playtesting.md), section 5, with the same code and the same rule.
 
 ## 10. The crowd test (S7, approved 24/11/2026)
 The riskiest technical question (Phase 1 and 2 risks) is whether a phone browser can draw a busy town: about 60 animated people, a town and a forest, at 30 frames a second. Everything else in this document is ordinary work; this one could change the plan (fewer people on screen, the Light look by default, or a smaller town).
@@ -261,7 +261,7 @@ Written into the earlier docs on 24/11/2026, after the director's "go".
 ## Open questions and risks
 - ✅ **S7:** yes to the crowd test on the live link before Phase 9 (the director, 24/11/2026). Section 10.
 - ✅ **Q20:** test phones are a recent high-end iPhone and a 2018 Android phone with a worn battery (the director, 24/11/2026). Section 2.
-- ⚠️ **No mid-range test phone:** the budgets are judged from a fast phone and a slow one (section 7.1). Borrowing a mid-range phone for one playtest in Phase 11 would close the gap.
+- ⚠️ **No mid-range test phone:** the budgets are judged from a fast phone and a slow one (section 7.1). Borrowing a mid-range phone for one war at M3 closes the gap ([Phase 11](11-prototyping-playtesting.md), section 4).
 - ⚠️ **Animated crowds on phones** are the top risk. Fallbacks, in order: baked animation, fewer people drawn (they still exist in the war), the Light look by default on weak phones.
 - ⚠️ **The faction AI** is still the biggest build. The layered plan lets a simple version play a whole war first; test wars show where it's weak.
 - ⚠️ **iPhone storage wiping** (section 6): the export file and "Add to Home Screen" soften it; only the phone app removes it.

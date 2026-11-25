@@ -261,7 +261,7 @@ The game is **3D**, with two views. A **view button is on screen at all times** 
 ## Open questions and risks
 - ⚠️ **The faction AI** is still the biggest build. The 7-step plan above is the smallest version that feels like a real war.
 - ⚠️ **Tap-to-move during combat** can mis-tap on a crowded screen. Tapping an enemy targets it, tapping ground moves; we may need a larger "tap area" around units.
-- ⚠️ **Six-minute days** may feel short or long: tune after the first playtest.
+- ⚠️ **Six-minute days** may feel short or long: tested by P-DAY in M1 and tuned in the data file ([Phase 11](11-prototyping-playtesting.md), sections 3 and 8.1).
 - ⚠️ **3D on a phone browser:** about 130 moving 3D units plus a town must run smoothly. Needs simple models, many copies of the same model drawn at once, and fog to limit how far first person draws. Test early on the director's phone.
 - ⚠️ **First-person view doubles some work:** the world must look right up close (ground, walls, faces), not just from above.
 - ✅ Q4: fight to the end. ✅ Q5: unlimited heirs. ✅ Q6: joystick.

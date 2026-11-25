@@ -106,6 +106,6 @@ Vibration works on Android browsers; iPhone browsers ignore it, so nothing impor
 
 ## Open questions and risks
 - ⚠️ **The guided war** is extra content to build and keep working as the game changes. Keep it short (Days 1–3) and data-driven.
-- ⚠️ **The on-beat ring** may annoy some players; the automatic option covers this, but playtests decide if it stays.
+- ⚠️ **The on-beat ring** may annoy some players; the automatic option covers this, but playtests decide if it stays: P-WORK and the good-strokes number ([Phase 11](11-prototyping-playtesting.md), sections 3 and 5).
 - ⚠️ **iPhone has no vibration in the browser**, so iPhone players rely on sound and visuals only.
 - ✅ Q8: the heir is a **random son or daughter** (the director, 21/11/2026). No choice screen. **Replaced 24/11/2026 by S6, pick P2:** you choose the heir from your living family (Phase 2, section 2.7; heir card in Phase 7, section 3.8).

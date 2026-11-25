@@ -84,7 +84,7 @@ One villager's eyes on a war the computer plays · every order optional · the f
 **G14 (threat must be tested)** isn't a feature: it becomes a fixed check in the test wars and in Phase 11's playtests.
 
 ## 4. Milestones
-Each milestone ends with: the test wars passing, the browser check at three phone sizes, the build live on the GitHub link, and the director's phone check. Then the director says "go", "change" or "stop".
+Each milestone starts with its prototype, the piece most likely to fail ([Phase 11](11-prototyping-playtesting.md), section 3: P-WORK and P-DAY in M1, P-RAID and P-DEATH in M2, P-AI before M3, P-CROWD in M1 and M2). Each milestone ends with: the test wars passing, the browser check at three phone sizes, the build live on the GitHub link, and the director's phone check. Then the director says "go", "change" or "stop".
 
 | # | Milestone | What the director can do at the end | Phone check asks | Time (Guess) |
 |---|---|---|---|---|
@@ -103,8 +103,8 @@ Each milestone ends with: the test wars passing, the browser check at three phon
 ## 5. The fun check (end of M3)
 The one decision that shapes everything after it.
 
-- **Who plays:** the director, plus at least 3 friends who didn't help design it, each for one whole war on their own phone. Phase 11 writes the exact questions.
-- **Passes if** (first pass, Phase 11 refines it): most players finish the war and want another one; they can say what they were doing and why; at least one moment is told as a story afterwards ("my heir took revenge on the man who killed me").
+- **Who plays:** the director, plus at least 3 friends who didn't help design it, each for one whole war on their own phone. The exact questions, the observation sheet and how a session runs are in [Phase 11](11-prototyping-playtesting.md), section 7.
+- **Passes if** (first pass; the six-part rule with "close" and "fail" is in [Phase 11](11-prototyping-playtesting.md), section 7.4): most players finish the war and want another one; they can say what they were doing and why; at least one moment is told as a story afterwards ("my heir took revenge on the man who killed me").
 - **If it passes:** go to M4.
 - **If it's close:** one or two "change" rounds of about 2 weekends each, aimed at what the players said, then check again.
 - **If it still isn't fun after two rounds:** stop and rethink before adding content. Options then: a smaller game (one town and wolves, no war AI), a different core loop, or parking the project. Saying this now keeps a weak idea from eating months.

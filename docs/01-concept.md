@@ -119,7 +119,7 @@ You can defect to the enemy town, **at great cost and risk of life**.
 | Original names from day one (no "Town Center", no copied unit or resource sets) | Keeps the "sell later" door open and avoids looking like a copy. The building at the heart of the town will be called the **Hall** (ASSUMPTION). |
 
 ## Open questions and risks
-- ⚠️ **Is the villager's job fun?** Gathering can feel repetitive. This is the biggest design risk; Phase 11 will propose a small prototype to test it first.
+- ⚠️ **Is the villager's job fun?** Gathering can feel repetitive. This is the biggest design risk; it is the first thing built in M1 (P-WORK, [Phase 11](11-prototyping-playtesting.md), section 3), with two backup work ideas if it fails.
 - ⚠️ **The strategy AI is a big build.** It must expand, gather, build and attack on its own. We'll keep it simple (scripted build orders plus a few decisions) and grow it.
 - ⚠️ **Phone performance:** two armies of 30–60 units each plus villagers. Test early on the director's phone.
 - ⚠️ **Folder name:** the project folder mentions a famous game. Fine locally, but the public repo and game must not use that name.
