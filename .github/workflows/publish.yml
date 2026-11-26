@@ -28,6 +28,15 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+      # the browser check (docs/08, section 9): three phone sizes, no errors, the P-WORK loop; nothing is published if it fails
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: browser-check-pictures
+          path: browser-check/results
+          retention-days: 7
       - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v5
         with:

@@ -9,8 +9,9 @@ You are not the king: you are one villager in a town at war. When you die, your 
 
 - `index.html` and `src/`: the game, in TypeScript with Babylon.js 9, packed by Vite (since M0). Right now one street of Almara with a clickable interface mock-up (Phase 7): dawn, day, dusk and night, a founding or growing town, isometric and first-person view. Two looks: **Full** (Quaternius's CC0 models) and **Light** (plain shapes, for slower phones; the choice is remembered on each device).
 - `src/mockup/`: the mock-up street and interface (buttons, bars, menus), moved over unchanged; they become TypeScript part by part from M1. The interface stays apart from the 3D world so it can be swapped.
-- `src/sim/`: the war itself, with no graphics (so far: the dice).
+- `src/sim/`: the war itself, with no graphics (so far: the dice, and chop and carry for the P-WORK test in M1).
 - `tests/`: automatic tests (`npm test`).
+- `browser-check/`: the browser check run before every publish (docs/08, section 9).
 - `public/`: the icon and the Home Screen description; with the offline helper, the game opens without a connection after the first visit.
 - `docs/`: the game design, one file per phase. Start with the one-page [docs/summary.md](docs/summary.md); everything in one file: [docs/gdd.md](docs/gdd.md).
 - `assets/`: outside art, each with its licence in [assets/LICENCES.md](assets/LICENCES.md).
@@ -28,7 +29,7 @@ npm install
 npm run dev
 ```
 
-Then open http://localhost:5173/ . Other commands: `npm test` (tests), `npm run check` (type check), `npm run build` (the published version, in `dist/`), `npm run preview` (opens that build).
+Then open http://localhost:5173/ . Other commands: `npm test` (tests), `npm run check` (type check), `npm run build` (the published version, in `dist/`), `npm run preview` (opens that build), `npm run browser-check` (builds, then opens the game at three phone sizes in Chrome and plays the chop-and-carry loop; pictures in `browser-check/results/`).
 
 ## Credits
 

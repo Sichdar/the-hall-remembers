@@ -10,3 +10,6 @@ asset-sources/
 # Build output and installed packages
 node_modules/
 dist/
+browser-check/results/
+playwright-report/
+test-results/

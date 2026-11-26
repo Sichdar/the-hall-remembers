@@ -11,13 +11,15 @@
     "preview": "vite preview --host",
     "test": "vitest run",
     "check": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
-    "gdd": "node tools/build-gdd.mjs"
+    "gdd": "node tools/build-gdd.mjs",
+    "browser-check": "npm run build && playwright test"
   },
   "dependencies": {
     "@babylonjs/core": "9.37.2",
     "@babylonjs/loaders": "9.37.2"
   },
   "devDependencies": {
+    "@playwright/test": "1.65.1",
     "@types/node": "26.6.10",
     "typescript": "7.0.2",
     "vite": "8.3.8",

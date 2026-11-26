@@ -105,6 +105,8 @@ const BS = {
   rail: base(MB.CreateBox("rail", { width: 1, height: 0.09, depth: 0.08 }, scene), "#9B8463"),
   barrel: base(MB.CreateCylinder("barrel", { height: 0.9, diameterTop: 0.6, diameterBottom: 0.6, tessellation: 8 }, scene), "#7A5232"),
   crate: base(MB.CreateBox("crate", { size: 0.7 }, scene), "#A07A4A"),
+  pine: base(MB.CreateIcoSphere("pine", { radius: 1, subdivisions: 1 }, scene), "#4E6B34"),
+  stump: base(MB.CreateCylinder("stump", { height: 1, diameterTop: 0.5, diameterBottom: 0.62, tessellation: 7 }, scene), "#C9A877"),
   log: base(MB.CreateCylinder("log", { height: 1.6, diameter: 0.3, tessellation: 6 }, scene), "#8C6A44"),
   row: base(MB.CreateBox("row", { width: 1, height: 0.22, depth: 0.55 }, scene), P.field),
   wheat: base(MB.CreateBox("wheat", { width: 1, height: 0.4, depth: 0.6 }, scene), P.wheat),
@@ -119,12 +121,13 @@ function inst(b, x, y, z, sx, sy, sz, ry, noShadow) {
   i.isPickable = false;
   if (!noShadow) sg.addShadowCaster(i);
   if (tagPlain) tagPlain.push(i);
+  if (curParts) curParts.push(i);
   return i;
 }
 // things that only show in the plain look (the Quaternius look has its own versions);
 // plain trees and torch posts stay in both looks, as the free Quaternius pack has no trees or lanterns
 const plainOnly = [], plainTrees = [], plainTorch = [];
-let tagPlain = false;
+let tagPlain = false, curParts = null;
 const spots = { trees: [], fences: [], props: [] };
 
 // ---------- collision ----------
@@ -166,6 +169,15 @@ function cypress(x, z, s) {
   inst(BS.trunk, x, 0.25 * s, z, 0.8 * s, 0.5 * s, 0.8 * s);
   inst(BS.cone, x, 0.4 * s + 2.6 * s, z, 1.15 * s, 5.2 * s, 1.15 * s, rr(0, 3));
   block(x, z, 0.4, 0.4); tagPlain = false;
+}
+// P-WORK: stone pines of the work forest. Each remembers its pieces, so it can shake when struck and become a stump.
+function pine(x, z, s) {
+  const spot = { x, z, s, k: "pine", work: true, parts: [] };
+  spots.trees.push(spot); tagPlain = plainTrees; curParts = spot.parts;
+  inst(BS.trunk, x, 1.6 * s, z, s * 1.3, 3.2 * s, s * 1.3, (x * 7) % 3);
+  inst(BS.pine, x, 3.6 * s, z, 2.2 * s, 0.75 * s, 2.0 * s, (x * 3) % 3);
+  inst(BS.pine, x + 0.7 * s, 3.25 * s, z + 0.5 * s, 1.3 * s, 0.55 * s, 1.2 * s, (z * 5) % 3);
+  block(x, z, 0.4, 0.4); tagPlain = false; curParts = null;
 }
 function bush(x, z, s) { inst(BS.bush, x, 0.35 * s, z, s, 0.7 * s, s * rr(0.8, 1.2), rr(0, 3)); }
 
@@ -248,6 +260,9 @@ for (let i = 0; i < 46; i++) {
   if (blockers.some(b => Math.abs(x - b.x) < b.hw + 0.6 && Math.abs(z - b.z) < b.hd + 0.6)) continue;
   bush(x, z, rr(0.5, 0.95));
 }
+// P-WORK: one line of stone pines west of the timber yard, nearest first, so the work walks outward as they fall.
+// Fixed small offsets instead of the street's random draws, so everything else in the street keeps its place.
+for (let i = 0; i < 12; i++) pine(-33 - 2.2 * i, (i % 2 ? 11 : 7.5) + Math.sin(i * 2.3) * 0.5, 0.95 + 0.1 * Math.sin(i * 1.7));
 function props(x, z) {
   const k = Math.floor(rnd() * 3);
   if (k === 0) { inst(BS.barrel, x, 0.45, z, 1); inst(BS.barrel, x + 0.7, 0.45, z + 0.2, 1); inst(BS.crate, x + 0.2, 0.35, z + 0.8, 1, 1, 1, 0.4); }
@@ -266,6 +281,18 @@ function props(x, z) {
   block(-24, 2.6, 1.6, 1.0);
   plainOnly.push(r);
 })();
+// P-WORK: the timber yard's log pile, one log per load delivered (15 at most), in both looks
+const yardLogs = [];
+(function () {
+  const rows = [5, 4, 3, 2, 1];
+  rows.forEach((n, row) => { for (let k = 0; k < n; k++) {
+    const l = BS.log.createInstance("yl"); l.rotation.z = Math.PI / 2; l.rotation.y = 0.3;
+    l.position.set(-23 + Math.sin(0.3) * (k - (n - 1) / 2) * 0.32, 0.15 + row * 0.27, 5.1 + Math.cos(0.3) * (k - (n - 1) / 2) * 0.32);
+    l.isPickable = false; l.setEnabled(false); sg.addShadowCaster(l); yardLogs.push(l);
+  } });
+  block(-23, 5.1, 0.9, 0.9);
+})();
+function yardPile(n) { yardLogs.forEach((l, i) => l.setEnabled(i < n)); }
 
 // banner of Almara: square, blue, white wave
 const bannerTex = new BABYLON.DynamicTexture("bannerTex", { width: 256, height: 320 }, scene, true);
@@ -376,7 +403,7 @@ const walkers = [];
 });
 
 // the player's villager
-const me = person({ tunic: "#4F6A86", skin: "#E0B48C", hat: 0, prop: null });
+const me = person({ tunic: "#4F6A86", skin: "#E0B48C", hat: 0, prop: "axe" }); // P-WORK: you are the woodcutter
 me.root.position.set(-1, 0, -0.2);
 const ring = MB.CreateTorus("ring", { diameter: 1.3, thickness: 0.13, tessellation: 24 }, scene);
 const ringMat = new BABYLON.StandardMaterial("ringMat", scene); ringMat.diffuseColor = C3.FromHexString(P.gold); ringMat.emissiveColor = C3.FromHexString("#C8932A"); ringMat.specularColor = new C3(0, 0, 0);
@@ -537,7 +564,30 @@ function collide(pos, r) {
   }
   pos.x = Math.max(-60, Math.min(60, pos.x)); pos.z = Math.max(-23, Math.min(40, pos.z));
 }
-let mx = 0, mz = 0, walkT = 0;
+let mx = 0, mz = 0, walkT = 0, speedMul = 1, swingT = 0;
+function swing() {
+  swingT = 0.32;
+  const q = me.q;
+  if (q && q.chop) { if (q.walk) q.walk.stop(); if (q.idle) q.idle.stop(); q.chop.stop(); q.chop.start(false, 1.5); q.state = "swing"; }
+}
+function face(x, z) { const p = me.root.position; meState.yaw = Math.atan2(x - p.x, z - p.z); }
+// a struck tree shakes for a moment; a felled one leaves a stump
+const shaking = [];
+function shake(spot) { if (!spot.parts) return; if (!spot.shakeT) { spot.base = spot.parts.map(p => p.rotation.z); shaking.push(spot); } spot.shakeT = 0.3; }
+function shakeTrees(dt) {
+  for (let k = shaking.length - 1; k >= 0; k--) {
+    const t = shaking[k]; t.shakeT = Math.max(0, t.shakeT - dt);
+    const a = Math.sin(t.shakeT * 40) * 0.05 * (t.shakeT / 0.3);
+    t.parts.forEach((p, i) => p.rotation.z = t.base[i] + a);
+    if (!t.shakeT) shaking.splice(k, 1);
+  }
+}
+function fell(spot) {
+  if (!spot.parts || spot.stump) return;
+  spot.parts.forEach(p => p.setEnabled(false));
+  spot.stump = inst(BS.stump, spot.x, 0.25, spot.z, spot.s, 0.5 * spot.s, spot.s, 0);
+  const lg = inst(BS.log, spot.x + 1.1, 0.16, spot.z + 0.4, 0.9, 1, 0.9, 0); lg.rotation.z = Math.PI / 2; lg.rotation.y = 0.6;
+}
 function updatePlayer(dt) {
   let ix = joy.x, iy = joy.y;
   if (keys.a || keys.arrowleft) ix -= 1; if (keys.d || keys.arrowright) ix += 1;
@@ -547,7 +597,7 @@ function updatePlayer(dt) {
   if (view === "iso") { fx = -Math.cos(iso.alpha); fz = -Math.sin(iso.alpha); }
   else { fx = Math.sin(meState.fpYaw); fz = Math.cos(meState.fpYaw); }
   const rx = fz, rz = -fx;
-  const speed = 4.2;
+  const speed = 4.2 * speedMul;
   const vx = (rx * ix - fx * iy) * speed, vz = (rz * ix - fz * iy) * speed;
   const pos = me.root.position;
   pos.x += vx * dt; pos.z += vz * dt; collide(pos, 0.35);
@@ -555,7 +605,11 @@ function updatePlayer(dt) {
   if (moving) { meState.yaw = Math.atan2(vx, vz); walkT += dt * 9; }
   if (view === "iso") me.root.rotation.y = meState.yaw;
   me.bodyN.position.y = moving ? Math.abs(Math.sin(walkT)) * 0.07 : 0;
-  setAnim(me.q, moving);
+  // P-WORK: an axe stroke leans the plain body forward; the Full look plays its strike once
+  if (swingT > 0) { swingT = Math.max(0, swingT - dt); me.bodyN.rotation.x = Math.sin((1 - swingT / 0.32) * Math.PI) * 0.4; }
+  else me.bodyN.rotation.x = 0;
+  if (!(me.q && me.q.chop && me.q.chop.isPlaying && !moving)) setAnim(me.q, moving);
+  shakeTrees(dt);
   ring.rotation.y += dt * 0.8;
 }
 function updateWalkers(dt, t) {
@@ -750,7 +804,7 @@ function buildQuatWorld() {
     const bb = q.getHierarchyBoundingVectors(true);
     q.scaling.setAll(1.7 / Math.max(0.1, bb.max.y - bb.min.y));
     const find = nm => q.anims.find(a => a.name.toLowerCase() === nm);
-    q.walk = find("walk"); q.idle = find("idle");
+    q.walk = find("walk"); q.idle = find("idle"); q.chop = find("punch") || null;
     q.state = ""; q.setEnabled(false);
     return q;
   };
@@ -1036,6 +1090,8 @@ setInterval(fit, 500);
 let paused = false;
 window.THR = {
   scene, engine, me, walkers, spots, housesSpec, block, mat, P, gate,
+  // P-WORK hooks: walking speed (1 = empty-handed), an axe stroke, face a point, shake or fell a work tree, the yard's pile
+  set speedMul(v) { speedMul = v; }, swing, face, shake, fell, yardPile,
   get view() { return view; }, get timeName() { return timeName; }, get look() { return lookName; },
   toggleView, setTime: v => document.querySelector('#timeG button[data-v="' + v + '"]').click(),
   zoom: () => zoomBtn.click(),
