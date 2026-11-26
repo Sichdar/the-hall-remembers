@@ -2,6 +2,7 @@
 // rebuild each part in TypeScript (docs/08, section 4: "the mock-up stays as it is until the first playable build replaces it").
 import * as BABYLON from "@babylonjs/core";
 import { Work, WORK } from "../sim/work";
+import { Errands } from "../sim/errands";
 // Interface layer: Phase 7 HUD mock-up (docs/07-ui-ux.md). Clickable, with mock rules and fast mock timings.
 // It only talks to the 3D page through window.THR, so the whole interface can be swapped without touching the world.
 (function () {
@@ -72,6 +73,17 @@ const work = new Work(workSpots);
 W.work = work; // for testing in the browser console
 const spotOf = t => workSpots[t.id];
 try { work.auto = localStorage.getItem("thr-auto") === "1"; } catch (e) {}
+// P-WORK 2 (the director's answer to Q34): the big swing and errands are the new default; the Test drawer switches back
+try { work.style = localStorage.getItem("thr-chop") === "beat" ? "beat" : "swing"; } catch (e) {}
+const ES = W.errandSites;
+const errands = new Errands([
+  { id: "palisade", x: ES.palisade.x, z: ES.palisade.z, name: "north palisade", ask: "Stakes pulled from the palisade. Fill the gap!", done: "The palisade holds", i: "tower" },
+  { id: "forge", x: ES.forge.x, z: ES.forge.z, name: "Smith's forge", ask: "The forge is going cold. Firewood!", done: "The forge roars again", i: "strike" },
+  { id: "oven", x: ES.oven.x, z: ES.oven.z, name: "bread oven", ask: "Wood for the evening bake, please.", done: "Bread tonight", i: "bread" }
+]);
+W.errands = errands; // for testing in the browser console
+try { errands.setOn(localStorage.getItem("thr-errands") !== "0"); } catch (e) {}
+const errandAt = () => errands.active && errands.active.site;
 let felledT = 0; // seconds the "tree down" hint stays
 // placeholder sounds made on the spot (no sound files yet, docs/10: placeholder effects only)
 let ac = null;
@@ -86,6 +98,15 @@ function thock(pitch, vol) {
 }
 function clink() { [1320, 1760].forEach((f, i) => { const a = audio(); if (!a) return; const t = a.currentTime + i * 0.07, o = a.createOscillator(), g = a.createGain();
   o.type = "sine"; o.frequency.value = f; g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.25); o.connect(g).connect(a.destination); o.start(t); o.stop(t + 0.26); }); }
+// a tree coming down: a short burst of low noise
+function crash() {
+  const a = audio(); if (!a) return; const t = a.currentTime, n = Math.floor(a.sampleRate * 0.7);
+  const buf = a.createBuffer(1, n, a.sampleRate), d = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 2);
+  const src = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+  src.buffer = buf; f.type = "lowpass"; f.frequency.value = 420; g.gain.value = 0.5;
+  src.connect(f).connect(g).connect(a.destination); src.start(t);
+}
 function buzz(ms) { if (navigator.vibrate && (!navigator.userActivation || navigator.userActivation.hasBeenActive)) try { navigator.vibrate(ms); } catch (e) {} }
 let lastTree = null;
 function onWork(ev) {
@@ -96,8 +117,15 @@ function onWork(ev) {
       S.goodStrokes++; float(e.streak > 1 ? "Good! x" + e.streak : "Good!", "good", ringAt);
       thock(260 + Math.min(10, e.streak) * 25, 0.3); buzz(10);
     }
+    else if (e.k === "swing") {
+      const sp = spotOf(work.chopping || lastTree); W.swing(); if (sp) W.shake(sp); S.swung = true;
+      const at = sp ? W.project(sp.x, 2.6, sp.z) : null;
+      if (e.q === "perfect") { float(e.streak > 1 ? "Perfect! x" + e.streak : "Perfect!", "good", at); thock(300 + Math.min(8, e.streak) * 30, 0.38); buzz(25); }
+      else if (e.q === "good") { float("Good", "good", at); thock(220, 0.25); buzz(10); }
+      else { float("Weak", "good weak", at); thock(130, 0.14); }
+    }
     else if (e.k === "full") { float("Sack full", "good"); }
-    else if (e.k === "felled") { W.fell(spotOf(e.tree)); felledT = 6; float("Tree down", "good"); }
+    else if (e.k === "felled") { W.fell(spotOf(e.tree)); felledT = 6; float("TIMBER!", "good big"); crash(); buzz(60); }
     else if (e.k === "rank") { banner("axe", e.name + " woodcutter"); }
   });
 }
@@ -161,6 +189,7 @@ ui.innerHTML = `
 <div id="hint" class="plate"></div>
 <div id="banner" class="plate"></div>
 <div id="ring"></div>
+<div id="swing" aria-hidden="true"><b class="zone"></b><i class="mark"></i></div>
 <div id="dot"></div>
 <div id="world"></div>
 <section id="panel" aria-modal="false"></section>`;
@@ -177,16 +206,29 @@ const fpsL = el("div", "fps"); drawer.appendChild(fpsL);
 const workL = el("div", "fps"); drawer.appendChild(workL);
 function workLine() {
   const s = work.stats, m = Math.floor(s.playTime / 60), share = work.lateShare;
+  if (work.style === "swing") {
+    const lp = work.latePerfect;
+    return "Work " + m + " min · " + s.fullLoads + " loads · ◎" + s.coin + " · perfect " + (s.swings ? Math.round(100 * s.perfect / s.swings) + "%" : "-") + (lp === null ? "" : " (after 3 min " + Math.round(100 * lp) + "%)") + " · errands " + errands.stats.done + "/" + errands.stats.asked;
+  }
   return "Work " + m + " min · " + s.fullLoads + " loads · ◎" + s.coin + " · good " + (s.strokes ? Math.round(100 * s.good / s.strokes) + "%" : "-") + (share === null ? "" : " (after 3 min " + Math.round(100 * share) + "%)");
 }
+// P-WORK 2 switches, so one session can compare the old and new ways
+const chopB = el("button", "pbtn"), errB = el("button", "pbtn");
+function switchText() {
+  chopB.textContent = "Chop: " + (work.style === "swing" ? "big swing" : "beat ring") + " ⇄";
+  errB.textContent = "Errands: " + (errands.on ? "on" : "off") + " ⇄";
+}
+chopB.onclick = () => { work.stop(); work.style = work.style === "swing" ? "beat" : "swing"; try { localStorage.setItem("thr-chop", work.style); } catch (e) {} switchText(); };
+errB.onclick = () => { errands.setOn(!errands.on); if (!errands.on) W.errandShow("palisade", 1); try { localStorage.setItem("thr-errands", errands.on ? "1" : "0"); } catch (e) {} switchText(); };
+switchText(); drawer.appendChild(chopB); drawer.appendChild(errB);
 const cpB = el("button", "pbtn", "Copy playtest summary");
 cpB.onclick = () => {
-  const txt = work.summary("M1 P-WORK");
+  const txt = work.summary("M1 P-WORK 2") + "\n" + errands.summaryLine() + (errands.on ? "" : " (errands switched off now)") + "\nWalk 5.5 m/s, a full load 10% slower";
   const done = () => float("Copied", "good");
   if (navigator.clipboard) navigator.clipboard.writeText(txt).then(done, () => prompt("Copy this:", txt)); else prompt("Copy this:", txt);
 };
 drawer.appendChild(cpB);
-drawer.appendChild(el("div", "fps", "Chopping uses the real P-WORK rules; the rest is still the mock-up"));
+drawer.appendChild(el("div", "fps", "Chopping and errands use the real P-WORK 2 rules; the rest is still the mock-up"));
 $("#testB").onclick = () => drawer.classList.toggle("on");
 
 // ---------- helpers: floating numbers, banner, toast-like log ----------
@@ -229,7 +271,7 @@ window.addEventListener("keydown", e => {
   const k = e.key.toLowerCase();
   if (k === "escape") { if (panelKind) closePanel(); else openPause(); }
   if (panelKind === "pause") return;
-  if (k === " ") { e.preventDefault(); act(); }
+  if (k === " ") { e.preventDefault(); if (e.repeat && swingHeld) return; if (!swingPress()) act(); }
   if (k === "q") brace(); if (k === "e") strike();
   if (k === "b") toggle("bag", openBag); if (k === "m") toggle("map", openMap); if (k === "o") toggle("orders", openOrders);
 });
@@ -405,6 +447,8 @@ function drawMap() {
   // every accepted order's place gets a dashed gold ring, the tracked one a thicker ring
   S.orders.forEach(o => { const at = ORDER_AT[o.id]; if (!at) return; const on = o.id === S.tracked;
     g.strokeStyle = "#A27A1E"; g.lineWidth = on ? 3 : 1.6; g.setLineDash([5, 4]); g.beginPath(); g.arc(mx(at.x), my(at.z + 1.6), on ? 13 : 10, 0, 7); g.stroke(); g.setLineDash([]); });
+  const ea = errands.active;
+  if (ea) { dot(ea.site.x, ea.site.z, "#C9A23A"); label(ea.site.x, ea.site.z + 0.8, ea.site.name); g.strokeStyle = "#A27A1E"; g.lineWidth = 3; g.setLineDash([5, 4]); g.beginPath(); g.arc(mx(ea.site.x), my(ea.site.z), 13, 0, 7); g.stroke(); g.setLineDash([]); }
   const me = W.me.root.position; dot(me.x, me.z, "#F2C14E", 7); label(me.x, me.z + 1.2, "You", "#5A4210");
   g.font = "italic 12px Georgia, serif"; g.fillStyle = "#7A6243"; g.textAlign = "left"; g.fillText("Only what you have seen. Enemies show only while you can see them.", 10, r.height - 10);
 }
@@ -439,7 +483,7 @@ function openSettings() {
   openPanel("pause", "Settings", `<div class="tabs"><button class="on">Display</button><button disabled>Controls</button><button disabled>Sound</button><button disabled>Game</button><button disabled>Language</button></div>
     <p><b>Text size</b></p><div class="tabs">${[["1", "Normal"], ["1.2", "Large"], ["1.4", "Larger"]].map(([v, n]) => `<button data-ts="${v}" class="${ts === v ? "on" : ""}">${n}</button>`).join("")}</div>
     <p><b>Meanings under Portuguese words</b></p><div class="tabs"><button data-pt="1" class="${showPT ? "on" : ""}">Show</button><button data-pt="0" class="${showPT ? "" : "on"}">Hide</button></div>
-    <p><b>Good strokes</b> (Controls)</p><div class="tabs"><button data-auto="0" class="${work.auto ? "" : "on"}">Tap on the beat</button><button data-auto="1" class="${work.auto ? "on" : ""}">Automatic</button></div>
+    <p><b>Chopping</b> (Controls)</p><div class="tabs"><button data-auto="0" class="${work.auto ? "" : "on"}">By hand</button><button data-auto="1" class="${work.auto ? "on" : ""}">Automatic</button></div>
     <p><b>Reduce flashing and motion</b></p><div class="tabs"><button data-calm="0" class="${calm ? "" : "on"}">Off</button><button data-calm="1" class="${calm ? "on" : ""}">On</button></div>
     <p class="note">Mock-up: only these work. The other tabs are listed in docs/07, section 3.10.</p><div class="menu"><button class="pbtn" id="pBack">Back</button></div>`, {
     full: true, after: p => {
@@ -499,12 +543,13 @@ function context() {
   if (S.weapon && dist(p, PL.dummy) < 3) return { k: "fight", icon: "sword", cap: S.target ? "Attacking" : "Attack" };
   if (smith && dist(p, posOf(smith)) < 2.4) return { k: "shop", icon: "talk", cap: "The Smith" };
   if (dist(p, PL.board) < 2.4) return { k: "board", icon: "scroll", cap: "Read the board" };
+  const es = errandAt(); if (S.load > 0 && es && dist(p, es) < 3.2) return { k: "errand", icon: "sack", cap: "Deliver" };
   if (S.load > 0 && dist(p, PL.cart) < 3.2) return { k: "deliver", icon: "sack", cap: "Deliver" };
   if (dist(p, PL.home) < 2.2) return { k: "home", icon: "chest", cap: "Store all coin" };
   const w = nearestWalker(p); if (w) return { k: "talk", icon: "talk", cap: "Talk", w };
   const t = nearestTree(p);
   if (t && t.timber <= 0) return { k: "stump", icon: "axe", cap: "Stump" };
-  if (t && !work.full) return { k: "chop", icon: "axe", cap: work.chopping === t ? (work.auto ? "Chopping" : "On the beat") : "Chop", t };
+  if (t && !work.full) return { k: "chop", icon: "axe", cap: work.chopping === t ? (work.auto ? "Chopping" : work.style === "swing" ? "Hold, let go" : "On the beat") : "Chop", t };
   if (t) return { k: "full", icon: "sack", cap: "Sack full" };
   return { k: "none", icon: "hand", cap: "" };
 }
@@ -512,6 +557,8 @@ let lastCtxKey = "";
 function act() {
   const c = ctx;
   if (c.k === "chop") {
+    // big swing by hand: the button's press and release do the work (swingPress, swingLift)
+    if (work.style === "swing" && !work.auto) return;
     // the first press starts the work; while chopping, the Action button (and Space) taps the beat like the ring
     if (work.chopping === c.t) onWork(work.tap());
     else if (work.start(c.t)) { lastTree = c.t; W.face(c.t.x, c.t.z); }
@@ -520,12 +567,26 @@ function act() {
   else if (c.k === "board") openBoard();
   else if (c.k === "shop") openShop();
   else if (c.k === "deliver") deliver();
+  else if (c.k === "errand") deliverErrand();
   else if (c.k === "home") storeAll();
   else if (c.k === "talk") say(c.w.w, GOSSIP[Math.floor(Math.random() * GOSSIP.length)]);
   else if (c.k === "fight") { S.target = PL.dummy; }
   else if (c.k === "full") float("Sack full: to the cart", "good");
 }
 actB.onclick = act;
+// big swing: hold the Action button (or Space), let go when the mark is in the gold
+let swingHeld = false;
+function swingPress() {
+  const c = ctx;
+  if (c.k !== "chop" || work.style !== "swing" || work.auto) return false;
+  if (work.chopping !== c.t) { if (!work.start(c.t)) return false; lastTree = c.t; W.face(c.t.x, c.t.z); }
+  swingHeld = true; work.hold(); // during the short recovery the hold starts as soon as it can (every frame)
+  return true;
+}
+function swingLift() { if (!swingHeld) return; swingHeld = false; onWork(work.release()); }
+actB.addEventListener("pointerdown", e => { if (swingPress()) e.preventDefault(); });
+["pointerup", "pointercancel"].forEach(n => window.addEventListener(n, swingLift));
+window.addEventListener("keyup", e => { if (e.key === " ") swingLift(); });
 
 function deliver() {
   const ev = work.deliver(), paid = ev.find(e => e.k === "paid"); if (!paid) return;
@@ -544,6 +605,27 @@ function deliver() {
   }
 }
 
+function deliverErrand() {
+  const e = errands.active; if (!e || work.load < 1) return;
+  const ev = errands.deliver(work.load), load = ev.find(x => x.k === "load"), done = ev.find(x => x.k === "done");
+  if (!load) return;
+  onWork(work.deliver(load.coin));
+  S.load = 0; S.loadsDone++; addCoin(load.coin); clink();
+  W.errandShow(e.site.id, e.haveT / e.needT);
+  if (done) {
+    work.stats.coin += done.coin;
+    setTimeout(() => { addCoin(done.coin); addRep(done.rep, "Brought timber to the " + e.site.name); banner(e.site.i, e.site.done); buzz(40); }, 500);
+  }
+}
+function onErrands(ev) {
+  ev.forEach(x => {
+    const s = x.e.site;
+    if (x.k === "new") { W.errandShow(s.id, 0); banner(s.i, s.ask); thock(520, 0.2); }
+    else if (x.k === "missed") { W.errandShow(s.id, 1); float("Too late: someone else saw to it", "good"); }
+  });
+}
+const mmss = t => Math.floor(t / 60) + ":" + String(Math.floor(t % 60)).padStart(2, "0");
+
 // ---------- fight (mock, against the straw dummy) ----------
 const braceB = $("#braceB"), strikeB = $("#strikeB");
 function brace() { if (!S.weapon || S.braceCd > 0) return; S.braceCd = 6; S.braceOn = 2; float(S.shield ? "Braced" : "Braced (no shield: weaker)", "good"); }
@@ -557,7 +639,7 @@ function hitDummy(dmg) {
 }
 
 // ---------- good-stroke ring ----------
-const ringEl = $("#ring");
+const ringEl = $("#ring"), swingEl = $("#swing");
 ringEl.addEventListener("pointerdown", e => {
   e.stopPropagation(); if (!work.chopping) return;
   onWork(work.tap()); // the ring closes on each stroke; a tap close to it (before or after) is a good stroke
@@ -566,11 +648,14 @@ ringEl.addEventListener("pointerdown", e => {
 // ---------- hint (one at a time, 8 words or fewer) and edge arrows (3 at most) ----------
 function hintNow() {
   const o = S.orders.find(x => x.id === "timber");
-  // the work comes first (P-WORK): a full sack, then learning the beat, then the board's order
-  if (work.full) return { i: "sack", t: "Bring it to the yard", at: PL.cart };
-  if (work.chopping && !S.goodStrokes && !work.auto) return { i: "axe", t: "Tap the ring on the beat" };
-  if (!S.readBoard) return { i: "scroll", t: "Read the notice board", at: PL.board };
+  // the work comes first (P-WORK): a full sack, then learning the swing (or the beat), then the town's errand, then the board
+  const es = errandAt();
+  if (work.full) return es ? { i: "sack", t: "Bring it to the " + es.name, at: es } : { i: "sack", t: "Bring it to the yard", at: PL.cart };
+  if (work.chopping && !work.auto && work.style === "swing" && !S.swung) return { i: "axe", t: "Hold Action, let go in the gold" };
+  if (work.chopping && !S.goodStrokes && !work.auto && work.style === "beat") return { i: "axe", t: "Tap the ring on the beat" };
   const me = W.me.root.position, next = work.nearestStanding(me.x, me.z);
+  if (es && !work.chopping) return work.load >= 1 ? { i: es.i, t: "Chop on, or to the " + es.name, at: es } : next ? { i: "axe", t: "Wood for the " + es.name, at: next } : null;
+  if (!S.readBoard) return { i: "scroll", t: "Read the notice board", at: PL.board };
   if (felledT > 0 && !work.chopping) return next ? { i: "axe", t: "Tree down: on to the next", at: next } : { i: "axe", t: "The forest is all stumps" };
   if (!work.chopping && !work.full && next) return { i: "axe", t: work.load >= 1 ? "Chop on, or deliver" : "Chop a pine", at: next };
   if (!S.weapon && S.loadsDone >= 1) return { i: "talk", t: "The Smith sells spears", at: smith ? { x: posOf(smith).x, z: posOf(smith).z } : null };
@@ -613,14 +698,24 @@ W.onFrame(dt => {
   work.tool = S.toolLvl;
   if (work.chopping && dist(me, work.chopping) > 2.8) work.stop();
   onWork(work.step(dt));
+  onErrands(errands.step(dt));
+  if (swingHeld && !work.holding && work.chopping) work.hold();
+  if (swingHeld && !work.chopping) swingHeld = false;
   S.load = Math.floor(work.load); S.loadMax = WORK.loadSize;
   W.speedMul = work.speedFactor;
   felledT = Math.max(0, felledT - dt);
-  if (work.chopping && !work.auto) {
+  if (work.chopping && !work.auto && work.style === "beat") {
     const p = W.project(work.chopping.x, 2.2, work.chopping.z);
     ringEl.classList.add("on"); ringEl.style.left = p.x + "px"; ringEl.style.top = p.y + "px";
     ringEl.style.setProperty("--s", (2 - work.ringPhase).toFixed(3));
   } else ringEl.classList.remove("on");
+  if (work.chopping && !work.auto && work.style === "swing") {
+    const p = W.project(work.chopping.x, 2.0, work.chopping.z);
+    swingEl.classList.add("on"); swingEl.style.left = (p.x + 56) + "px"; swingEl.style.top = p.y + "px";
+    swingEl.style.setProperty("--m", work.meter.toFixed(3));
+    swingEl.style.setProperty("--a", work.zoneAt.toFixed(3)); swingEl.style.setProperty("--w", work.zone.toFixed(3));
+    swingEl.classList.toggle("held", work.holding);
+  } else swingEl.classList.remove("on");
 
   // fight
   S.braceCd = Math.max(0, S.braceCd - dt); S.strikeCd = Math.max(0, S.strikeCd - dt); S.braceOn = Math.max(0, S.braceOn - dt);
@@ -650,8 +745,11 @@ W.onFrame(dt => {
   $("#coinN").textContent = S.coin;
   $("#repL").textContent = level(S.rep); $("#repRow .bar i").style.width = ((S.rep + 100) / 2) + "%";
   const o = S.orders.find(x => x.id === S.tracked), tr = $("#track");
-  tr.classList.toggle("on", !!o);
-  if (o) { const h = ic(o.icon) + "<span>" + (o.id === "timber" ? "Timber " + o.have + "/" + o.need + " · yard" : o.id === "gate" ? "North gate · tonight" : o.text) + (S.orders.length > 1 ? " ⇄" : "") + "</span>"; if (tr._h !== h) { tr.innerHTML = h; tr._h = h; } }
+  const ea = errands.active, ep = errands.progress;
+  tr.classList.toggle("on", !!o || !!ea);
+  tr.classList.toggle("late", !!ea && ea.left < 20);
+  if (ea) { const f = n => (Math.round(n * 10) / 10).toString(); const h = ic(ea.site.i) + "<span>" + ea.site.name[0].toUpperCase() + ea.site.name.slice(1) + " " + f(ep.have) + "/" + f(ep.need) + " · " + mmss(ea.left) + "</span>"; if (tr._h !== h) { tr.innerHTML = h; tr._h = h; } }
+  else if (o) { const h = ic(o.icon) + "<span>" + (o.id === "timber" ? "Timber " + o.have + "/" + o.need + " · yard" : o.id === "gate" ? "North gate · tonight" : o.text) + (S.orders.length > 1 ? " ⇄" : "") + "</span>"; if (tr._h !== h) { tr.innerHTML = h; tr._h = h; } }
   const tn = W.timeName, dI = (tn === "night") ? "moon" : "sun";
   const dT = "Day 1 · " + tn[0].toUpperCase() + tn.slice(1);
   if ($("#dialT").textContent !== dT) { $("#dialT").textContent = dT; $("#dialI").innerHTML = ic(dI); }
@@ -669,10 +767,11 @@ W.onFrame(dt => {
 
   // edge arrows: tracked order, hint target, danger at night, home at night (3 at most)
   const arrows = [];
+  if (ea) arrows.push({ x: ea.site.x, z: ea.site.z, i: ea.site.i });
   if (tn === "night") arrows.push({ x: -45, z: 10, i: "paw", foe: true });
   if (o && o.id === "timber") arrows.push({ ...PL.cart, i: "axe" });
   if (o && o.id === "gate") arrows.push({ ...PL.gate, i: "tower" });
-  if (hn && hn.at && !(o && o.id === "timber" && hn.at === PL.cart)) arrows.push({ ...hn.at, i: hn.i });
+  if (hn && hn.at && !(o && o.id === "timber" && hn.at === PL.cart) && !(ea && hn.at === ea.site)) arrows.push({ ...hn.at, i: hn.i });
   if ((tn === "night" || tn === "dusk") && arrows.length < 3 && dist(me, PL.home) > 6) arrows.push({ ...PL.home, i: "house" });
   edgeArrows(arrows.slice(0, 3));
 

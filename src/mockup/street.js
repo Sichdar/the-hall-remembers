@@ -323,6 +323,34 @@ block(1.2, 2.9, 0.3, 0.3);
   block(-3.5, 2.9, 1.0, 0.3);
 })();
 
+// P-WORK 2: where the town's errands are done (src/sim/errands.ts). The interface adds the words; this draws the work.
+const ERRAND_SITES = {
+  palisade: { x: -12, z: 25.4 },  // a gap in the north palisade, filled stake by stake
+  forge: { x: 6.6, z: -3.0 },     // the Smith's firewood stack, across the lane from where he stands
+  oven: { x: -17, z: -3.2 }       // the bread oven's wood pile, in front of the baker's house
+  // (both on the south side of the street, whose house fronts face the camera, so the piles can be seen growing)
+};
+const gapStakes = [];
+// a wood pile of up to 8 logs that grows with the errand
+function woodPile(x, z) {
+  const logs = [];
+  [4, 3, 1].forEach((n, row) => { for (let k = 0; k < n; k++) {
+    // logs lie along x (rotated a quarter turn), side by side along z, rows stacked up
+    const l = BS.log.createInstance("el"); l.rotation.z = Math.PI / 2;
+    l.position.set(x, 0.15 + row * 0.27, z + (k - (n - 1) / 2) * 0.32);
+    l.isPickable = false; l.setEnabled(false); sg.addShadowCaster(l); logs.push(l);
+  } });
+  block(x, z, 0.7, 0.7);
+  return logs;
+}
+// the piles stand just east of where you stand to deliver, clear of the house fronts
+const errandPiles = { forge: woodPile(ERRAND_SITES.forge.x + 1.6, ERRAND_SITES.forge.z), oven: woodPile(ERRAND_SITES.oven.x + 1.6, ERRAND_SITES.oven.z) };
+/** Shows how far an errand has got, 0 to 1: the palisade gap fills, a pile grows. `open` = the palisade's gap before anyone fills it. */
+function errandShow(id, share) {
+  if (id === "palisade") { const n = Math.round(share * gapStakes.length); gapStakes.forEach((p, i) => p.forEach(m => m.setEnabled(i < n))); return; }
+  const logs = errandPiles[id]; if (logs) { const n = Math.round(share * logs.length); logs.forEach((l, i) => l.setEnabled(i < n)); }
+}
+
 // north lane and the north gate (a timber gatehouse in a palisade; shown in both looks, the Quaternius packs have no gate)
 const gate = { x: 4.2, z: 27 };
 const northLane = box(2.6, 0.06, 25, P.path, gate.x, 0.032, 14.6); northLane.receiveShadows = true;
@@ -339,8 +367,9 @@ const northLane = box(2.6, 0.06, 25, P.path, gate.x, 0.032, 14.6); northLane.rec
   // palisade of pointed stakes either side (instances: about 80 stakes cost one draw each for stake and tip)
   const stakeB = base(MB.CreateBox("stake", { width: 0.42, height: 1, depth: 0.42 }, scene), "#8A6A44");
   const tipB = base(MB.CreateCylinder("tip", { height: 0.45, diameterTop: 0, diameterBottom: 0.5, tessellation: 4 }, scene), "#8A6A44");
-  const stake = x => { const h = 2.5 + Math.abs(Math.sin(x * 3.7)) * 0.35; inst(stakeB, gate.x + x, h / 2, gate.z, 1, h, 1); inst(tipB, gate.x + x, h + 0.22, gate.z, 1); };
-  for (let x = -3.3; x > -22; x -= 0.46) stake(x);
+  const stake = x => { const h = 2.5 + Math.abs(Math.sin(x * 3.7)) * 0.35; return [inst(stakeB, gate.x + x, h / 2, gate.z, 1, h, 1), inst(tipB, gate.x + x, h + 0.22, gate.z, 1)]; };
+  // P-WORK 2: the stakes around x = -12 can be pulled out and put back, one by one (the palisade errand)
+  for (let x = -3.3; x > -22; x -= 0.46) { const pair = stake(x), wx = gate.x + x; if (Math.abs(wx - ERRAND_SITES.palisade.x) < 1.4) gapStakes.push(pair); }
   for (let x = 3.3; x < 22; x += 0.46) stake(x);
   block(gate.x - 12.6, gate.z, 9.4, 0.3); block(gate.x + 12.6, gate.z, 9.4, 0.3);
   // a post and iron cup each side of the way
@@ -582,7 +611,29 @@ function shakeTrees(dt) {
     if (!t.shakeT) shaking.splice(k, 1);
   }
 }
+// P-WORK 2: near the work pines, their canopies turn see-through, so you can watch your own swing.
+// Instances can't fade one by one, so each nearby canopy is swapped for a faded copy while you're there.
+let ghostMat = null;
+const ghosted = new Map(); // spot -> [[instance, faded copy], ...]
+function unghost(t) { (ghosted.get(t) || []).forEach(([p, g]) => { if (!t.stump) p.setEnabled(true); g.dispose(); }); ghosted.delete(t); }
+function seeThrough(pos) {
+  for (const t of spots.trees) {
+    if (!t.work) continue;
+    const near = !t.stump && Math.hypot(t.x - pos.x, t.z - pos.z) < 4.5;
+    if (near && !ghosted.has(t)) {
+      if (!ghostMat) { ghostMat = BS.pine.material.clone("pineGhost"); ghostMat.alpha = 0.28; }
+      const list = [];
+      t.parts.forEach(p => { if (p.sourceMesh !== BS.pine) return;
+        const g = BS.pine.clone("pineGhost"); g.material = ghostMat; g.isPickable = false; g.receiveShadows = false;
+        g.position.copyFrom(p.position); g.scaling.copyFrom(p.scaling); g.rotation.copyFrom(p.rotation);
+        p.setEnabled(false); list.push([p, g]); });
+      ghosted.set(t, list);
+    } else if (!near && ghosted.has(t)) unghost(t);
+  }
+  ghosted.forEach(list => list.forEach(([p, g]) => g.rotation.copyFrom(p.rotation))); // the faded copy shakes with the tree
+}
 function fell(spot) {
+  if (ghosted.has(spot)) unghost(spot);
   if (!spot.parts || spot.stump) return;
   spot.parts.forEach(p => p.setEnabled(false));
   spot.stump = inst(BS.stump, spot.x, 0.25, spot.z, spot.s, 0.5 * spot.s, spot.s, 0);
@@ -597,12 +648,13 @@ function updatePlayer(dt) {
   if (view === "iso") { fx = -Math.cos(iso.alpha); fz = -Math.sin(iso.alpha); }
   else { fx = Math.sin(meState.fpYaw); fz = Math.cos(meState.fpYaw); }
   const rx = fz, rz = -fx;
-  const speed = 4.2 * speedMul;
+  // P-WORK 2: 5.5 m/s, about 30% faster than the first test's 4.2 (the director: "the character is slow")
+  const speed = 5.5 * speedMul;
   const vx = (rx * ix - fx * iy) * speed, vz = (rz * ix - fz * iy) * speed;
   const pos = me.root.position;
   pos.x += vx * dt; pos.z += vz * dt; collide(pos, 0.35);
   const moving = Math.hypot(vx, vz) > 0.1;
-  if (moving) { meState.yaw = Math.atan2(vx, vz); walkT += dt * 9; }
+  if (moving) { meState.yaw = Math.atan2(vx, vz); walkT += dt * 11; }
   if (view === "iso") me.root.rotation.y = meState.yaw;
   me.bodyN.position.y = moving ? Math.abs(Math.sin(walkT)) * 0.07 : 0;
   // P-WORK: an axe stroke leans the plain body forward; the Full look plays its strike once
@@ -610,6 +662,7 @@ function updatePlayer(dt) {
   else me.bodyN.rotation.x = 0;
   if (!(me.q && me.q.chop && me.q.chop.isPlaying && !moving)) setAnim(me.q, moving);
   shakeTrees(dt);
+  seeThrough(pos);
   ring.rotation.y += dt * 0.8;
 }
 function updateWalkers(dt, t) {
@@ -634,7 +687,8 @@ function setAnim(q, moving) {
   if (!q || q.state === want) return;
   q.state = want;
   if (q.walk) q.walk.stop(); if (q.idle) q.idle.stop();
-  const a = moving ? q.walk : q.idle; if (a) a.start(true, 1.0);
+  // your own walk plays 30% faster to match your faster pace (P-WORK 2); the townsfolk keep theirs
+  const a = moving ? q.walk : q.idle; if (a) a.start(true, moving && q === me.q ? 1.3 : 1.0);
 }
 function setLook(l) {
   lookName = l;
@@ -1092,6 +1146,8 @@ window.THR = {
   scene, engine, me, walkers, spots, housesSpec, block, mat, P, gate,
   // P-WORK hooks: walking speed (1 = empty-handed), an axe stroke, face a point, shake or fell a work tree, the yard's pile
   set speedMul(v) { speedMul = v; }, swing, face, shake, fell, yardPile,
+  // P-WORK 2 hooks: where errands are done, and how far one has got
+  errandSites: ERRAND_SITES, errandShow,
   get view() { return view; }, get timeName() { return timeName; }, get look() { return lookName; },
   toggleView, setTime: v => document.querySelector('#timeG button[data-v="' + v + '"]').click(),
   zoom: () => zoomBtn.click(),

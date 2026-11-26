@@ -41,6 +41,11 @@ Each is the **first piece built in its milestone**, on the real setup from M0 (n
 - **Fewer, bigger moments:** no beat ring; instead each tree takes one long hold-and-release with a sweet spot, and loads are bigger.
 - **Work as errands:** less chopping, more carrying to where the town needs it right now (the wall, the forge, the field camp), so the "why" carries the fun.
 
+**First P-WORK test (26/11/2026): failed.** The director: the chopping is boring and the villager is slow. In 8½ minutes only about 2 were spent chopping; 36% of strokes were on the beat after 3 minutes, with no sign of learning it; automatic mode wasn't tried. The director chose to try both ideas at once rather than one weekend each, with switches to compare:
+- **P-WORK 2** (`src/sim/work.ts`, `src/sim/errands.ts`): walking 30% faster (5.5 m/s), a full load 10% slower instead of 20%. The **big swing** is the default: hold the Action button, a mark rises and falls, let go in the gold zone (a new place each swing): perfect 4 timber, good 2.5, weak 1, so about 3 swings a load. **Errands**: every so often the town asks for 2 or 3 loads at one place (the north palisade's gap, the Smith's forge, the bread oven), with a time limit; each load there pays 3 coin instead of 2, the last one a bonus and +2 reputation, and the place visibly fills (stakes go back in, the wood pile grows). A missed errand costs nothing. The pines near you turn see-through so you can watch your swing.
+- The Test drawer switches back to the beat ring and turns errands off, so one session can compare. The playtest summary reports both.
+- Pass mark for the big swing: the same three, with "half the swings perfect after 3 minutes" in place of the beat.
+
 ## 4. The three kinds of test
 | Test | Who | When | What it checks | Cost |
 |---|---|---|---|---|

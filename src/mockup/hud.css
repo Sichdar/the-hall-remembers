@@ -46,6 +46,7 @@
 #track { position: absolute; left: var(--sl); top: calc(var(--st) + 112px); padding: 5px 9px; display: none; align-items: center; gap: 6px;
   font-family: var(--serif); pointer-events: auto; cursor: pointer; max-width: 260px; }
 #track.on { display: flex; }
+#track.late { border-color: var(--danger); color: #FFD7D2; }
 #track .ic { width: 18px; height: 18px; color: var(--brass-hi); }
 
 /* --- top centre: sun dial --- */
@@ -103,6 +104,15 @@
 .float { position: absolute; transform: translate(-50%, -50%); font-weight: 800; color: var(--gold); text-shadow: 0 1px 2px #000, 0 0 3px #000; white-space: nowrap;
   animation: rise 1.3s ease-out forwards; font-size: 1.05em; }
 .float.good { color: #FFF3C4; font-family: var(--serif); font-size: 1.5em; }
+.float.weak { color: #C9BFAE; font-size: 1.05em; }
+.float.big { font-size: 2.4em; letter-spacing: .04em; }
+/* P-WORK 2: the big swing's meter beside the tree. --m = where the mark is, --a = where the gold zone starts, --w = its width (0 to 1) */
+#swing { position: absolute; width: 22px; height: 104px; margin: -52px 0 0 -11px; display: none; pointer-events: none;
+  background: rgba(46,32,21,.78); border: 2px solid var(--brass); border-radius: 11px; box-shadow: 0 0 0 2px rgba(0,0,0,.35); overflow: hidden; }
+#swing.on { display: block; }
+#swing .zone { position: absolute; left: 0; right: 0; bottom: calc(var(--a) * 100%); height: calc(var(--w) * 100%); background: var(--gold); opacity: .85; }
+#swing .mark { position: absolute; left: -2px; right: -2px; height: 6px; bottom: calc(var(--m) * 100% - 3px); background: #FFF8E6; border-radius: 3px; box-shadow: 0 0 4px #000; }
+#swing.held { border-color: var(--gold); }
 .edge { position: absolute; width: 40px; height: 40px; margin: -20px 0 0 -20px; display: grid; place-items: center; border-radius: 50%; }
 .edge .ic { width: 20px; height: 20px; }
 .edge .ar { position: absolute; inset: -9px; display: grid; place-items: center; }

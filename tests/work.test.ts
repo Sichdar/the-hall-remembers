@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { WORK, Work, type WorkEvent } from "../src/sim/work";
+import { WORK, Work, type ChopStyle, type WorkEvent } from "../src/sim/work";
 
 // P-WORK rules (docs/02 section 2.2, docs/05 section 2.3, docs/11 section 3).
-const one = () => new Work([{ x: 0, z: 0 }, { x: 10, z: 0 }]);
+/** Two trees; the first test's beat ring unless told otherwise. The gold zone always starts at 0.5 (rnd = 0). */
+const one = (style: ChopStyle = "beat") => { const w = new Work([{ x: 0, z: 0 }, { x: 10, z: 0 }], () => 0); w.style = style; return w; };
 /** Runs time in 0.05 s steps; `tapAt` taps when this many seconds are left before each stroke (null = no taps). */
 function chop(w: Work, seconds: number, tapAt: number | null = null) {
   const out = [];
@@ -75,10 +76,10 @@ describe("the land runs out", () => {
 });
 
 describe("carry and pay", () => {
-  it("a full load slows you by 20%, a half load by 10%", () => {
+  it("a full load slows you by 10%, a half load by 5% (P-WORK 2)", () => {
     const w = one(); expect(w.speedFactor).toBe(1);
-    w.load = 5; expect(w.speedFactor).toBeCloseTo(0.9);
-    w.load = 10; expect(w.speedFactor).toBeCloseTo(0.8);
+    w.load = 5; expect(w.speedFactor).toBeCloseTo(0.95);
+    w.load = 10; expect(w.speedFactor).toBeCloseTo(0.9);
   });
 
   it("a full load pays 2 coin; a part load pays its share, at least 1", () => {
@@ -98,6 +99,12 @@ describe("carry and pay", () => {
     expect(w.window).toBeCloseTo(win * 1.2);
   });
 
+  it("an errand's own pay replaces the yard's, and the load still counts for rank", () => {
+    const w = one(); w.load = 10;
+    expect(w.deliver(3)).toEqual([{ k: "paid", coin: 3, full: true }]);
+    expect(w.stats).toMatchObject({ coin: 3, fullLoads: 1 });
+  });
+
   it("Master pays 1 coin more per full load", () => {
     const w = one(); w.stats.fullLoads = 40; w.load = 10;
     expect(w.deliver()).toEqual([{ k: "paid", coin: 3, full: true }]);
@@ -114,5 +121,87 @@ describe("the pass mark", () => {
     expect(w.stats.strokesLate).toBeLessThan(w.stats.strokes);
     expect(w.lateShare).toBe(1);
     expect(w.summary("test")).toContain("after 3 min");
+  });
+});
+
+// P-WORK 2: the big swing (docs/11, section 3, "fewer, bigger moments"). With rnd = 0 the gold zone is 0.5 to 0.66.
+/** Holds for `secs`, then lets go; returns the swing's events. Waits out the recovery first. */
+function swingFor(w: Work, secs: number) {
+  w.step(WORK.swing.recover);
+  expect(w.hold()).toBe(true);
+  w.step(secs);
+  return w.release();
+}
+const at = (share: number) => share * WORK.swing.fill; // seconds of holding to reach this point of the meter
+
+describe("the big swing", () => {
+  it("letting go in the gold zone is perfect, close to it good, far from it weak", () => {
+    const w = one("swing"); w.start(w.trees[0]!);
+    expect(swingFor(w, at(0.58))).toEqual([{ k: "swing", q: "perfect", timber: WORK.swing.perfect, streak: 1 }]);
+    expect(swingFor(w, at(0.45))[0]).toMatchObject({ q: "good", timber: WORK.swing.good, streak: 0 });
+    expect(swingFor(w, at(0.1))[0]).toMatchObject({ q: "weak", timber: WORK.swing.weak });
+    expect(w.stats).toMatchObject({ swings: 3, perfect: 1, goodSwings: 1, weak: 1 });
+  });
+
+  it("the meter rises, then falls: holding too long gives a second chance on the way down", () => {
+    const w = one("swing"); w.start(w.trees[0]!);
+    w.hold(); w.step(at(1.4)); // up to the top, then back down to 0.6
+    expect(w.meter).toBeCloseTo(0.6, 5);
+    expect(w.release()[0]).toMatchObject({ q: "perfect" });
+  });
+
+  it("two perfect swings fill most of a load; the third fills it and stops the work", () => {
+    const w = one("swing"); w.start(w.trees[0]!);
+    swingFor(w, at(0.58)); swingFor(w, at(0.58));
+    expect(w.load).toBeCloseTo(2 * WORK.swing.perfect, 5);
+    const ev = swingFor(w, at(0.58));
+    expect(w.full).toBe(true);
+    expect(ev).toContainEqual({ k: "full" });
+    expect(w.chopping).toBeNull();
+  });
+
+  it("no new swing until the last one has recovered, and no swing without a tree", () => {
+    const w = one("swing");
+    expect(w.hold()).toBe(false);
+    w.start(w.trees[0]!);
+    w.hold(); w.step(at(0.58)); w.release();
+    expect(w.hold()).toBe(false);
+    w.step(WORK.swing.recover);
+    expect(w.hold()).toBe(true);
+  });
+
+  it("taps of the beat ring do nothing in big-swing mode", () => {
+    const w = one("swing"); w.start(w.trees[0]!);
+    w.step(5);
+    expect(w.tap()).toEqual([]);
+    expect(w.load).toBe(0); // and no strokes land on their own
+  });
+
+  it("automatic mode: one good swing every 1.6 s, not counted for the pass mark", () => {
+    const w = one("swing"); w.auto = true; w.start(w.trees[0]!);
+    expect(w.hold()).toBe(false);
+    const ev = w.step(WORK.swing.autoEvery * 2 + 0.01);
+    expect(ev.filter(e => e.k === "swing")).toHaveLength(2);
+    expect(w.load).toBeCloseTo(2 * WORK.swing.good, 5);
+    expect(w.stats.swings).toBe(0);
+  });
+
+  it("perfect swings in a row build a streak; the axe and rank make every swing bigger", () => {
+    const w = one("swing"); w.tool = 1; w.start(w.trees[0]!);
+    swingFor(w, at(0.58));
+    const ev = swingFor(w, at(0.58));
+    expect(ev[0]).toMatchObject({ q: "perfect", streak: 2, timber: WORK.swing.perfect * 1.25 });
+    expect(w.stats.bestStreak).toBe(2);
+  });
+
+  it("the summary names the style and the perfect share after 3 minutes", () => {
+    const w = one("swing");
+    w.step(181); w.start(w.trees[0]!);
+    swingFor(w, at(0.58)); swingFor(w, at(0.1));
+    expect(w.latePerfect).toBe(0.5);
+    const s = w.summary("test");
+    expect(s).toContain("chop style now big swing");
+    expect(s).toContain("perfect after 3 min 1/2 (50%)");
+    expect(s).not.toContain("Beat ring");
   });
 });
